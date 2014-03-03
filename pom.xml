@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+  	<name>Sakai Feedback</name>
+  	<groupId>org.sakaiproject.feedback</groupId>
+  	<artifactId>feedback</artifactId>
+  	<packaging>pom</packaging>
+    <version>10-SNAPSHOT</version>
+
+	<parent>
+        <groupId>org.sakaiproject</groupId>
+        <artifactId>master</artifactId>
+        <version>10.0-SNAPSHOT</version>
+        <relativePath>../master/pom.xml</relativePath>
+    </parent>
+
+	<properties>
+        <log4j.version>1.2.8</log4j.version>
+        <servlet-api.version>2.4</servlet-api.version>
+        <lombok.version>0.10.6</lombok.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+  	
+  	<organization>
+    	<name>University of Oxford</name>
+    	<url>http://www.ox.ax.uk</url>
+  	</organization>
+  	<inceptionYear>2005</inceptionYear>
+  	<developers>
+    	<developer>
+      		<name>Adrian Fish</name>
+      		<email>adrian.r.fish@gmail.com</email>
+    	</developer>
+  	</developers>
+
+  	<modules>
+    	<module>tool</module>
+  	</modules>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mc-release</id>
+			<url>http://mc-repo.googlecode.com/svn/maven2/releases</url>
+		</pluginRepository>
+    </pluginRepositories>
+
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+	<issueManagement>
+        <system>JIRA</system>
+        <url>https://jira.oucs.ox.ac.uk/jira/browse/WL-3179</url>
+    </issueManagement>
+
+	<scm>
+        <connection>scm:git:git://github.com/ox-it/wl-feedback.git</connection>
+        <developerConnection>scm:git:git://github.com/ox-it/wl-feedback.git</developerConnection>
+        <url>https://github.com/adrianfish/yaft</url>
+    </scm>
+    
+    <build>
+    </build>
+
+</project>
