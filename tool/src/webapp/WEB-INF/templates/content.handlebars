@@ -1,0 +1,12 @@
+<h2 id="feedback-title">{{translate 'title'}}</h2>
+<div id="feedback-overview">
+    {{translate 'content_instruction'}}
+</div>
+<form id="feedback-form" action="/direct/feedback" method="POST">
+    <table cols="2">
+        <tr><td>{{translate 'title_label'}}</td><td><input type="text" name="title" /></td></tr>
+        <tr><td>{{translate 'description_label'}}</td><td><textarea name="description"></textarea></td></tr>
+    </table>
+    <br />
+    <input type="submit" value="{{translate 'submit_label'}}" />
+</form>

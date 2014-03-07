@@ -74,6 +74,9 @@
             <resource>
                 <directory>${basedir}/src/java</directory>
             </resource>
+            <resource>
+                <directory>${basedir}/src/bundle</directory>
+            </resource>
         </resources>
 	</build>
 </project>

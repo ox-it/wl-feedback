@@ -24,5 +24,9 @@
 	</bean-->
     <bean id="org.sakaiproject.feedback.util.SakaiProxy" class="org.sakaiproject.feedback.util.SakaiProxy">
         <property name="sessionManager"><ref bean="org.sakaiproject.tool.api.SessionManager" /></property>
+    </bean>
+
+	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" 
+		class="org.sakaiproject.feedback.tool.entityproviders.FeedbackEntityProvider">
 	</bean>
 </beans>
