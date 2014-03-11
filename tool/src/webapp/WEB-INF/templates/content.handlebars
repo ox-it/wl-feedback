@@ -2,11 +2,15 @@
 <div id="feedback-overview">
     {{translate 'content_instruction'}}
 </div>
-<form id="feedback-form" action="/direct/feedback" method="POST">
-    <table cols="2">
-        <tr><td>{{translate 'title_label'}}</td><td><input type="text" name="title" /></td></tr>
-        <tr><td>{{translate 'description_label'}}</td><td><textarea name="description"></textarea></td></tr>
+<form id="feedback-form" action="/direct/feedback/reportcontent" method="POST">
+    <table id="feedback-field-table" cols="2">
+        <tr><td id="feedback-title-label">{{translate 'title_label'}}</td><td id="feedback-title-field"><input type="text" name="title" /></td></tr>
+        <tr><td id="feedback-description-label">{{translate 'description_label'}}</td><td id="feedback-description-field"><textarea name="description"></textarea></td></tr>
     </table>
     <br />
-    <input type="submit" value="{{translate 'submit_label'}}" />
+    <span id="feedback-attachments-label">{{translate 'attachments_label'}}</span>
+    <br />
+    <input id="feedback-attachment" name="attachment" type="file" class="multi"/><br clear="all"/>
+    <br />
+    <input id="feedback-submit-button" type="submit" value="{{translate 'submit_label'}}" />
 </form>

@@ -59,6 +59,7 @@ public class FeedbackTool extends HttpServlet {
 		request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
         request.setAttribute("userId", userId);
         request.setAttribute("language", (new ResourceLoader(userId)).getLocale().getLanguage());
+        request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("featureSuggestionUrl", "http://www.jazzwax.com"));
 
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
 	}
