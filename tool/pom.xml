@@ -13,7 +13,7 @@
   	<parent>
     	<artifactId>feedback</artifactId>
     	<groupId>org.sakaiproject.feedback</groupId>
-    	<version>10-SNAPSHOT</version>
+    	<version>11-SNAPSHOT</version>
   	</parent>
 
   	<dependencies>
@@ -72,6 +72,14 @@
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.2</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
         </dependency>
 	</dependencies>
 	

@@ -79,6 +79,9 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 			throw new EntityException("You must be logged in to post a content report", "", HttpServletResponse.SC_UNAUTHORIZED);
 		}
 
+        String siteId = view.getPathSegment(1);
+        System.out.println("Site ID: " + siteId);
+
         String title = (String) params.get("title");
         String description = (String) params.get("description");
 
@@ -94,9 +97,9 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
 
-        List<Attachment> attachments = getAttachments(params);
+        List<FileItem> attachments = getAttachments(params);
 
-        sendEmail(userId, CONTENT, title, description, attachments);
+        sakaiProxy.sendEmail(userId, siteId, CONTENT, title, description, attachments, true);
 
         return "success";
 	}
@@ -110,6 +113,9 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 			throw new EntityException("You must be logged in to post a functionality report", "", HttpServletResponse.SC_UNAUTHORIZED);
 		}
 
+        String siteId = view.getPathSegment(1);
+        System.out.println("Site ID: " + siteId);
+
         String title = (String) params.get("title");
         String description = (String) params.get("description");
 
@@ -125,14 +131,14 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
 
-        List<Attachment> attachments = getAttachments(params);
+        List<FileItem> attachments = getAttachments(params);
 
-        sendEmail(userId, FUNCTIONALITY, title, description, attachments);
+        sakaiProxy.sendEmail(userId, siteId, FUNCTIONALITY, title, description, attachments, false);
 
         return "success";
 	}
 
-	private List<Attachment> getAttachments(Map<String, Object> params) {
+	private List<FileItem> getAttachments(Map<String, Object> params) {
 
 		final List<FileItem> fileItems = new ArrayList<FileItem>();
 
@@ -166,34 +172,6 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 			}
 		}
 
-		final List<Attachment> attachments = new ArrayList<Attachment>();
-		if (fileItems.size() > 0) {
-			for (FileItem fileItem : fileItems) {
-				String name = fileItem.getName();
-
-				if (name.contains("/")) {
-					name = name.substring(name.lastIndexOf("/") + 1);
-                } else if (name.contains("\\")) {
-					name = name.substring(name.lastIndexOf("\\") + 1);
-                }
-
-				attachments.add(new Attachment(name, fileItem.getContentType(), fileItem.get()));
-			}
-		}
-
-		return attachments;
+		return fileItems;
 	}
-
-    private void sendEmail(String userId, String feedbackType, String title, String description, List<Attachment> attachments) {
-
-
-        String email = sakaiProxy.getUser(userId).getEmail();
-
-        if (email == null) {
-            logger.error("No email for reporter: " + userId + ". No email will be sent.");
-            return;
-        }
-
-        if (logger.isDebugEnabled()) logger.debug("Email address for reporter: " + email);
-    }
 }
