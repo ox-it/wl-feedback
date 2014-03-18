@@ -19,6 +19,7 @@
                 startupArgs: {
                     state: 'home',
                     userId: '${userId}',
+                    siteId: '${siteId}',
                     language: '${language}',
                     featureSuggestionUrl: '${featureSuggestionUrl}'
                 }

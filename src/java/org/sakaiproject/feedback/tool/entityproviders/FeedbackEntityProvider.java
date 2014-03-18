@@ -70,7 +70,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         return loader;
 	}
 
-	@EntityCustomAction(action = "reportcontent", viewKey = EntityView.VIEW_NEW)
+	@EntityCustomAction(action = "reportcontent", viewKey = EntityView.VIEW_EDIT)
 	public String handleContentReport(EntityView view, Map<String, Object> params) {
 		
 		String userId = developerHelperService.getCurrentUserId();
@@ -80,7 +80,12 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 		}
 
         String siteId = view.getPathSegment(1);
-        System.out.println("Site ID: " + siteId);
+
+		if (siteId == null) {
+			throw new EntityException("You must supply a site id to post a functionality report", "", HttpServletResponse.SC_BAD_REQUEST);
+		}
+
+        if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
 
         String title = (String) params.get("title");
         String description = (String) params.get("description");
@@ -104,7 +109,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         return "success";
 	}
 
-	@EntityCustomAction(action = "reportfunctionality", viewKey = EntityView.VIEW_NEW)
+	@EntityCustomAction(action = "reportfunctionality", viewKey = EntityView.VIEW_EDIT)
 	public String handleFunctionalityReport(EntityView view, Map<String, Object> params) {
 		
 		String userId = developerHelperService.getCurrentUserId();
@@ -114,7 +119,12 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 		}
 
         String siteId = view.getPathSegment(1);
-        System.out.println("Site ID: " + siteId);
+
+		if (siteId == null) {
+			throw new EntityException("You must supply a site id to post a functionality report", "", HttpServletResponse.SC_BAD_REQUEST);
+		}
+
+        if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
 
         String title = (String) params.get("title");
         String description = (String) params.get("description");

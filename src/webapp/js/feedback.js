@@ -32,7 +32,7 @@
             });
         } else if (CONTENT === state) {
 
-            feedback.utils.renderTemplate(CONTENT, {}, 'feedback-content');
+            feedback.utils.renderTemplate(CONTENT, {siteId: feedback.startupArgs.siteId}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -47,7 +47,7 @@
                 });
             });
         } else if (FUNCTIONALITY === state) {
-            feedback.utils.renderTemplate(FUNCTIONALITY , {}, 'feedback-content');
+            feedback.utils.renderTemplate(FUNCTIONALITY , {siteId: feedback.startupArgs.siteId}, 'feedback-content');
 
             $(document).ready(function () {
 
