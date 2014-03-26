@@ -2,6 +2,13 @@
 <div id="feedback-overview">
     {{translate 'content_instruction'}}
 </div>
+<div id="feedback-siteupdaters">
+    <select name="recipient">
+        {{#each siteUpdaters}}
+        <option value="{{id}}">{{displayName}}</option>
+        {{/each}}
+    </select>
+</div>
 <form id="feedback-form" action="/direct/feedback/{{siteId}}/reportcontent" method="POST">
     <table id="feedback-field-table" cols="2">
         <tr><td id="feedback-title-label">{{translate 'title_label'}}</td><td id="feedback-title-field"><input type="text" name="title" /></td></tr>

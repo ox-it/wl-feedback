@@ -1,9 +1,10 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html  
-      xmlns="http://www.w3.org/1999/xhtml"
-      xml:lang="${language}"
-      lang="${language}">
+    xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="${language}"
+    lang="${language}">
     <head>
         <link rel="stylesheet" type="text/css" href="/feedback-tool/css/feedback.css" />
         <script type="text/javascript" src="/feedback-tool/lib/jquery-1.9.1.min.js"></script>
@@ -21,7 +22,12 @@
                     userId: '${userId}',
                     siteId: '${siteId}',
                     language: '${language}',
-                    featureSuggestionUrl: '${featureSuggestionUrl}'
+                    featureSuggestionUrl: '${featureSuggestionUrl}',
+                    siteUpdaters: [
+                        <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
+                        {id: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
+                        </c:forEach>
+                    ]
                 }
             };
     

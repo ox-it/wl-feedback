@@ -1,8 +1,15 @@
 <h2 id="feedback-title">{{translate 'title'}}</h2>
 <div id="feedback-overview">
-    {{translate 'functionality_instruction'}}
+    {{translate 'technical_instruction'}}
 </div>
-<form id="feedback-form" action="/direct/feedback/{{siteId}}/reportfunctionality" method="POST">
+<div id="feedback-siteupdaters">
+    <select name="recipient">
+        {{#each siteUpdaters}}
+        <option value="{{id}}">{{displayName}}</option>
+        {{/each}}
+    </select>
+</div>
+<form id="feedback-form" action="/direct/feedback/{{siteId}}/reporttechnical" method="POST">
     <table id="feedback-field-table" cols="2">
         <tr><td id="feedback-title-label">{{translate 'title_label'}}</td><td id="feedback-title-field"><input type="text" name="title" /></td></tr>
         <tr><td id="feedback-description-label">{{translate 'description_label'}}</td><td id="feedback-description-field"><textarea name="description"></textarea></td></tr>

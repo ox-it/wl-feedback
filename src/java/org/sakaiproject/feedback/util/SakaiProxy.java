@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import java.util.Map;
+import java.text.MessageFormat;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
@@ -19,8 +21,6 @@ import org.sakaiproject.email.api.EmailAddress;
 import org.sakaiproject.email.api.EmailAddress.RecipientType;
 import org.sakaiproject.email.api.EmailMessage;
 import org.sakaiproject.email.api.EmailService;
-import org.sakaiproject.emailtemplateservice.model.RenderedTemplate;
-import org.sakaiproject.emailtemplateservice.service.EmailTemplateService;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.tool.api.SessionManager;
@@ -54,15 +54,7 @@ public class SakaiProxy {
     private EmailService emailService;
 
     @Setter
-    private EmailTemplateService emailTemplateService;
-
-    @Setter
     private ArrayList<String> emailTemplates;
-
-    public void init() {
-
-        emailTemplateService.processEmailTemplates(emailTemplates);
-    }
 
     public String getConfigString(String name, String defaultValue) {
         return serverConfigurationService.getString(name, defaultValue);
@@ -86,19 +78,18 @@ public class SakaiProxy {
 		return toolManager.getCurrentPlacement().getContext();
 	}
 
-    private String getSiteContactEmail(String siteId) {
+    private String getSiteTitle(String siteId) {
 
         try {
-            Site site = siteService.getSite(siteId);
-            return site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
+            return siteService.getSite(siteId).getTitle();
         } catch (Exception e) {
-            logger.error("Failed to get contact email for site : " + siteId + ". Returning null ...");
+            logger.error("Failed to get site for id : " + siteId + ". Returning empty string ...");
         }
 
-        return null;
+        return "";
     }
 
-    private String getSiteProperty(String siteId, String name) {
+    public String getSiteProperty(String siteId, String name) {
 
         try {
             Site site = siteService.getSite(siteId);
@@ -110,9 +101,25 @@ public class SakaiProxy {
         return null;
     }
 
+    public Map<String, String> getSiteUpdaters(String siteId) {
+
+        try {
+            Site site = siteService.getSite(siteId);
+            Map<String, String> map = new HashMap<String, String>();
+            for (String userId : site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE)) {
+                User user = userDirectoryService.getUser(userId);
+                map.put(user.getId(), user.getDisplayName());
+            }
+            return map;
+        } catch (Exception e) {
+            logger.error("Failed to get site updaters for site : " + siteId + ". Returning an empty map ...");
+            return new HashMap<String, String>();
+        }
+    }
+
 	public void sendEmail(String fromUserId, String siteId, String feedbackType
-                            , String subject, String content
-                            , List<FileItem> fileItems, boolean sendMeACopy) {
+                            , String userTitle, String userContent
+                            , List<FileItem> fileItems) {
 
 		final List<Attachment> attachments = new ArrayList<Attachment>();
 
@@ -130,17 +137,17 @@ public class SakaiProxy {
 			}
 		}
 
-        User user = getUser(fromUserId);
+        final User user = getUser(fromUserId);
 
-        String fromEmail = user.getEmail();
-        String fromName = user.getDisplayName();
+        final String fromEmail = user.getEmail();
+        final String fromName = user.getDisplayName();
 
         if (fromEmail == null) {
             logger.error("No email for reporter: " + fromUserId + ". No email will be sent.");
             return;
         }
 
-        String contactEmail = getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
+        final String contactEmail = getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
 
         if (contactEmail == null || contactEmail.isEmpty()) {
             logger.error("No contact email for site: " + siteId + ". No email will be sent.");
@@ -148,7 +155,7 @@ public class SakaiProxy {
         }
 
 
-        String siteLocale = getSiteProperty(siteId, "locale_string");
+        final String siteLocale = getSiteProperty(siteId, "locale_string");
 
         Locale locale = null;
 
@@ -161,39 +168,50 @@ public class SakaiProxy {
             } else if (localeParts.length == 2) {
                 locale = new Locale(localeParts[0], localeParts[1]);
             } else {
-                // Get the default Sakai locale
+                locale = Locale.getDefault();
             }
         } else {
-            // Get the default Sakai locale
+            locale = Locale.getDefault();
         }
+
+        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.feedback", locale);
+
+        String subjectTemplate = null;
+        
+        if (feedbackType.equals(Constants.CONTENT)) {
+            subjectTemplate = rb.getString("content_email_subject_template");
+        } else {
+            subjectTemplate = rb.getString("technical_email_subject_template");
+        }
+
+        final String formattedSubject
+            = MessageFormat.format(subjectTemplate, new String[] {fromName});
+
+        final String siteTitle = getSiteTitle(siteId);
+
+        final String bodyTemplate = rb.getString("email_body_template");
+        final String formattedBody
+            = MessageFormat.format(bodyTemplate, new String[] {fromName, fromEmail, siteTitle, siteId, userTitle, userContent});
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);
             logger.debug("fromEmail: " + fromEmail);
             logger.debug("contactEmail: " + contactEmail);
+            logger.debug("userContent: " + userContent);
+            logger.debug("userTitle: " + userTitle);
+            logger.debug("subjectTemplate: " + subjectTemplate);
+            logger.debug("bodyTemplate: " + bodyTemplate);
+            logger.debug("formattedSubject: " + formattedSubject);
+            logger.debug("formattedBody: " + formattedBody);
         }
-
-        Map<String, String> replacementValues = new HashMap<String, String>();
-        replacementValues.put("fromName", fromName);
-        replacementValues.put("title", title);
-        replacementValues.put("content", content);
 
 		final EmailMessage msg = new EmailMessage();
 
 		msg.setFrom(new EmailAddress(fromEmail, fromName));
         msg.setContentType(ContentType.TEXT_PLAIN);
 
-        Rendered Template template
-             = emailTemplateService.getRenderedTemplate("feedback.contactProblem", user.getReference(), replacementValues);
-
-        if (template == null) {
-            log.warn("SakaiProxy.sendEmail() no template with key: " + emailTemplateKey + ". Email will be sent as is ...");
-		    msg.setSubject(title);
-		    msg.setBody(content);
-        } else {
-		    msg.setSubject(template.getRenderedSubject());
-		    msg.setBody(template.getRenderedMessage());
-        }
+		msg.setSubject(formattedSubject);
+		msg.setBody(formattedBody);
 
         if (attachments != null) {
         	for (Attachment attachment : attachments) {
@@ -201,8 +219,8 @@ public class SakaiProxy {
         	}
         }
 
-		if (sendMeACopy) {
-		    // Send a copy
+		if (feedbackType.equals(Constants.CONTENT)) {
+            // Copy the sender in
 			msg.addRecipient(RecipientType.CC, fromName, fromEmail);
 		}
 

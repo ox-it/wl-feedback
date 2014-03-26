@@ -20,24 +20,13 @@
 
 <beans>
 
-    <!-- Setup email templates -->
-    <bean id="org.sakaiproject.feedback.tool.emailtemplates.List" class="java.util.ArrayList">
-        <constructor-arg>
-            <list>
-                <value>org/sakaiproject/feedback/tool/emailtemplates/template-contentProblem.xml</value>
-            </list>
-        </constructor-arg>
-    </bean>
-
-    <bean id="org.sakaiproject.feedback.util.SakaiProxy" class="org.sakaiproject.feedback.util.SakaiProxy" init-method="init">
+    <bean id="org.sakaiproject.feedback.util.SakaiProxy" class="org.sakaiproject.feedback.util.SakaiProxy">
         <property name="emailService"><ref bean="org.sakaiproject.email.api.EmailService" /></property>
-        <property name="emailTemplateService"><ref bean="org.sakaiproject.emailtemplateservice.service.EmailTemplateService" /></property>
         <property name="serverConfigurationService"><ref bean="org.sakaiproject.component.api.ServerConfigurationService" /></property>
         <property name="sessionManager"><ref bean="org.sakaiproject.tool.api.SessionManager" /></property>
         <property name="toolManager"><ref bean="org.sakaiproject.tool.api.ToolManager" /></property>
         <property name="siteService"><ref bean="org.sakaiproject.site.api.SiteService" /></property>
         <property name="userDirectoryService"><ref bean="org.sakaiproject.user.api.UserDirectoryService" /></property>
-        <property name="emailTemplates" ref="org.sakaiproject.feedback.tool.emailtemplates.List" />
     </bean>
 
 	<bean parent="org.sakaiproject.entitybroker.entityprovider.AbstractEntityProvider" 

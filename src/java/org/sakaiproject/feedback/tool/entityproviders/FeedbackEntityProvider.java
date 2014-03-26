@@ -21,6 +21,7 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.Outputable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
+import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.ResourceLoader;
@@ -28,9 +29,6 @@ import org.sakaiproject.util.ResourceLoader;
 public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable {
 	
 	public final static String ENTITY_PREFIX = "feedback";
-
-	private final static String CONTENT = "content";
-	private final static String FUNCTIONALITY = "functionality";
 
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -82,7 +80,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         String siteId = view.getPathSegment(1);
 
 		if (siteId == null) {
-			throw new EntityException("You must supply a site id to post a functionality report", "", HttpServletResponse.SC_BAD_REQUEST);
+			throw new EntityException("You must supply a site id to post a technical report", "", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
         if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
@@ -104,24 +102,24 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         List<FileItem> attachments = getAttachments(params);
 
-        sakaiProxy.sendEmail(userId, siteId, CONTENT, title, description, attachments, true);
+        sakaiProxy.sendEmail(userId, siteId, Constants.CONTENT, title, description, attachments);
 
         return "success";
 	}
 
-	@EntityCustomAction(action = "reportfunctionality", viewKey = EntityView.VIEW_EDIT)
+	@EntityCustomAction(action = "reporttechnical", viewKey = EntityView.VIEW_EDIT)
 	public String handleFunctionalityReport(EntityView view, Map<String, Object> params) {
 		
 		String userId = developerHelperService.getCurrentUserId();
 		
 		if (userId == null) {
-			throw new EntityException("You must be logged in to post a functionality report", "", HttpServletResponse.SC_UNAUTHORIZED);
+			throw new EntityException("You must be logged in to post a technical report", "", HttpServletResponse.SC_UNAUTHORIZED);
 		}
 
         String siteId = view.getPathSegment(1);
 
 		if (siteId == null) {
-			throw new EntityException("You must supply a site id to post a functionality report", "", HttpServletResponse.SC_BAD_REQUEST);
+			throw new EntityException("You must supply a site id to post a technical report", "", HttpServletResponse.SC_BAD_REQUEST);
 		}
 
         if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
@@ -143,7 +141,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         List<FileItem> attachments = getAttachments(params);
 
-        sakaiProxy.sendEmail(userId, siteId, FUNCTIONALITY, title, description, attachments, false);
+        sakaiProxy.sendEmail(userId, siteId, Constants.TECHNICAL, title, description, attachments);
 
         return "success";
 	}

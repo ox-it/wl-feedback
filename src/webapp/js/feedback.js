@@ -5,7 +5,7 @@
     /* STATES */
     var HOME = 'home';
     var CONTENT = 'content';
-    var FUNCTIONALITY = 'functionality';
+    var TECHNICAL = 'technical';
 
     sakai.loadTranslations('org.sakaiproject.feedback.bundle.feedback', feedback);
 
@@ -26,13 +26,13 @@
                     feedback.switchState(CONTENT);
                 });
 
-                $('#feedback-reportfunctionalitylink').click(function (e) {
-                    feedback.switchState(FUNCTIONALITY);
+                $('#feedback-reporttechnicallink').click(function (e) {
+                    feedback.switchState(TECHNICAL);
                 });
             });
         } else if (CONTENT === state) {
 
-            feedback.utils.renderTemplate(CONTENT, {siteId: feedback.startupArgs.siteId}, 'feedback-content');
+            feedback.utils.renderTemplate(CONTENT, {siteId: feedback.startupArgs.siteId, siteUpdaters: feedback.startupArgs.siteUpdaters}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -46,8 +46,8 @@
                     namePattern: '$name_$i'
                 });
             });
-        } else if (FUNCTIONALITY === state) {
-            feedback.utils.renderTemplate(FUNCTIONALITY , {siteId: feedback.startupArgs.siteId}, 'feedback-content');
+        } else if (TECHNICAL === state) {
+            feedback.utils.renderTemplate(TECHNICAL , {siteId: feedback.startupArgs.siteId, siteUpdaters: feedback.startupArgs.siteUpdaters}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -108,8 +108,8 @@
             return feedback.switchState(CONTENT);
         });
 
-        $('#feedback-functionalityitem').click(function (e) {
-            return feedback.switchState(FUNCTIONALITY);
+        $('#feedback-technicalitem').click(function (e) {
+            return feedback.switchState(TECHNICAL);
         });
     });
 

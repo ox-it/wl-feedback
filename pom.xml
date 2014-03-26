@@ -7,7 +7,7 @@
 
   	<name>Sakai Feedback Tool</name>
   	<groupId>org.sakaiproject.feedback</groupId>
-  	<artifactId>feedback</artifactId>
+  	<artifactId>feedback-tool</artifactId>
     <version>11-SNAPSHOT</version>
   	<packaging>war</packaging>
 	
@@ -30,13 +30,6 @@
       		<email>adrian.r.fish@gmail.com</email>
     	</developer>
   	</developers>
-
-	<properties>
-        <log4j.version>1.2.8</log4j.version>
-        <servlet-api.version>2.4</servlet-api.version>
-        <lombok.version>0.10.6</lombok.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
 	<pluginRepositories>
 		<pluginRepository>
@@ -62,14 +55,23 @@
 			<artifactId>servlet-api</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+            <scope>compile</scope>
+        </dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>${lombok.version}</version>
         </dependency>
 		<dependency>
 			<groupId>org.sakaiproject.kernel</groupId>
@@ -104,15 +106,8 @@
             <artifactId>spring-web</artifactId>
         </dependency>
         <dependency>
-        	<groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-        </dependency>
-        <dependency>
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
-            <version>1.2.2</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.activation</groupId>
@@ -122,21 +117,20 @@
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.sakaiproject.emailtemplateservice</groupId>
-            <artifactId>emailtemplateservice-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
 	</dependencies>
-	
+
 	<build>
         <resources>
             <resource>
                 <directory>${basedir}/src/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
             </resource>
             <resource>
                 <directory>${basedir}/src/bundle</directory>
             </resource>
         </resources>
-	</build>
+    </build>
+
 </project>

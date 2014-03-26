@@ -3,43 +3,35 @@
 templates['content'] = template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
+  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
 
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\n        <option value=\"";
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">";
+  if (helper = helpers.displayName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.displayName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</option>\n        ";
+  return buffer;
+  }
 
   buffer += "<h2 id=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
     + "</h2>\n<div id=\"feedback-overview\">\n    "
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_instruction", options) : helperMissing.call(depth0, "translate", "content_instruction", options)))
-    + "\n</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
+    + "\n</div>\n<div id=\"feedback-siteupdaters\">\n    <select name=\"recipient\">\n        ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.siteUpdaters), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n    </select>\n</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
   if (helper = helpers.siteId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.siteId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
     + "/reportcontent\" method=\"POST\">\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
-    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" /></td></tr>\n        <tr><td id=\"feedback-description-label\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
-    + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n    </table>\n    <br />\n    <span id=\"feedback-attachments-label\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
-    + "</span>\n    <br />\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <br />\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "submit_label", options) : helperMissing.call(depth0, "translate", "submit_label", options)))
-    + "\" />\n</form>\n";
-  return buffer;
-  });
-templates['functionality'] = template(function (Handlebars,depth0,helpers,partials,data) {
-  this.compilerInfo = [4,'>= 1.0.0'];
-helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
-
-
-  buffer += "<h2 id=\"feedback-title\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
-    + "</h2>\n<div id=\"feedback-overview\">\n    "
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "functionality_instruction", options) : helperMissing.call(depth0, "translate", "functionality_instruction", options)))
-    + "\n</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
-  if (helper = helpers.siteId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
-  else { helper = (depth0 && depth0.siteId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
-  buffer += escapeExpression(stack1)
-    + "/reportfunctionality\" method=\"POST\">\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
     + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" /></td></tr>\n        <tr><td id=\"feedback-description-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
@@ -66,12 +58,12 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report", options) : helperMissing.call(depth0, "translate", "report", options)))
     + "</a>\n        <span class=\"feedback-shortdescription\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "short_content_description", options) : helperMissing.call(depth0, "translate", "short_content_description", options)))
-    + "</span>\n    </div>\n    <div class=\"feedback-link\">\n        <a id=\"feedback-reportfunctionalitylink\" href=\"javascript:;\" title=\""
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report_functionality_tooltip", options) : helperMissing.call(depth0, "translate", "report_functionality_tooltip", options)))
+    + "</span>\n    </div>\n    <div class=\"feedback-link\">\n        <a id=\"feedback-reporttechnicallink\" href=\"javascript:;\" title=\""
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report_technical_tooltip", options) : helperMissing.call(depth0, "translate", "report_technical_tooltip", options)))
     + "\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report", options) : helperMissing.call(depth0, "translate", "report", options)))
     + "</a>\n        <span class=\"feedback-shortdescription\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "short_functionality_description", options) : helperMissing.call(depth0, "translate", "short_functionality_description", options)))
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "short_technical_description", options) : helperMissing.call(depth0, "translate", "short_technical_description", options)))
     + "</span>\n    </div>\n    <div class=\"feedback-link\">\n        <a id=\"feedback-suggestfeaturelink\" href=\"";
   if (helper = helpers.featureSuggestionUrl) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.featureSuggestionUrl); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
@@ -83,6 +75,48 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + "</a>\n        <span class=\"feedback-shortdescription\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "feature_description", options) : helperMissing.call(depth0, "translate", "feature_description", options)))
     + "</span>\n    </div>\n</div>\n";
+  return buffer;
+  });
+templates['technical'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  this.compilerInfo = [4,'>= 1.0.0'];
+helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
+  var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
+
+function program1(depth0,data) {
+  
+  var buffer = "", stack1, helper;
+  buffer += "\n        <option value=\"";
+  if (helper = helpers.id) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.id); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "\">";
+  if (helper = helpers.displayName) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.displayName); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "</option>\n        ";
+  return buffer;
+  }
+
+  buffer += "<h2 id=\"feedback-title\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
+    + "</h2>\n<div id=\"feedback-overview\">\n    "
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_instruction", options) : helperMissing.call(depth0, "translate", "technical_instruction", options)))
+    + "\n</div>\n<div id=\"feedback-siteupdaters\">\n    <select name=\"recipient\">\n        ";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.siteUpdaters), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "\n    </select>\n</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
+  if (helper = helpers.siteId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
+  else { helper = (depth0 && depth0.siteId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
+  buffer += escapeExpression(stack1)
+    + "/reporttechnical\" method=\"POST\">\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
+    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" /></td></tr>\n        <tr><td id=\"feedback-description-label\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
+    + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n    </table>\n    <br />\n    <span id=\"feedback-attachments-label\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
+    + "</span>\n    <br />\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <br />\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "submit_label", options) : helperMissing.call(depth0, "translate", "submit_label", options)))
+    + "\" />\n</form>\n";
   return buffer;
   });
 templates['toolbar'] = template(function (Handlebars,depth0,helpers,partials,data) {
@@ -99,10 +133,10 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report_content_tooltip", options) : helperMissing.call(depth0, "translate", "report_content_tooltip", options)))
     + "\" href=\"javascript:;\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_label", options) : helperMissing.call(depth0, "translate", "content_label", options)))
-    + "</a></span></li>\n<li id=\"feedback-functionalityitem\" role=\"menuitem\"><span><a title=\""
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report_functionality_tooltip", options) : helperMissing.call(depth0, "translate", "report_functionality_tooltip", options)))
+    + "</a></span></li>\n<li id=\"feedback-technicalitem\" role=\"menuitem\"><span><a title=\""
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report_technical_tooltip", options) : helperMissing.call(depth0, "translate", "report_technical_tooltip", options)))
     + "\" href=\"javascript:;\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "functionality_label", options) : helperMissing.call(depth0, "translate", "functionality_label", options)))
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_label", options) : helperMissing.call(depth0, "translate", "technical_label", options)))
     + "</a></span></li>\n<li id=\"feedback-suggestfeatureitem\" role=\"menuitem\"><span><a title=\""
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "suggest_feature_tooltip", options) : helperMissing.call(depth0, "translate", "suggest_feature_tooltip", options)))
     + "\" href=\"";
