@@ -66,11 +66,11 @@ public class FeedbackTool extends HttpServlet {
 
         Map<String, String> siteUpdaters = new HashMap<String, String>();
 
-        //if (contactEmail.isEmpty()) {
+        if (contactEmail.isEmpty()) {
             // No contact email. Load up the maintainers so the reporter can
             // pick one
             siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
-        //}
+        }
 
 		request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
         request.setAttribute("userId", userId);

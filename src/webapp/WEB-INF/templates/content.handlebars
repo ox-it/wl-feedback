@@ -2,14 +2,15 @@
 <div id="feedback-overview">
     {{translate 'content_instruction'}}
 </div>
-<div id="feedback-siteupdaters">
-    <select name="recipient">
-        {{#each siteUpdaters}}
-        <option value="{{id}}">{{displayName}}</option>
-        {{/each}}
-    </select>
-</div>
 <form id="feedback-form" action="/direct/feedback/{{siteId}}/reportcontent" method="POST">
+    <input type="hidden" name="contactemail" value="{{contactEmail}}" />
+    <div id="feedback-siteupdaters">
+        <select name="alternativerecipient">
+            {{#each siteUpdaters}}
+            <option value="{{email}}">{{displayName}}</option>
+            {{/each}}
+        </select>
+    </div>
     <table id="feedback-field-table" cols="2">
         <tr><td id="feedback-title-label">{{translate 'title_label'}}</td><td id="feedback-title-field"><input type="text" name="title" /></td></tr>
         <tr><td id="feedback-description-label">{{translate 'description_label'}}</td><td id="feedback-description-field"><textarea name="description"></textarea></td></tr>

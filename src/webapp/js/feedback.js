@@ -30,29 +30,18 @@
                     feedback.switchState(TECHNICAL);
                 });
             });
-        } else if (CONTENT === state) {
+        } else if (CONTENT === state || TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(CONTENT, {siteId: feedback.startupArgs.siteId, siteUpdaters: feedback.startupArgs.siteUpdaters}, 'feedback-content');
-
-            $(document).ready(function () {
-
-                feedback.addMouseUpToTextArea();
-                feedback.fitFrame();
-
-                $('#feedback-form').ajaxForm(feedback.getFormOptions());
-
-                $('#feedback-attachment').MultiFile( {
-                    max: 5,
-                    namePattern: '$name_$i'
-                });
-            });
-        } else if (TECHNICAL === state) {
-            feedback.utils.renderTemplate(TECHNICAL , {siteId: feedback.startupArgs.siteId, siteUpdaters: feedback.startupArgs.siteUpdaters}, 'feedback-content');
+            feedback.utils.renderTemplate(state, {siteId: feedback.startupArgs.siteId, contactEmail: feedback.startupArgs.contactEmail, siteUpdaters: feedback.startupArgs.siteUpdaters}, 'feedback-content');
 
             $(document).ready(function () {
 
                 feedback.addMouseUpToTextArea();
                 feedback.fitFrame();
+
+                if (feedback.startupArgs.siteUpdaters.length > 0) {
+                    $('#feedback-siteupdaters').show();
+                }
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions());
 

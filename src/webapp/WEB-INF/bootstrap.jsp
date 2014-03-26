@@ -23,9 +23,10 @@
                     siteId: '${siteId}',
                     language: '${language}',
                     featureSuggestionUrl: '${featureSuggestionUrl}',
+                    contactEmail: '${contactEmail}',
                     siteUpdaters: [
                         <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
-                        {id: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
+                        {email: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
                         </c:forEach>
                     ]
                 }

@@ -78,15 +78,15 @@ public class SakaiProxy {
 		return toolManager.getCurrentPlacement().getContext();
 	}
 
-    private String getSiteTitle(String siteId) {
+    private Site getSite(String siteId) {
 
         try {
-            return siteService.getSite(siteId).getTitle();
+            return siteService.getSite(siteId);
         } catch (Exception e) {
-            logger.error("Failed to get site for id : " + siteId + ". Returning empty string ...");
+            logger.error("Failed to get site for id : " + siteId + ". Returning null ...");
         }
 
-        return "";
+        return null;
     }
 
     public String getSiteProperty(String siteId, String name) {
@@ -108,7 +108,7 @@ public class SakaiProxy {
             Map<String, String> map = new HashMap<String, String>();
             for (String userId : site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE)) {
                 User user = userDirectoryService.getUser(userId);
-                map.put(user.getId(), user.getDisplayName());
+                map.put(user.getEmail(), user.getDisplayName());
             }
             return map;
         } catch (Exception e) {
@@ -117,7 +117,7 @@ public class SakaiProxy {
         }
     }
 
-	public void sendEmail(String fromUserId, String siteId, String feedbackType
+	public void sendEmail(String fromUserId, String toEmail, String siteId, String feedbackType
                             , String userTitle, String userContent
                             , List<FileItem> fileItems) {
 
@@ -146,14 +146,6 @@ public class SakaiProxy {
             logger.error("No email for reporter: " + fromUserId + ". No email will be sent.");
             return;
         }
-
-        final String contactEmail = getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
-
-        if (contactEmail == null || contactEmail.isEmpty()) {
-            logger.error("No contact email for site: " + siteId + ". No email will be sent.");
-            return;
-        }
-
 
         final String siteLocale = getSiteProperty(siteId, "locale_string");
 
@@ -187,16 +179,31 @@ public class SakaiProxy {
         final String formattedSubject
             = MessageFormat.format(subjectTemplate, new String[] {fromName});
 
-        final String siteTitle = getSiteTitle(siteId);
+        final Site site = getSite(siteId);
+
+        final String siteTitle = site.getTitle();
+
+        final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + site.getId();
+
+        final String instance = serverConfigurationService.getServerIdInstance();
 
         final String bodyTemplate = rb.getString("email_body_template");
         final String formattedBody
-            = MessageFormat.format(bodyTemplate, new String[] {fromName, fromEmail, siteTitle, siteId, userTitle, userContent});
+            = MessageFormat.format(bodyTemplate, new String[] {user.getId(),
+                                                                    user.getEid(),
+                                                                    fromName,
+                                                                    fromEmail,
+                                                                    siteTitle,
+                                                                    siteId,
+                                                                    siteUrl,
+                                                                    instance,
+                                                                    userTitle,
+                                                                    userContent});
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);
             logger.debug("fromEmail: " + fromEmail);
-            logger.debug("contactEmail: " + contactEmail);
+            logger.debug("toEmail: " + toEmail);
             logger.debug("userContent: " + userContent);
             logger.debug("userTitle: " + userTitle);
             logger.debug("subjectTemplate: " + subjectTemplate);
@@ -224,7 +231,7 @@ public class SakaiProxy {
 			msg.addRecipient(RecipientType.CC, fromName, fromEmail);
 		}
 
-		msg.addRecipient(RecipientType.TO, contactEmail);
+		msg.addRecipient(RecipientType.TO, toEmail);
 
         new Thread(new Runnable() {
             public void run() {

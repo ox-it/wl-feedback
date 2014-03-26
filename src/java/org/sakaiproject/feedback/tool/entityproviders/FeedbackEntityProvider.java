@@ -71,6 +71,17 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 	@EntityCustomAction(action = "reportcontent", viewKey = EntityView.VIEW_EDIT)
 	public String handleContentReport(EntityView view, Map<String, Object> params) {
 		
+        return handleReport(view, params, Constants.CONTENT);
+	}
+
+	@EntityCustomAction(action = "reporttechnical", viewKey = EntityView.VIEW_EDIT)
+	public String handleTechnicalReport(EntityView view, Map<String, Object> params) {
+
+        return handleReport(view, params, Constants.TECHNICAL);
+	}
+
+	private String handleReport(EntityView view, Map<String, Object> params, String type) {
+
 		String userId = developerHelperService.getCurrentUserId();
 		
 		if (userId == null) {
@@ -100,51 +111,23 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
 
-        List<FileItem> attachments = getAttachments(params);
+        String toEmail = (String) params.get("contactemail");
 
-        sakaiProxy.sendEmail(userId, siteId, Constants.CONTENT, title, description, attachments);
-
-        return "success";
-	}
-
-	@EntityCustomAction(action = "reporttechnical", viewKey = EntityView.VIEW_EDIT)
-	public String handleFunctionalityReport(EntityView view, Map<String, Object> params) {
-		
-		String userId = developerHelperService.getCurrentUserId();
-		
-		if (userId == null) {
-			throw new EntityException("You must be logged in to post a technical report", "", HttpServletResponse.SC_UNAUTHORIZED);
-		}
-
-        String siteId = view.getPathSegment(1);
-
-		if (siteId == null) {
-			throw new EntityException("You must supply a site id to post a technical report", "", HttpServletResponse.SC_BAD_REQUEST);
-		}
-
-        if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
-
-        String title = (String) params.get("title");
-        String description = (String) params.get("description");
-
-        if (title == null || title.length() == 0) {
-			logger.error("No title. Returning BAD REQUEST ...");
-			throw new EntityException("You need to supply a title", "", HttpServletResponse.SC_BAD_REQUEST);
+        if (toEmail == null || toEmail.isEmpty()) {
+            toEmail = (String) params.get("alternativerecipient");
         }
 
-        if (description == null || description.length() == 0) {
-			logger.error("No description. Returning BAD REQUEST ...");
-			throw new EntityException("You need to supply a description", "", HttpServletResponse.SC_BAD_REQUEST);
+        if (toEmail == null || toEmail.isEmpty()) {
+			logger.error("No recipient. Returning BAD REQUEST ...");
+			throw new EntityException("You need to supply a recipient", "", HttpServletResponse.SC_BAD_REQUEST);
         }
-
-        if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
 
         List<FileItem> attachments = getAttachments(params);
 
-        sakaiProxy.sendEmail(userId, siteId, Constants.TECHNICAL, title, description, attachments);
+        sakaiProxy.sendEmail(userId, toEmail, siteId, type, title, description, attachments);
 
         return "success";
-	}
+    }
 
 	private List<FileItem> getAttachments(Map<String, Object> params) {
 
