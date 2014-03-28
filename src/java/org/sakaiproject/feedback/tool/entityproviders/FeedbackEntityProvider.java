@@ -113,8 +113,11 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         String toEmail = (String) params.get("contactemail");
 
+        boolean addNoContactMessage = false;
+
         if (toEmail == null || toEmail.isEmpty()) {
             toEmail = (String) params.get("alternativerecipient");
+            addNoContactMessage = true;
         }
 
         if (toEmail == null || toEmail.isEmpty()) {
@@ -124,7 +127,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         List<FileItem> attachments = getAttachments(params);
 
-        sakaiProxy.sendEmail(userId, toEmail, siteId, type, title, description, attachments);
+        sakaiProxy.sendEmail(userId, toEmail, addNoContactMessage, siteId, type, title, description, attachments);
 
         return "success";
     }

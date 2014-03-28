@@ -117,7 +117,7 @@ public class SakaiProxy {
         }
     }
 
-	public void sendEmail(String fromUserId, String toEmail, String siteId, String feedbackType
+	public void sendEmail(String fromUserId, String toEmail, boolean addNoContactEmailMessage, String siteId, String feedbackType
                             , String userTitle, String userContent
                             , List<FileItem> fileItems) {
 
@@ -185,11 +185,18 @@ public class SakaiProxy {
 
         final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + site.getId();
 
+        String noContactEmailMessage = "";
+        
+        if (addNoContactEmailMessage) {
+            noContactEmailMessage = rb.getString("no_contact_email_message");
+        }
+
         final String instance = serverConfigurationService.getServerIdInstance();
 
         final String bodyTemplate = rb.getString("email_body_template");
         final String formattedBody
-            = MessageFormat.format(bodyTemplate, new String[] {user.getId(),
+            = MessageFormat.format(bodyTemplate, new String[] {noContactEmailMessage,
+                                                                    user.getId(),
                                                                     user.getEid(),
                                                                     fromName,
                                                                     fromEmail,
