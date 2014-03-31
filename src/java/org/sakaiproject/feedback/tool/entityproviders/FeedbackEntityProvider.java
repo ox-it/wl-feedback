@@ -21,7 +21,9 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.Outputable;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
 import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
+import org.sakaiproject.feedback.db.Database;
 import org.sakaiproject.feedback.util.Constants;
+import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.util.RequestFilter;
 import org.sakaiproject.util.ResourceLoader;
@@ -35,6 +37,11 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
     private SakaiProxy sakaiProxy = null;
     public void setSakaiProxy(SakaiProxy sakaiProxy) {
         this.sakaiProxy = sakaiProxy;
+    }
+
+    private Database db = null;
+    public void setDb(Database db) {
+        this.db = db;
     }
 
 	public Object getSampleEntity() {
@@ -128,6 +135,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         List<FileItem> attachments = getAttachments(params);
 
         sakaiProxy.sendEmail(userId, toEmail, addNoContactMessage, siteId, type, title, description, attachments);
+
+        db.logReport(userId, siteId, type, title, description);
 
         return "success";
     }

@@ -4,8 +4,8 @@
 </div>
 <form id="feedback-form" action="/direct/feedback/{{siteId}}/reportcontent" method="POST">
     <input type="hidden" name="contactemail" value="{{contactEmail}}" />
-    <div id="feedback-siteupdaters">
-        <select name="alternativerecipient">
+    <div id="feedback-siteupdaters-wrapper">
+        <select id="feedback-siteupdaters" name="alternativerecipient">
             {{#each siteUpdaters}}
             <option value="{{email}}">{{displayName}}</option>
             {{/each}}

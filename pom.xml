@@ -125,6 +125,7 @@
                 <directory>${basedir}/src/java</directory>
                 <includes>
                     <include>**/*.xml</include>
+                    <include>**/*.sql</include>
                 </includes>
             </resource>
             <resource>
