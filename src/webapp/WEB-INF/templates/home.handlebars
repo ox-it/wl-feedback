@@ -2,17 +2,25 @@
 <div id="feedback-overview">
     {{translate 'overview'}}
 </div>
+<div id="feedback-help-wrapper">
+    <span id="feedback-help-1">{{translate 'help_1'}}</span>
+    <a href="{{helpPagesUrl}}" target="_blank" title="{{translate 'help_tooltip'}}">{{translate 'help_2'}}</a>
+    <span id="feedback-help-3">{{translate 'help_3'}}</span>
+</div>
 <div id="feedback-links">
+    {{#if loggedIn}}
     <div class="feedback-link">
-        <a id="feedback-reportcontentlink" href="javascript:;" title="{{translate 'report_content_tooltip'}}">{{translate 'report'}}</a>
-        <span class="feedback-shortdescription">{{translate 'short_content_description'}}</span>
+        <a id="feedback-report-content-link" href="javascript:;" title="{{translate 'report_content_tooltip'}}">{{translate 'report'}}</a>
+        <span class="feedback-short-description">{{translate 'short_content_description'}}</span>
+    </div>
+    {{/if}}
+    <div class="feedback-link">
+        <a id="feedback-report-technical-link" href="javascript:;" title="{{translate 'report_technical_tooltip'}}">{{translate 'report'}}</a>
+        <span class="feedback-short-description">{{translate 'short_technical_description'}}</span>
     </div>
     <div class="feedback-link">
-        <a id="feedback-reporttechnicallink" href="javascript:;" title="{{translate 'report_technical_tooltip'}}">{{translate 'report'}}</a>
-        <span class="feedback-shortdescription">{{translate 'short_technical_description'}}</span>
+        <a id="feedback-suggest-feature-link" href="{{featureSuggestionUrl}}" target="_blank" title="{{translate 'suggest_feature_tooltip'}}">{{translate 'suggest'}}</a>
+        <span class="feedback-short-description">{{translate 'feature_description'}}</span>
     </div>
-    <div class="feedback-link">
-        <a id="feedback-suggestfeaturelink" href="{{featureSuggestionUrl}}" target="_blank" title="{{translate 'suggest_feature_tooltip'}}">{{translate 'suggest'}}</a>
-        <span class="feedback-shortdescription">{{translate 'feature_description'}}</span>
-    </div>
+    <div id="feedback-supplementary-info">{{{supplementaryInfo}}}</div>
 </div>

@@ -4,8 +4,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.ResourceBundle;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
@@ -54,31 +56,44 @@ public class FeedbackTool extends HttpServlet {
 
         String userId = sakaiProxy.getCurrentUserId();
 
-        if (userId == null) {
-            logger.error("No current user. Throwing a ServletException ...");
-			throw new ServletException("You are not currently logged in.");
-        }
-
         String siteId = sakaiProxy.getCurrentSiteId();
 
-        String contactEmail = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
-        if (contactEmail == null) contactEmail = "";
+        if (userId != null) {
+            String contactEmail = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
+            if (contactEmail == null) contactEmail = "";
 
-        Map<String, String> siteUpdaters = new HashMap<String, String>();
+            Map<String, String> siteUpdaters = new HashMap<String, String>();
 
-        if (contactEmail.isEmpty()) {
-            // No contact email. Load up the maintainers so the reporter can
-            // pick one
-            siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+            if (contactEmail.isEmpty()) {
+                // No contact email. Load up the maintainers so the reporter can
+                // pick one
+                siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+            }
+
+            ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
+
+            request.setAttribute("language", rl.getLocale().getLanguage());
+            request.setAttribute("contactEmail", contactEmail);
+            request.setAttribute("siteUpdaters", siteUpdaters);
+            request.setAttribute("i18n", rl);
+        } else {
+            // No logged in user. The content report will be hidden.
+            Locale requestLocale = request.getLocale();
+            request.setAttribute("language", requestLocale.getLanguage());
+            ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.ui", requestLocale);
+            Map<String, String> bundleMap = new HashMap<String, String>();
+            for (String key : rb.keySet()) {
+                bundleMap.put(key, rb.getString(key));
+            }
+            request.setAttribute("i18n", bundleMap);
         }
 
 		request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
-        request.setAttribute("userId", userId);
+        request.setAttribute("userId", (userId == null) ? "" : userId);
         request.setAttribute("siteId", siteId);
-        request.setAttribute("contactEmail", contactEmail);
-        request.setAttribute("siteUpdaters", siteUpdaters);
-        request.setAttribute("language", (new ResourceLoader(userId)).getLocale().getLanguage());
-        request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("featureSuggestionUrl", ""));
+        request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
+        request.setAttribute("helpPagesUrl", sakaiProxy.getConfigString("feedback.helpPagesUrl", ""));
+        request.setAttribute("supplementaryInfo", sakaiProxy.getConfigString("feedback.supplementaryInfo", ""));
 
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
 	}

@@ -53,9 +53,6 @@ public class SakaiProxy {
     @Setter
     private EmailService emailService;
 
-    @Setter
-    private ArrayList<String> emailTemplates;
-
     public String getConfigString(String name, String defaultValue) {
         return serverConfigurationService.getString(name, defaultValue);
     }
@@ -101,6 +98,13 @@ public class SakaiProxy {
         return null;
     }
 
+    /**
+     *  Returns a map of display name onto email for each user, in the specified
+     *  site, with site.upd.
+     *
+     *  @param siteId The site to retrieve updaters for
+     *  @return A map of display name onto email address
+     */
     public Map<String, String> getSiteUpdaters(String siteId) {
 
         try {
@@ -117,7 +121,7 @@ public class SakaiProxy {
         }
     }
 
-	public void sendEmail(String fromUserId, String toEmail, boolean addNoContactEmailMessage, String siteId, String feedbackType
+	public void sendEmail(String fromUserId, String senderAddress, String toAddress, boolean addNoContactEmailMessage, String siteId, String feedbackType
                             , String userTitle, String userContent
                             , List<FileItem> fileItems) {
 
@@ -137,12 +141,20 @@ public class SakaiProxy {
 			}
 		}
 
-        final User user = getUser(fromUserId);
+        String fromAddress = senderAddress;
+        String fromName = "User not logged in";
+        String userId = "";
+        String userEid = "";
 
-        final String fromEmail = user.getEmail();
-        final String fromName = user.getDisplayName();
+        if (fromUserId != null) {
+            User user = getUser(fromUserId);
+            fromAddress = user.getEmail();
+            fromName = user.getDisplayName();
+            userId = user.getId();
+            userEid = user.getEid();
+        }
 
-        if (fromEmail == null) {
+        if (fromAddress == null) {
             logger.error("No email for reporter: " + fromUserId + ". No email will be sent.");
             return;
         }
@@ -166,7 +178,7 @@ public class SakaiProxy {
             locale = Locale.getDefault();
         }
 
-        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.feedback", locale);
+        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.email", locale);
 
         String subjectTemplate = null;
         
@@ -196,10 +208,10 @@ public class SakaiProxy {
         final String bodyTemplate = rb.getString("email_body_template");
         final String formattedBody
             = MessageFormat.format(bodyTemplate, new String[] {noContactEmailMessage,
-                                                                    user.getId(),
-                                                                    user.getEid(),
+                                                                    userId,
+                                                                    userEid,
                                                                     fromName,
-                                                                    fromEmail,
+                                                                    fromAddress,
                                                                     siteTitle,
                                                                     siteId,
                                                                     siteUrl,
@@ -209,8 +221,8 @@ public class SakaiProxy {
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);
-            logger.debug("fromEmail: " + fromEmail);
-            logger.debug("toEmail: " + toEmail);
+            logger.debug("fromAddress: " + fromAddress);
+            logger.debug("toAddress: " + toAddress);
             logger.debug("userContent: " + userContent);
             logger.debug("userTitle: " + userTitle);
             logger.debug("subjectTemplate: " + subjectTemplate);
@@ -221,7 +233,7 @@ public class SakaiProxy {
 
 		final EmailMessage msg = new EmailMessage();
 
-		msg.setFrom(new EmailAddress(fromEmail, fromName));
+		msg.setFrom(new EmailAddress(fromAddress, fromName));
         msg.setContentType(ContentType.TEXT_PLAIN);
 
 		msg.setSubject(formattedSubject);
@@ -235,10 +247,10 @@ public class SakaiProxy {
 
 		if (feedbackType.equals(Constants.CONTENT)) {
             // Copy the sender in
-			msg.addRecipient(RecipientType.CC, fromName, fromEmail);
+			msg.addRecipient(RecipientType.CC, fromName, fromAddress);
 		}
 
-		msg.addRecipient(RecipientType.TO, toEmail);
+		msg.addRecipient(RecipientType.TO, toAddress);
 
         new Thread(new Runnable() {
             public void run() {
@@ -248,6 +260,6 @@ public class SakaiProxy {
                     logger.error("Failed to send email.", e);
                 }
             }
-        }).start();
+        }, "Feedback Email Thread").start();
 	}
 }

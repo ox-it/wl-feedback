@@ -1,13 +1,10 @@
 package org.sakaiproject.feedback.tool.entityproviders;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
-
-import lombok.Setter;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.fileupload.FileItem;
@@ -24,9 +21,7 @@ import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.feedback.db.Database;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
-import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.util.RequestFilter;
-import org.sakaiproject.util.ResourceLoader;
 
 public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable {
 	
@@ -45,34 +40,18 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
     }
 
 	public Object getSampleEntity() {
+
 		return null;
 	}
 
 	public String getEntityPrefix() {
+
 		return ENTITY_PREFIX;
 	}
 
 	public String[] getHandledOutputFormats() {
+
 		return new String[] { Formats.JSON };
-	}
-
-	@EntityCustomAction(action = "translations", viewKey = EntityView.VIEW_SHOW)
-	public Map getTranslationsForPath(EntityView view, Map<String, Object> params) {
-		
-		String userId = developerHelperService.getCurrentUserId();
-		
-		if (userId == null) {
-			throw new EntityException("You must be logged in to retrieve translations", "", HttpServletResponse.SC_UNAUTHORIZED);
-		}
-
-        String bundlePath = (String) params.get("path");
-
-        if (bundlePath == null) {
-			throw new EntityException("You need to supply the bundle path as the 'path' parameter", "", HttpServletResponse.SC_BAD_REQUEST);
-        }
-
-        ResourceLoader loader = new ResourceLoader(bundlePath);
-        return loader;
 	}
 
 	@EntityCustomAction(action = "reportcontent", viewKey = EntityView.VIEW_EDIT)
@@ -87,15 +66,16 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         return handleReport(view, params, Constants.TECHNICAL);
 	}
 
-	private String handleReport(EntityView view, Map<String, Object> params, String type) {
+	private String handleReport(final EntityView view, final Map<String, Object> params, final String type) {
 
-		String userId = developerHelperService.getCurrentUserId();
-		
-		if (userId == null) {
-			throw new EntityException("You must be logged in to post a content report", "", HttpServletResponse.SC_UNAUTHORIZED);
-		}
+		final String userId = developerHelperService.getCurrentUserId();
 
-        String siteId = view.getPathSegment(1);
+        if (userId == null && Constants.CONTENT.equals(type)) {
+			logger.error("Not logged in for content report. Returning BAD REQUEST ...");
+			throw new EntityException("You must be logged in to post a content report", "", HttpServletResponse.SC_BAD_REQUEST);
+        }
+
+        final String siteId = view.getPathSegment(1);
 
 		if (siteId == null) {
 			throw new EntityException("You must supply a site id to post a technical report", "", HttpServletResponse.SC_BAD_REQUEST);
@@ -103,8 +83,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
 
-        String title = (String) params.get("title");
-        String description = (String) params.get("description");
+        final String title = (String) params.get("title");
+        final String description = (String) params.get("description");
 
         if (title == null || title.length() == 0) {
 			logger.error("No title. Returning BAD REQUEST ...");
@@ -118,30 +98,48 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
 
-        String toEmail = (String) params.get("contactemail");
+        String toAddress = null;
 
         boolean addNoContactMessage = false;
 
-        if (toEmail == null || toEmail.isEmpty()) {
-            toEmail = (String) params.get("alternativerecipient");
-            addNoContactMessage = true;
+        String senderAddress = "";
+
+        if (type.equals(Constants.TECHNICAL)) {
+            toAddress = sakaiProxy.getConfigString("feedback.technicalAddress", null);
+            if (userId == null) {
+                senderAddress = (String) params.get("senderaddress");
+                if (senderAddress == null || senderAddress.length() == 0) {
+                    logger.error("No sender email address for non logged in user. Returning BAD REQUEST ...");
+                    throw new EntityException("No sender email address for non logged in user", "", HttpServletResponse.SC_BAD_REQUEST);
+                }
+            } else {
+                senderAddress = sakaiProxy.getUser(userId).getEmail();
+            }
+        } else {
+            senderAddress = sakaiProxy.getUser(userId).getEmail();
+            toAddress = (String) params.get("contactemail");
+
+            if (toAddress == null || toAddress.isEmpty()) {
+                toAddress = (String) params.get("alternativerecipient");
+                addNoContactMessage = true;
+            }
         }
 
-        if (toEmail == null || toEmail.isEmpty()) {
-			logger.error("No recipient. Returning BAD REQUEST ...");
-			throw new EntityException("You need to supply a recipient", "", HttpServletResponse.SC_BAD_REQUEST);
+        if (toAddress == null || toAddress.isEmpty()) {
+            logger.error("No recipient. Returning BAD REQUEST ...");
+            throw new EntityException("You need to supply a recipient", "", HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        List<FileItem> attachments = getAttachments(params);
+        final List<FileItem> attachments = getAttachments(params);
 
-        sakaiProxy.sendEmail(userId, toEmail, addNoContactMessage, siteId, type, title, description, attachments);
+        sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments);
 
-        db.logReport(userId, siteId, type, title, description);
+        db.logReport(userId, senderAddress, siteId, type, title, description);
 
         return "success";
     }
 
-	private List<FileItem> getAttachments(Map<String, Object> params) {
+	private List<FileItem> getAttachments(final Map<String, Object> params) {
 
 		final List<FileItem> fileItems = new ArrayList<FileItem>();
 
@@ -172,6 +170,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 					fileItems.add(attachment5);
                 }
 			} catch (Exception e) {
+                logger.error("Failed to completely parse attachments.", e);
 			}
 		}
 

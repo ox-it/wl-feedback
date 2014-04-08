@@ -11,24 +11,28 @@
         <script type="text/javascript" src="/feedback-tool/lib/jquery.form.min.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/jquery.MultiFile.pack.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/handlebars.runtime-v1.3.0.js"></script>
-        <script type="text/javascript" src="/feedback-tool/js/sakaii18nloader.js"></script>
         <script type="text/javascript" src="/feedback-tool/templates/all.handlebars"></script>
 
         <script type="text/javascript">
 
             var feedback = {
-                startupArgs: {
-                    state: 'home',
-                    userId: '${userId}',
-                    siteId: '${siteId}',
-                    language: '${language}',
-                    featureSuggestionUrl: '${featureSuggestionUrl}',
-                    contactEmail: '${contactEmail}',
-                    siteUpdaters: [
-                        <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
-                        {email: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
-                        </c:forEach>
-                    ]
+                state: 'home',
+                userId: '${userId}',
+                siteId: '${siteId}',
+                language: '${language}',
+                featureSuggestionUrl: '${featureSuggestionUrl}',
+                helpPagesUrl: '${helpPagesUrl}',
+                supplementaryInfo: '${supplementaryInfo}',
+                contactEmail: '${contactEmail}',
+                siteUpdaters: [
+                    <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
+                    {email: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
+                    </c:forEach>
+                ],
+                i18n: {
+                    <c:forEach items="${i18n}" var="i" varStatus="is">
+                    ${i.key}: "${i.value}"<c:if test="${!is.last}">,</c:if>
+                    </c:forEach>
                 }
             };
     

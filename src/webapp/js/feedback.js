@@ -7,8 +7,6 @@
     var CONTENT = 'content';
     var TECHNICAL = 'technical';
 
-    sakai.loadTranslations('org.sakaiproject.feedback.bundle.feedback', feedback);
-
     feedback.switchState = function (state) {
 
 	    $('#feedback-toolbar > li > span').removeClass('current');
@@ -16,31 +14,45 @@
 
         if (HOME === state) {
 
-            feedback.utils.renderTemplate(HOME, {featureSuggestionUrl: feedback.startupArgs.featureSuggestionUrl}, 'feedback-content');
+            var loggedIn = (feedback.userId != '') ? true : false;
+            feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
+                                                    supplementaryInfo: feedback.supplementaryInfo,
+                                                    helpPagesUrl: feedback.helpPagesUrl,
+                                                    loggedIn: loggedIn }, 'feedback-content');
 
             $(document).ready(function () {
 
-                feedback.fitFrame();
+                if (feedback.helpPagesUrl.length > 0 ) {
+                    $('#feedback-help-wrapper').show();
+                }
 
-                $('#feedback-reportcontentlink').click(function (e) {
+                $('#feedback-report-content-link').click(function (e) {
                     feedback.switchState(CONTENT);
                 });
 
-                $('#feedback-reporttechnicallink').click(function (e) {
+                $('#feedback-report-technical-link').click(function (e) {
                     feedback.switchState(TECHNICAL);
                 });
-            });
-        } else if (CONTENT === state || TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, {siteId: feedback.startupArgs.siteId, contactEmail: feedback.startupArgs.contactEmail, siteUpdaters: feedback.startupArgs.siteUpdaters}, 'feedback-content');
+                if (feedback.supplementaryInfo.length > 0) {
+                    $('#feedback-supplementary-info').show();
+                }
+
+                feedback.fitFrame();
+            });
+        } else if (CONTENT === state) {
+
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
+                                                    contactEmail: feedback.contactEmail,
+                                                    siteUpdaters: feedback.siteUpdaters }, 'feedback-content');
 
             $(document).ready(function () {
 
                 feedback.addMouseUpToTextArea();
                 feedback.fitFrame();
 
-                if (feedback.startupArgs.siteUpdaters.length > 0) {
-                    $('#feedback-siteupdaters').show();
+                if (feedback.siteUpdaters.length > 0) {
+                    $('#feedback-siteupdaters-wrapper').show();
                 }
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions());
@@ -49,6 +61,28 @@
                     max: 5,
                     namePattern: '$name_$i'
                 });
+            });
+        } else if (TECHNICAL === state) {
+
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId }, 'feedback-content');
+
+            $(document).ready(function () {
+
+                feedback.addMouseUpToTextArea();
+                feedback.fitFrame();
+
+                if (feedback.userId.length == 0) {
+                    // Not logged in, show the sender email box.
+                    $('#feedback-sender-address').show();
+                }
+
+                $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
+
+                $('#feedback-attachment').MultiFile( {
+                    max: 5,
+                    namePattern: '$name_$i'
+                } );
+
             });
         }
 
@@ -71,7 +105,7 @@
         });
     };
 
-    feedback.getFormOptions = function () {
+    feedback.getFormOptions = function (loggedIn) {
 
         return {
             dataType: 'html',
@@ -81,25 +115,49 @@
                 feedback.switchState(HOME);
             },
             error: function (xmlHttpRequest, textStatus, errorThrown) {
+            },
+            beforeSubmit: function (formArray, $form, options) {
+                for (var i=0,j=formArray.length;i<j;i++) {
+                    if (formArray[i].name === 'title'
+                            || formArray[i].name === 'description') {
+                        if (formArray[i].value.length == 0) {
+                            alert(mandatory_title_warning);
+                            return false;
+                        }
+                    } else if (!loggedIn && formArray[i].name === 'senderaddress') {
+                        if (formArray[i].value.length == 0) {
+                            alert(mandatory_email_warning);
+                            return false;
+                        }
+                    }
+                }
+                return true;
             }
         };
     };
 
-    feedback.utils.renderTemplate(TOOLBAR , {featureSuggestionUrl: feedback.startupArgs.featureSuggestionUrl}, 'feedback-toolbar');
+    var loggedIn = (feedback.userId != '') ? true : false;
+    feedback.utils.renderTemplate(TOOLBAR , { featureSuggestionUrl: feedback.featureSuggestionUrl,
+                                                loggedIn: loggedIn,
+                                                helpPagesUrl: feedback.helpPagesUrl }, 'feedback-toolbar');
 
     $(document).ready(function () {
 
-        $('#feedback-homeitem').click(function (e) {
+        $('#feedback-home-item').click(function (e) {
             return feedback.switchState(HOME);
         });
 
-        $('#feedback-contentitem').click(function (e) {
+        $('#feedback-content-item').click(function (e) {
             return feedback.switchState(CONTENT);
         });
 
-        $('#feedback-technicalitem').click(function (e) {
+        $('#feedback-technical-item').click(function (e) {
             return feedback.switchState(TECHNICAL);
         });
+
+        if (feedback.helpPagesUrl.length > 0 ) {
+            $('#feedback-help-item').show();
+        }
     });
 
     feedback.switchState(HOME);
