@@ -38,6 +38,14 @@
                     $('#feedback-supplementary-info').show();
                 }
 
+                $('.feedback-explanation-link').click(function (e) {
+
+                    $(this).next().toggle({ duration: 'fast',
+                                            complete: function () {
+                                                feedback.fitFrame();
+                                            } });
+                });
+
                 feedback.fitFrame();
             });
         } else if (CONTENT === state) {

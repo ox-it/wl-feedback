@@ -10,3 +10,11 @@
 #feedback-help-wrapper {
     display: none;
 }
+
+.feedback-explanation {
+    display: none;
+    width: 50%;
+    border: 1px black solid;
+    margin: 10px 0px 10px 20px;
+    padding: 5px;
+}

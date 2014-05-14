@@ -53,6 +53,9 @@ public class SakaiProxy {
     @Setter
     private EmailService emailService;
 
+    public boolean getConfigBoolean(String name, boolean defaultValue) {
+        return serverConfigurationService.getBoolean(name, defaultValue);
+    }
     public String getConfigString(String name, String defaultValue) {
         return serverConfigurationService.getString(name, defaultValue);
     }

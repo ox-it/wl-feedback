@@ -64,7 +64,11 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report", options) : helperMissing.call(depth0, "translate", "report", options)))
     + "</a>\n        <span class=\"feedback-short-description\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "short_content_description", options) : helperMissing.call(depth0, "translate", "short_content_description", options)))
-    + "</span>\n    </div>\n    ";
+    + "</span>\n        <a class=\"feedback-explanation-link\" href=\"javascript:;\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "more", options) : helperMissing.call(depth0, "translate", "more", options)))
+    + "</a>\n        <div class=\"feedback-explanation\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_explanation", options) : helperMissing.call(depth0, "translate", "content_explanation", options)))
+    + "</div>\n    </div>\n    ";
   return buffer;
   }
 
@@ -93,7 +97,11 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report", options) : helperMissing.call(depth0, "translate", "report", options)))
     + "</a>\n        <span class=\"feedback-short-description\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "short_technical_description", options) : helperMissing.call(depth0, "translate", "short_technical_description", options)))
-    + "</span>\n    </div>\n    <div class=\"feedback-link\">\n        <a id=\"feedback-suggest-feature-link\" href=\"";
+    + "</span>\n        <a class=\"feedback-explanation-link\" href=\"javascript:;\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "more", options) : helperMissing.call(depth0, "translate", "more", options)))
+    + "</a>\n        <div class=\"feedback-explanation\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_explanation", options) : helperMissing.call(depth0, "translate", "technical_explanation", options)))
+    + "</div>\n    </div>\n    <div class=\"feedback-link\">\n        <a id=\"feedback-suggest-feature-link\" href=\"";
   if (helper = helpers.featureSuggestionUrl) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.featureSuggestionUrl); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
@@ -103,7 +111,11 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "suggest", options) : helperMissing.call(depth0, "translate", "suggest", options)))
     + "</a>\n        <span class=\"feedback-short-description\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "feature_description", options) : helperMissing.call(depth0, "translate", "feature_description", options)))
-    + "</span>\n    </div>\n    <div id=\"feedback-supplementary-info\">";
+    + "</span>\n        <a class=\"feedback-explanation-link\" href=\"javascript:;\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "more", options) : helperMissing.call(depth0, "translate", "more", options)))
+    + "</a>\n        <div class=\"feedback-explanation\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "suggest_explanation", options) : helperMissing.call(depth0, "translate", "suggest_explanation", options)))
+    + "</div>\n    </div>\n    <div id=\"feedback-supplementary-info\">";
   if (helper = helpers.supplementaryInfo) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.supplementaryInfo); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   if(stack1 || stack1 === 0) { buffer += stack1; }
