@@ -1,6 +1,9 @@
 Sakai Feeback Tool
 ==================
 
+Overview
+--------
+
 This tool allows a Sakai user to report problems with a site's content or
 functionality. Reports are sent as emails to the problem site's contact email,
 or, if that hasn't been specified, to a user selected site maintainer. In
