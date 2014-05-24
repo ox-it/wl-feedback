@@ -15,7 +15,9 @@ import org.sakaiproject.entitybroker.entityprovider.capabilities.ActionsExecutab
 import org.sakaiproject.entitybroker.entityprovider.capabilities.AutoRegisterEntityProvider;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.Describeable;
 import org.sakaiproject.entitybroker.entityprovider.capabilities.Outputable;
+import org.sakaiproject.entitybroker.entityprovider.capabilities.RequestAware;
 import org.sakaiproject.entitybroker.entityprovider.extension.Formats;
+import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.feedback.db.Database;
@@ -23,7 +25,11 @@ import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.util.RequestFilter;
 
-public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable {
+import net.tanesha.recaptcha.ReCaptcha;
+import net.tanesha.recaptcha.ReCaptchaFactory;
+import net.tanesha.recaptcha.ReCaptchaResponse;
+
+public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable, RequestAware {
 	
 	public final static String ENTITY_PREFIX = "feedback";
 
@@ -39,6 +45,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         this.db = db;
     }
 
+    private RequestGetter requestGetter = null;
+
 	public Object getSampleEntity() {
 
 		return null;
@@ -53,6 +61,10 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
 		return new String[] { Formats.JSON };
 	}
+
+    public void setRequestGetter(RequestGetter rg) {
+        this.requestGetter = rg;
+    }
 
 	@EntityCustomAction(action = "reportcontent", viewKey = EntityView.VIEW_EDIT)
 	public String handleContentReport(EntityView view, Map<String, Object> params) {
@@ -107,6 +119,23 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         if (type.equals(Constants.TECHNICAL)) {
             toAddress = sakaiProxy.getConfigString("feedback.technicalAddress", null);
             if (userId == null) {
+
+                // Recaptcha
+                if (sakaiProxy.getConfigBoolean("recaptcha.enabled", false)) {
+                    String publicKey = sakaiProxy.getConfigString("recaptcha.public-key", "");
+                    String privateKey = sakaiProxy.getConfigString("recaptcha.private-key", "");
+                    ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
+                    String challengeField = (String) params.get("recaptcha_challenge_field");
+                    String responseField = (String) params.get("recaptcha_response_field");
+                    if (challengeField == null) challengeField = "";
+                    if (responseField == null) responseField = "";
+                    String remoteAddress = requestGetter.getRequest().getRemoteAddr();
+                    ReCaptchaResponse response = captcha.checkAnswer(remoteAddress, challengeField, responseField);
+                    if (!response.isValid()) {
+			            throw new SecurityException("Recaptcha Error: Your recaptcha response did not match.");
+                    }
+                }
+
                 senderAddress = (String) params.get("senderaddress");
                 if (senderAddress == null || senderAddress.length() == 0) {
                     logger.error("No sender email address for non logged in user. Returning BAD REQUEST ...");

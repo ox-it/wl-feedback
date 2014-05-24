@@ -47,6 +47,10 @@
         <div class="portletBody">
             <ul id="feedback-toolbar" class="navIntraTool actionToolBar" role="menu"></ul>
             <div id="feedback-content" class="portletBody"></div>
+            <div id="feedback-recaptcha-block" style="display: none;">
+                <div>Enter the text that you see in the box below:</div>
+                ${recaptchaScript}
+            </div>
         </div>
         <script type="text/javascript" src="/feedback-tool/js/feedback.js"></script>
 

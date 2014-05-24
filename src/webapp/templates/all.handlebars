@@ -22,9 +22,9 @@ function program1(depth0,data) {
 
   buffer += "<h2 id=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
-    + "</h2>\n<div id=\"feedback-overview\">\n    "
+    + "</h2>\n<div id=\"feedback-overview\" class=\"instruction\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_instruction", options) : helperMissing.call(depth0, "translate", "content_instruction", options)))
-    + "\n</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
+    + "</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
   if (helper = helpers.siteId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.siteId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
@@ -45,7 +45,7 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
     + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n    </table>\n    <div id=\"feedback-attachments-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
-    + "</div>\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <br />\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
+    + "</div>\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "submit_label", options) : helperMissing.call(depth0, "translate", "submit_label", options)))
     + "\" />\n</form>\n";
   return buffer;
@@ -76,7 +76,7 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
     + "</h2>\n<div id=\"feedback-overview\">\n    "
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "overview", options) : helperMissing.call(depth0, "translate", "overview", options)))
-    + "\n</div>\n<div id=\"feedback-help-wrapper\">\n    <span id=\"feedback-help-1\">"
+    + "\n</div>\n<div id=\"feedback-help-wrapper\">\n    <span>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "help_1", options) : helperMissing.call(depth0, "translate", "help_1", options)))
     + "</span>\n    <a href=\"";
   if (helper = helpers.helpPagesUrl) { stack1 = helper.call(depth0, {hash:{},data:data}); }
@@ -86,7 +86,7 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "help_tooltip", options) : helperMissing.call(depth0, "translate", "help_tooltip", options)))
     + "\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "help_2", options) : helperMissing.call(depth0, "translate", "help_2", options)))
-    + "</a>\n    <span id=\"feedback-help-3\">"
+    + "</a>\n    <span>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "help_3", options) : helperMissing.call(depth0, "translate", "help_3", options)))
     + "</span>\n</div>\n<div id=\"feedback-links\">\n    ";
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.loggedIn), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
@@ -130,9 +130,9 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
   buffer += "<h2 id=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
-    + "</h2>\n<div id=\"feedback-overview\">\n    "
+    + "</h2>\n<div id=\"feedback-overview\" class=\"instruction\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_instruction", options) : helperMissing.call(depth0, "translate", "technical_instruction", options)))
-    + "\n</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
+    + "</div>\n<form id=\"feedback-form\" action=\"/direct/feedback/";
   if (helper = helpers.siteId) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.siteId); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)
@@ -146,7 +146,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "sender_address_label", options) : helperMissing.call(depth0, "translate", "sender_address_label", options)))
     + "</td><td><input type=\"text\" name=\"senderaddress\" /></td</tr>\n    </table>\n    <div id=\"feedback-attachments-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
-    + "</div>\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <br />\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
+    + "</div>\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "submit_label", options) : helperMissing.call(depth0, "translate", "submit_label", options)))
     + "\" />\n</form>\n";
   return buffer;

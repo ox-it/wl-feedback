@@ -1,3 +1,9 @@
+#feedback-overview {
+    margin-bottom: 5px;
+}
+#feedback-help-wrapper {
+    margin-bottom: 5px;
+}
 #feedback-siteupdaters-wrapper {
     display: none;
 }
@@ -11,10 +17,29 @@
     display: none;
 }
 
+.feedback-link {
+    margin-bottom: 5px;
+}
+
 .feedback-explanation {
     display: none;
     width: 50%;
     border: 1px black solid;
+    border-radius: 1em 1em 1em 1em;
     margin: 10px 0px 10px 20px;
     padding: 5px;
+    background-color: #FFFFDD;
+}
+
+#feedback-recaptcha-block {
+    display: none;
+    margin-top: 5px;
+}
+
+#feedback-attachments-label {
+    margin-top: 5px;
+}
+
+#feedback-field-table {
+    margin-top: 5px;
 }

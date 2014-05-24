@@ -96,6 +96,7 @@ public class FeedbackTool extends HttpServlet {
                 String privateKey = sakaiProxy.getConfigString("recaptcha.private-key", "");
                 ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
                 String captchaScript = captcha.createRecaptchaHtml("Uh oh ...", null);
+		        request.setAttribute("recaptchaScript", captchaScript);
             }
         }
 

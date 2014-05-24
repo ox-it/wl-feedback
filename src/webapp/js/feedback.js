@@ -7,6 +7,8 @@
     var CONTENT = 'content';
     var TECHNICAL = 'technical';
 
+    var loggedIn = (feedback.userId != '') ? true : false;
+
     feedback.switchState = function (state) {
 
 	    $('#feedback-toolbar > li > span').removeClass('current');
@@ -14,7 +16,6 @@
 
         if (HOME === state) {
 
-            var loggedIn = (feedback.userId != '') ? true : false;
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
@@ -79,9 +80,10 @@
                 feedback.addMouseUpToTextArea();
                 feedback.fitFrame();
 
-                if (feedback.userId.length == 0) {
+                if (!loggedIn) {
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
+                    $('#feedback-recaptcha-block').detach().insertAfter($('#feedback-field-table')).show();
                 }
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
@@ -123,6 +125,9 @@
                 feedback.switchState(HOME);
             },
             error: function (xmlHttpRequest, textStatus, errorThrown) {
+
+               console.log(textStatus);
+               console.log(errorThrown);
             },
             beforeSubmit: function (formArray, $form, options) {
                 for (var i=0,j=formArray.length;i<j;i++) {
