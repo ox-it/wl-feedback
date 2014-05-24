@@ -1,3 +1,23 @@
+#feedback-technical-item {
+    display: none;
+}
+#feedback-report-technical-wrapper {
+    display: none;
+}
+#feedback-suggest-feature-item {
+    display: none;
+}
+#feedback-help-item {
+    display: none;
+}
+#feedback-suggest-feature-wrapper {
+    display: none;
+}
+#feedback-technical-setup-instruction {
+    display: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 #feedback-overview {
     margin-bottom: 5px;
 }

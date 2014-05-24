@@ -1,6 +1,9 @@
 <h2 id="feedback-title">{{translate 'title'}}</h2>
-<div id="feedback-overview">
+<div id="feedback-overview" class="instruction">
     {{translate 'overview'}}
+</div>
+<div id="feedback-technical-setup-instruction" class="information">
+    {{translate 'technical_setup_instruction'}}
 </div>
 <div id="feedback-help-wrapper">
     <span>{{translate 'help_1'}}</span>
@@ -16,13 +19,13 @@
         <div class="feedback-explanation">{{translate 'content_explanation'}}</div>
     </div>
     {{/if}}
-    <div class="feedback-link">
+    <div id="feedback-report-technical-wrapper" class="feedback-link">
         <a id="feedback-report-technical-link" href="javascript:;" title="{{translate 'report_technical_tooltip'}}">{{translate 'report'}}</a>
         <span class="feedback-short-description">{{translate 'short_technical_description'}}</span>
         <a class="feedback-explanation-link" href="javascript:;">{{translate 'more'}}</a>
         <div class="feedback-explanation">{{translate 'technical_explanation'}}</div>
     </div>
-    <div class="feedback-link">
+    <div id="feedback-suggest-feature-wrapper" class="feedback-link">
         <a id="feedback-suggest-feature-link" href="{{featureSuggestionUrl}}" target="_blank" title="{{translate 'suggest_feature_tooltip'}}">{{translate 'suggest'}}</a>
         <span class="feedback-short-description">{{translate 'feature_description'}}</span>
         <a class="feedback-explanation-link" href="javascript:;">{{translate 'more'}}</a>

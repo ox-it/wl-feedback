@@ -11,8 +11,9 @@
 
     feedback.switchState = function (state) {
 
-	    $('#feedback-toolbar > li > span').removeClass('current');
-        $('#feedback-' + state + 'item > span').addClass('current');
+        $('#feedback-toolbar > li > span').removeClass('current');
+
+        $('#feedback-' + state + '-item > span').addClass('current');
 
         if (HOME === state) {
 
@@ -24,6 +25,7 @@
             $(document).ready(function () {
 
                 if (feedback.helpPagesUrl.length > 0 ) {
+                    $('#feedback-help-item').show();
                     $('#feedback-help-wrapper').show();
                 }
 
@@ -31,9 +33,21 @@
                     feedback.switchState(CONTENT);
                 });
 
-                $('#feedback-report-technical-link').click(function (e) {
-                    feedback.switchState(TECHNICAL);
-                });
+                if (feedback.enableTechnical) {
+                    $('#feedback-technical-item').show().css('display', 'inline');
+                    $('#feedback-report-technical-wrapper').show();
+                    $('#feedback-report-technical-link').click(function (e) {
+                        feedback.switchState(TECHNICAL);
+                    });
+                } else {
+                    $('#feedback-technical-setup-instruction').show();
+                }
+
+                if (feedback.featureSuggestionUrl.length > 0) {
+                    $('#feedback-suggest-feature-wrapper').show();
+                } else {
+                    $('#feedback-feature-suggestion-setup-instruction').show();
+                }
 
                 if (feedback.supplementaryInfo.length > 0) {
                     $('#feedback-supplementary-info').show();
@@ -83,7 +97,7 @@
                 if (!loggedIn) {
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
-                    $('#feedback-recaptcha-block').detach().insertAfter($('#feedback-field-table')).show();
+                    $('#feedback-recaptcha-block').clone().insertAfter($('#feedback-field-table')).show();
                 }
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
@@ -134,12 +148,12 @@
                     if (formArray[i].name === 'title'
                             || formArray[i].name === 'description') {
                         if (formArray[i].value.length == 0) {
-                            alert(mandatory_title_warning);
+                            alert(feedback.i18n.mandatory_title_warning);
                             return false;
                         }
                     } else if (!loggedIn && formArray[i].name === 'senderaddress') {
                         if (formArray[i].value.length == 0) {
-                            alert(mandatory_email_warning);
+                            alert(feedback.i18n.mandatory_email_warning);
                             return false;
                         }
                     }

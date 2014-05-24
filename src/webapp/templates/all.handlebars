@@ -74,8 +74,10 @@ function program1(depth0,data) {
 
   buffer += "<h2 id=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
-    + "</h2>\n<div id=\"feedback-overview\">\n    "
+    + "</h2>\n<div id=\"feedback-overview\" class=\"instruction\">\n    "
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "overview", options) : helperMissing.call(depth0, "translate", "overview", options)))
+    + "\n</div>\n<div id=\"feedback-technical-setup-instruction\" class=\"information\">\n    "
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_setup_instruction", options) : helperMissing.call(depth0, "translate", "technical_setup_instruction", options)))
     + "\n</div>\n<div id=\"feedback-help-wrapper\">\n    <span>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "help_1", options) : helperMissing.call(depth0, "translate", "help_1", options)))
     + "</span>\n    <a href=\"";
@@ -91,7 +93,7 @@ function program1(depth0,data) {
     + "</span>\n</div>\n<div id=\"feedback-links\">\n    ";
   stack1 = helpers['if'].call(depth0, (depth0 && depth0.loggedIn), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n    <div class=\"feedback-link\">\n        <a id=\"feedback-report-technical-link\" href=\"javascript:;\" title=\""
+  buffer += "\n    <div id=\"feedback-report-technical-wrapper\" class=\"feedback-link\">\n        <a id=\"feedback-report-technical-link\" href=\"javascript:;\" title=\""
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report_technical_tooltip", options) : helperMissing.call(depth0, "translate", "report_technical_tooltip", options)))
     + "\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "report", options) : helperMissing.call(depth0, "translate", "report", options)))
@@ -101,7 +103,7 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "more", options) : helperMissing.call(depth0, "translate", "more", options)))
     + "</a>\n        <div class=\"feedback-explanation\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_explanation", options) : helperMissing.call(depth0, "translate", "technical_explanation", options)))
-    + "</div>\n    </div>\n    <div class=\"feedback-link\">\n        <a id=\"feedback-suggest-feature-link\" href=\"";
+    + "</div>\n    </div>\n    <div id=\"feedback-suggest-feature-wrapper\" class=\"feedback-link\">\n        <a id=\"feedback-suggest-feature-link\" href=\"";
   if (helper = helpers.featureSuggestionUrl) { stack1 = helper.call(depth0, {hash:{},data:data}); }
   else { helper = (depth0 && depth0.featureSuggestionUrl); stack1 = typeof helper === functionType ? helper.call(depth0, {hash:{},data:data}) : helper; }
   buffer += escapeExpression(stack1)

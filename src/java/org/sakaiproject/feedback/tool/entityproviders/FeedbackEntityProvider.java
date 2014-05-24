@@ -117,13 +117,13 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         String senderAddress = "";
 
         if (type.equals(Constants.TECHNICAL)) {
-            toAddress = sakaiProxy.getConfigString("feedback.technicalAddress", null);
+            toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
             if (userId == null) {
 
                 // Recaptcha
-                if (sakaiProxy.getConfigBoolean("recaptcha.enabled", false)) {
-                    String publicKey = sakaiProxy.getConfigString("recaptcha.public-key", "");
-                    String privateKey = sakaiProxy.getConfigString("recaptcha.private-key", "");
+                if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
+                    String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
+                    String privateKey = sakaiProxy.getConfigString("user.recaptcha.private-key", "");
                     ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
                     String challengeField = (String) params.get("recaptcha_challenge_field");
                     String responseField = (String) params.get("recaptcha_response_field");

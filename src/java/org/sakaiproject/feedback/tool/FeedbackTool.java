@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.api.Session;
@@ -91,14 +92,18 @@ public class FeedbackTool extends HttpServlet {
             }
             request.setAttribute("i18n", bundleMap);
 
-            if (sakaiProxy.getConfigBoolean("recaptcha.enabled", false)) {
-                String publicKey = sakaiProxy.getConfigString("recaptcha.public-key", "");
-                String privateKey = sakaiProxy.getConfigString("recaptcha.private-key", "");
+            if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
+                String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
+                String privateKey = sakaiProxy.getConfigString("user.recaptcha.private-key", "");
                 ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
                 String captchaScript = captcha.createRecaptchaHtml("Uh oh ...", null);
 		        request.setAttribute("recaptchaScript", captchaScript);
             }
         }
+
+        request.setAttribute("enableTechnical", 
+            (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
+                ? false : true);
 
 		request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
         request.setAttribute("userId", (userId == null) ? "" : userId);

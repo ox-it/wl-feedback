@@ -21,6 +21,7 @@
                 siteId: '${siteId}',
                 language: '${language}',
                 featureSuggestionUrl: '${featureSuggestionUrl}',
+                enableTechnical: ${enableTechnical},
                 helpPagesUrl: '${helpPagesUrl}',
                 supplementaryInfo: '${supplementaryInfo}',
                 contactEmail: '${contactEmail}',
