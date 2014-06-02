@@ -8,13 +8,13 @@
   	<name>Sakai Feedback Tool</name>
   	<groupId>org.sakaiproject.feedback</groupId>
   	<artifactId>feedback-tool</artifactId>
-    <version>11-SNAPSHOT</version>
+  	<version>10-SNAPSHOT</version>
   	<packaging>war</packaging>
 	
 	<parent>
         <groupId>org.sakaiproject</groupId>
         <artifactId>master</artifactId>
-        <version>11-SNAPSHOT</version>
+        <version>10-SNAPSHOT</version>
         <relativePath>../master/pom.xml</relativePath>
     </parent>
 
