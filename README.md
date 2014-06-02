@@ -37,4 +37,6 @@ used to initialise the page shell with Javascript variables. Javascript then
 takes over and renders templates into the shell when a link is clicked. Forms
 are submitted to an EntityProvider (FeedbackEntityProvider.java) and that
 provider does the emailing. Some protection against DDoS attacks is provided by
-an optional Recaptcha integration.
+an optional Recaptcha integration. There's a template for every page although
+they are all compiled from WEB-INF/templates into templates/all.handlebars. One
+download with all the templates compiled to JS.
