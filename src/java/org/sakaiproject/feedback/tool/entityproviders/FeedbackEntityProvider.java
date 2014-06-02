@@ -59,7 +59,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
 	public String[] getHandledOutputFormats() {
 
-		return new String[] { Formats.JSON };
+		return new String[] { Formats.JSON, Formats.HTML };
 	}
 
     public void setRequestGetter(RequestGetter rg) {
@@ -132,7 +132,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     String remoteAddress = requestGetter.getRequest().getRemoteAddr();
                     ReCaptchaResponse response = captcha.checkAnswer(remoteAddress, challengeField, responseField);
                     if (!response.isValid()) {
-			            throw new SecurityException("Recaptcha Error: Your recaptcha response did not match.");
+                        logger.warn("Recaptcha failed with this message: " + response.getErrorMessage());
+                        return "RECAPTCHA FAILURE";
                     }
                 }
 

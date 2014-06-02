@@ -29,10 +29,6 @@ import org.sakaiproject.util.ResourceLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import net.tanesha.recaptcha.ReCaptcha;
-import net.tanesha.recaptcha.ReCaptchaFactory;
-import net.tanesha.recaptcha.ReCaptchaResponse;
-
 /**
  * @author Adrian Fish (adrian.r.fish@gmail.com)
  */
@@ -94,10 +90,7 @@ public class FeedbackTool extends HttpServlet {
 
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
-                String privateKey = sakaiProxy.getConfigString("user.recaptcha.private-key", "");
-                ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
-                String captchaScript = captcha.createRecaptchaHtml("Uh oh ...", null);
-		        request.setAttribute("recaptchaScript", captchaScript);
+		        request.setAttribute("recaptchaPublicKey", publicKey);
             }
         }
 

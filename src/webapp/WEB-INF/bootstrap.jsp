@@ -10,6 +10,7 @@
         <script type="text/javascript" src="/feedback-tool/lib/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/jquery.form.min.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/jquery.MultiFile.pack.js"></script>
+        <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/handlebars.runtime-v1.3.0.js"></script>
         <script type="text/javascript" src="/feedback-tool/templates/all.handlebars"></script>
 
@@ -25,6 +26,7 @@
                 helpPagesUrl: '${helpPagesUrl}',
                 supplementaryInfo: '${supplementaryInfo}',
                 contactEmail: '${contactEmail}',
+                recaptchaPublicKey: '${recaptchaPublicKey}',
                 siteUpdaters: [
                     <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
                     {email: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
@@ -48,10 +50,6 @@
         <div class="portletBody">
             <ul id="feedback-toolbar" class="navIntraTool actionToolBar" role="menu"></ul>
             <div id="feedback-content" class="portletBody"></div>
-            <div id="feedback-recaptcha-block" style="display: none;">
-                <div>Enter the text that you see in the box below:</div>
-                ${recaptchaScript}
-            </div>
         </div>
         <script type="text/javascript" src="/feedback-tool/js/feedback.js"></script>
 

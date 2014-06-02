@@ -22,7 +22,7 @@
     margin-bottom: 5px;
 }
 #feedback-help-wrapper {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 #feedback-siteupdaters-wrapper {
     display: none;
@@ -38,7 +38,7 @@
 }
 
 .feedback-link {
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 }
 
 .feedback-explanation {
@@ -52,7 +52,6 @@
 }
 
 #feedback-recaptcha-block {
-    display: none;
     margin-top: 5px;
 }
 
@@ -62,4 +61,11 @@
 
 #feedback-field-table {
     margin-top: 5px;
+}
+
+#feedback-recaptcha-error {
+    display: none;
+}
+#feedback-recaptcha-wrapper {
+    display: none;
 }

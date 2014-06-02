@@ -25,7 +25,7 @@
             $(document).ready(function () {
 
                 if (feedback.helpPagesUrl.length > 0 ) {
-                    $('#feedback-help-item').show();
+                    $('#feedback-help-item').show().css('display', 'inline');
                     $('#feedback-help-wrapper').show();
                 }
 
@@ -92,13 +92,27 @@
             $(document).ready(function () {
 
                 feedback.addMouseUpToTextArea();
-                feedback.fitFrame();
 
                 if (!loggedIn) {
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
-                    $('#feedback-recaptcha-block').clone().insertAfter($('#feedback-field-table')).show();
+
+                    if (feedback.recaptchaPublicKey.length > 0) {
+                        // Recaptcha is enabled, show it.
+                        Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
+                            {
+                                theme: "red",
+                                callback: function () {
+
+                                    feedback.fitFrame();
+                                    $('#feedback-recaptcha-wrapper').show();
+                                }
+                            }
+                        );
+                    }
                 }
+
+                feedback.fitFrame();
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
 
@@ -136,12 +150,18 @@
             iframe: true,
             timeout: 30000,
             success: function (responseText, statusText, xhr) {
+
+                if (responseText === 'RECAPTCHA FAILURE') {
+                    $('#feedback-recaptcha-error').show();
+                    setTimeout(function () {
+                        $('#feedback-recaptcha-error').fadeOut();
+                    }, 2000);
+                    Recaptcha.reload();
+                } else {
                 feedback.switchState(HOME);
+                }
             },
             error: function (xmlHttpRequest, textStatus, errorThrown) {
-
-               console.log(textStatus);
-               console.log(errorThrown);
             },
             beforeSubmit: function (formArray, $form, options) {
                 for (var i=0,j=formArray.length;i<j;i++) {
