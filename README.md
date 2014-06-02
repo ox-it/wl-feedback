@@ -17,13 +17,14 @@ The code builds as a webapp which you can drop straight into your tomcat. To
 configure the tool, set these properties in your sakai.properties or
 local.properties.
 
-feedback.featureSuggestionUrl=http://sakaifeature.myinstitution.ac.uk
-feedback.helpPagesUrl=http://sakaihelp.myinstitution.ac.uk
-feedback.supplementaryInfo=This is a chunk of really helpful \
-supplementary information. Enjoy!
+    feedback.featureSuggestionUrl=http://sakaifeature.myinstitution.ac.uk
+    feedback.helpPagesUrl=http://sakaihelp.myinstitution.ac.uk
+    feedback.supplementaryInfo=This is a chunk of really helpful \
+    supplementary information. Enjoy!
 
 # The address to which technical feedback and queries will be sent.
-feedback.technicalAddress=feedback@sakai.myinstitution.ac.uk
+
+    feedback.technicalAddress=feedback@sakai.myinstitution.ac.uk
 
 If you have configured Recaptcha in your Sakai, Feedback will use it to
 validate unauthenticated technical feedback reports.
