@@ -65,6 +65,12 @@
 
 #feedback-recaptcha-error {
     display: none;
+    margin-left: 10px;
+    padding: 5px;
+    border: 1px red solid;
+    border-radius: 1em 1em 1em 1em;
+    background-color: red;
+    color: white;
 }
 #feedback-recaptcha-wrapper {
     display: none;
