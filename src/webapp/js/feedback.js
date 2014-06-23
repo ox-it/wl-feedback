@@ -80,6 +80,8 @@
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions());
 
+                $('#feedback-max-attachments-mb').html(feedback.maxAttachmentsMB);
+
                 $('#feedback-attachment').MultiFile( {
                     max: 5,
                     namePattern: '$name_$i'
@@ -115,6 +117,8 @@
                 feedback.fitFrame();
 
                 $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
+
+                $('#feedback-max-attachments-mb').html(feedback.maxAttachmentsMB);
 
                 $('#feedback-attachment').MultiFile( {
                     max: 5,

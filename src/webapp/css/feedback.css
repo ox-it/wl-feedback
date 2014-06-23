@@ -75,3 +75,8 @@
 #feedback-recaptcha-wrapper {
     display: none;
 }
+
+#feedback-max-attachments-label {
+    color: red;
+    font-weight: bold;
+}

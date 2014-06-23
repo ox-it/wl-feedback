@@ -11,7 +11,13 @@
         <div>Enter the text that you see in the box below:</div>
         <div id="feedback-recaptcha-block"></div>
     </div>
-    <div id="feedback-attachments-label">{{translate 'attachments_label'}}</div>
+    <div id="feedback-attachments-label">
+        <span>{{translate 'attachments_label'}}</span>
+        <span id="feedback-max-attachments-label">
+            <span id="feedback-max-attachments-mb"></span>
+            <span id="feedback-attachments-max-suffix">{{translate 'attachments_max_suffix'}}</span>
+        </span>
+    </div>
     <input id="feedback-attachment" name="attachment" type="file" class="multi"/><br clear="all"/>
     <input id="feedback-submit-button" type="submit" value="{{translate 'submit_label'}}" />
     <span id="feedback-recaptcha-error">{{translate 'recaptcha_error'}}</span>

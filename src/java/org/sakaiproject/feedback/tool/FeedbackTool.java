@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import org.sakaiproject.feedback.tool.entityproviders.FeedbackEntityProvider;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
@@ -104,6 +105,7 @@ public class FeedbackTool extends HttpServlet {
         request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
         request.setAttribute("helpPagesUrl", sakaiProxy.getConfigString("feedback.helpPagesUrl", ""));
         request.setAttribute("supplementaryInfo", sakaiProxy.getConfigString("feedback.supplementaryInfo", ""));
+        request.setAttribute("maxAttachmentsMB", sakaiProxy.getAttachmentLimit());
 
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
 	}

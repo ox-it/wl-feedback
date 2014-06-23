@@ -21,6 +21,7 @@ import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.exception.EntityException;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.feedback.db.Database;
+import org.sakaiproject.feedback.exception.AttachmentsTooBigException;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.util.RequestFilter;
@@ -32,6 +33,11 @@ import net.tanesha.recaptcha.ReCaptchaResponse;
 public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable, RequestAware {
 	
 	public final static String ENTITY_PREFIX = "feedback";
+
+    private final static String ATTACHMENTS_TOO_BIG = "ATTACHMENTS_TOO_BIG";
+    private final static String SUCCESS = "SUCCESS";
+    private final static String ERROR = "ERROR";
+    private final static String NO_SENDER_ADDRESS = "NO_SENDER_ADDRESS";
 
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -47,8 +53,18 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
     private RequestGetter requestGetter = null;
 
-	public Object getSampleEntity() {
+    private long maxAttachmentsBytes = 0L;
 
+    public void init() {
+
+        maxAttachmentsBytes = sakaiProxy.getAttachmentLimit() * 1024 * 1024;
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("maxAttachmentsBytes = " + maxAttachmentsBytes);
+        }
+    }
+
+	public Object getSampleEntity() {
 		return null;
 	}
 
@@ -162,18 +178,28 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             throw new EntityException("You need to supply a recipient", "", HttpServletResponse.SC_BAD_REQUEST);
         }
 
-        final List<FileItem> attachments = getAttachments(params);
-
         if (senderAddress != null && senderAddress.length() > 0) {
-            sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments);
-            db.logReport(userId, senderAddress, siteId, type, title, description);
-            return "success";
+            List<FileItem> attachments = null;
+        
+            try {
+                attachments = getAttachments(params);
+                sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments);
+                db.logReport(userId, senderAddress, siteId, type, title, description);
+                return SUCCESS;
+            } catch (AttachmentsTooBigException atbe) {
+                logger.error("The total size of the attachments exceeded the permitted limit of " + maxAttachmentsBytes + ". '" + ATTACHMENTS_TOO_BIG + "' will be returned to the client.");
+                return ATTACHMENTS_TOO_BIG;
+            } catch (Exception e) {
+                logger.error("Caught exception while sending email or generating report. '" + ERROR + "' will be returned to the client.", e);
+                return ERROR;
+            }
         } else {
-            return "NO_SENDER_ADDRESS";
+            logger.error("Failed to determine a sender address No email or report will be generated. '"  + NO_SENDER_ADDRESS + "' will be returned to the client.");
+            return NO_SENDER_ADDRESS;
         }
     }
 
-	private List<FileItem> getAttachments(final Map<String, Object> params) {
+	private List<FileItem> getAttachments(final Map<String, Object> params) throws Exception {
 
 		final List<FileItem> fileItems = new ArrayList<FileItem>();
 
@@ -182,31 +208,37 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 		if (uploadsDone != null && uploadsDone.equals(RequestFilter.ATTR_UPLOADS_DONE)) {
 			logger.debug("UPLOAD STATUS: " + params.get("upload.status"));
 
-			try {
-				FileItem attachment1 = (FileItem) params.get("attachment_0");
-				if (attachment1 != null && attachment1.getSize() > 0) {
-					fileItems.add(attachment1);
-                }
-				FileItem attachment2 = (FileItem) params.get("attachment_1");
-				if (attachment2 != null && attachment2.getSize() > 0) {
-					fileItems.add(attachment2);
-                }
-				FileItem attachment3 = (FileItem) params.get("attachment_2");
-				if (attachment3 != null && attachment3.getSize() > 0) {
-					fileItems.add(attachment3);
-                }
-				FileItem attachment4 = (FileItem) params.get("attachment_3");
-				if (attachment4 != null && attachment4.getSize() > 0) {
-					fileItems.add(attachment4);
-                }
-				FileItem attachment5 = (FileItem) params.get("attachment_4");
-				if (attachment5 != null && attachment5.getSize() > 0) {
-					fileItems.add(attachment5);
-                }
-			} catch (Exception e) {
-                logger.error("Failed to completely parse attachments.", e);
-			}
+            FileItem attachment1 = (FileItem) params.get("attachment_0");
+            if (attachment1 != null && attachment1.getSize() > 0) {
+                fileItems.add(attachment1);
+            }
+            FileItem attachment2 = (FileItem) params.get("attachment_1");
+            if (attachment2 != null && attachment2.getSize() > 0) {
+                fileItems.add(attachment2);
+            }
+            FileItem attachment3 = (FileItem) params.get("attachment_2");
+            if (attachment3 != null && attachment3.getSize() > 0) {
+                fileItems.add(attachment3);
+            }
+            FileItem attachment4 = (FileItem) params.get("attachment_3");
+            if (attachment4 != null && attachment4.getSize() > 0) {
+                fileItems.add(attachment4);
+            }
+            FileItem attachment5 = (FileItem) params.get("attachment_4");
+            if (attachment5 != null && attachment5.getSize() > 0) {
+                fileItems.add(attachment5);
+            }
 		}
+
+        long totalSize = 0L;
+
+        for (FileItem fileItem : fileItems) {
+            totalSize += fileItem.getSize();
+        }
+
+        if (totalSize > maxAttachmentsBytes) {
+            throw new AttachmentsTooBigException();
+        }
 
 		return fileItems;
 	}

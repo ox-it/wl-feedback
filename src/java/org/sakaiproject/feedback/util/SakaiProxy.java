@@ -33,6 +33,8 @@ import lombok.Setter;
 
 public class SakaiProxy {
 
+    public static final int ATTACH_MAX_DEFAULT = 10;
+
 	private static final Log logger = LogFactory.getLog(SakaiProxy.class);
 
     @Setter
@@ -56,8 +58,13 @@ public class SakaiProxy {
     public boolean getConfigBoolean(String name, boolean defaultValue) {
         return serverConfigurationService.getBoolean(name, defaultValue);
     }
+
     public String getConfigString(String name, String defaultValue) {
         return serverConfigurationService.getString(name, defaultValue);
+    }
+
+    public int getConfigInt(String name, int defaultValue) {
+        return serverConfigurationService.getInt(name, defaultValue);
     }
 
     public String getCurrentUserId() {
@@ -269,4 +276,14 @@ public class SakaiProxy {
             }
         }, "Feedback Email Thread").start();
 	}
+
+    public int getAttachmentLimit() {
+
+        // set the limit to whichever is the lowest.
+        int contentUploadMax = getConfigInt("content.upload.max", ATTACH_MAX_DEFAULT);
+        int feedbackAttachMax= getConfigInt("feedback.attach.max", ATTACH_MAX_DEFAULT);
+        int mb = (contentUploadMax < feedbackAttachMax) ? contentUploadMax : feedbackAttachMax;
+
+        return mb;
+    }
 }
