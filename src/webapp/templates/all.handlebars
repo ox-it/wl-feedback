@@ -41,7 +41,7 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "mandatory_instruction", options) : helperMissing.call(depth0, "translate", "mandatory_instruction", options)))
     + "</div>\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
-    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" /></td></tr>\n        <tr><td id=\"feedback-description-label\">"
+    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" maxlength=\"40\"/></td></tr>\n        <tr><td id=\"feedback-description-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
     + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n    </table>\n    <div id=\"feedback-attachments-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
@@ -142,7 +142,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "mandatory_instruction", options) : helperMissing.call(depth0, "translate", "mandatory_instruction", options)))
     + "</div>\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
-    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" /></td></tr>\n        <tr><td id=\"feedback-description-label\">"
+    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" maxlength=\"40\"/></td></tr>\n        <tr><td id=\"feedback-description-label\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
     + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n        <tr id=\"feedback-sender-address\"><td>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "sender_address_label", options) : helperMissing.call(depth0, "translate", "sender_address_label", options)))

@@ -3,7 +3,7 @@
 <form id="feedback-form" action="/direct/feedback/{{siteId}}/reporttechnical" method="POST">
     <div id="feedback-mandatory-instruction" class="instruction">{{translate 'mandatory_instruction'}}</div>
     <table id="feedback-field-table" cols="2">
-        <tr><td id="feedback-title-label">{{translate 'title_label'}}</td><td id="feedback-title-field"><input type="text" name="title" /></td></tr>
+        <tr><td id="feedback-title-label">{{translate 'title_label'}}</td><td id="feedback-title-field"><input type="text" name="title" maxlength="40"/></td></tr>
         <tr><td id="feedback-description-label">{{translate 'description_label'}}</td><td id="feedback-description-field"><textarea name="description"></textarea></td></tr>
         <tr id="feedback-sender-address"><td>{{translate 'sender_address_label'}}</td><td><input type="text" name="senderaddress" /></td</tr>
     </table>
