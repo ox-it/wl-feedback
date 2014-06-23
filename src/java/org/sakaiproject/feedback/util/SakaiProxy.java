@@ -103,7 +103,8 @@ public class SakaiProxy {
 
     /**
      *  Returns a map of display name onto email for each user, in the specified
-     *  site, with site.upd.
+     *  site, with site.upd. If a user doesn't have an email specced, they
+     *  aren't returned.
      *
      *  @param siteId The site to retrieve updaters for
      *  @return A map of display name onto email address
@@ -115,7 +116,10 @@ public class SakaiProxy {
             Map<String, String> map = new HashMap<String, String>();
             for (String userId : site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE)) {
                 User user = userDirectoryService.getUser(userId);
-                map.put(user.getEmail(), user.getDisplayName());
+                String email = user.getEmail();
+                if (email != null && email.length() > 0) {
+                    map.put(email, user.getDisplayName());
+                }
             }
             return map;
         } catch (Exception e) {
