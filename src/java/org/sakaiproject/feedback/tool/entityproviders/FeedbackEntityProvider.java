@@ -114,6 +114,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         boolean addNoContactMessage = false;
 
+        // The senderAddress can be either picked up from the current user's
+        // account, or manually entered by the user submitting the report.
         String senderAddress = "";
 
         if (type.equals(Constants.TECHNICAL)) {
@@ -162,11 +164,13 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         final List<FileItem> attachments = getAttachments(params);
 
-        sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments);
-
-        db.logReport(userId, senderAddress, siteId, type, title, description);
-
-        return "success";
+        if (senderAddress != null && senderAddress.length() > 0) {
+            sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments);
+            db.logReport(userId, senderAddress, siteId, type, title, description);
+            return "success";
+        } else {
+            return "NO_SENDER_ADDRESS";
+        }
     }
 
 	private List<FileItem> getAttachments(final Map<String, Object> params) {
