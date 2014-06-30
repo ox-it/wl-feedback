@@ -10,7 +10,7 @@
         <script type="text/javascript" src="/feedback-tool/lib/jquery-1.9.1.min.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/jquery.form.min.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/jquery.MultiFile.pack.js"></script>
-        <script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+        <script type="text/javascript" src="${recaptchaScheme}://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
         <script type="text/javascript" src="/feedback-tool/lib/handlebars.runtime-v1.3.0.js"></script>
         <script type="text/javascript" src="/feedback-tool/templates/all.handlebars"></script>
 
