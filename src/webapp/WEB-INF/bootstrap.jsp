@@ -25,12 +25,11 @@
                 enableTechnical: ${enableTechnical},
                 helpPagesUrl: '${helpPagesUrl}',
                 supplementaryInfo: '${supplementaryInfo}',
-                contactEmail: '${contactEmail}',
                 recaptchaPublicKey: '${recaptchaPublicKey}',
                 maxAttachmentsMB: ${maxAttachmentsMB},
                 siteUpdaters: [
                     <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
-                    {email: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
+                    {id: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
                     </c:forEach>
                 ],
                 i18n: {

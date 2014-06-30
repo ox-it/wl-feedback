@@ -61,12 +61,10 @@ public class FeedbackTool extends HttpServlet {
         String siteId = sakaiProxy.getCurrentSiteId();
 
         if (userId != null) {
-            String contactEmail = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
-            if (contactEmail == null) contactEmail = "";
 
             Map<String, String> siteUpdaters = new HashMap<String, String>();
 
-            if (contactEmail.isEmpty()) {
+            if (sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL) == null) {
                 // No contact email. Load up the maintainers so the reporter can
                 // pick one
                 siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
@@ -75,7 +73,6 @@ public class FeedbackTool extends HttpServlet {
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
 
             request.setAttribute("language", rl.getLocale().getLanguage());
-            request.setAttribute("contactEmail", contactEmail);
             request.setAttribute("siteUpdaters", siteUpdaters);
             request.setAttribute("i18n", rl);
         } else {

@@ -24,6 +24,8 @@ import org.sakaiproject.feedback.db.Database;
 import org.sakaiproject.feedback.exception.AttachmentsTooBigException;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.user.api.User;
 import org.sakaiproject.util.RequestFilter;
 
 import net.tanesha.recaptcha.ReCaptcha;
@@ -162,11 +164,24 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             }
         } else {
             senderAddress = sakaiProxy.getUser(userId).getEmail();
-            toAddress = (String) params.get("contactemail");
 
-            if (toAddress == null || toAddress.isEmpty()) {
-                toAddress = (String) params.get("alternativerecipient");
-                addNoContactMessage = true;
+            String alternativeRecipientId = (String) params.get("alternativerecipient");
+
+            if (alternativeRecipientId != null && alternativeRecipientId.length() > 0) {
+                // The site has no contact email. The user has selected one from
+                // the list of site updaters.
+                User alternativeRecipientUser = sakaiProxy.getUser(alternativeRecipientId);
+
+                if (alternativeRecipientUser != null) {
+                    toAddress = alternativeRecipientUser.getEmail();
+                    addNoContactMessage = true;
+                } else {
+                    logger.error("No user for id '" + alternativeRecipientId + "'. Returning BAD REQUEST ...");
+                    throw new EntityException("No user for id '" + alternativeRecipientId + "'", "", HttpServletResponse.SC_BAD_REQUEST);
+                }
+            } else {
+                // The site has a contact email. Use it as the toAddress.
+                toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
             }
         }
 

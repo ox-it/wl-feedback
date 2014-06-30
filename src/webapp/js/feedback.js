@@ -66,7 +66,6 @@
         } else if (CONTENT === state) {
 
             feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    contactEmail: feedback.contactEmail,
                                                     siteUpdaters: feedback.siteUpdaters }, 'feedback-content');
 
             $(document).ready(function () {

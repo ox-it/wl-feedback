@@ -109,12 +109,12 @@ public class SakaiProxy {
     }
 
     /**
-     *  Returns a map of display name onto email for each user, in the specified
-     *  site, with site.upd. If a user doesn't have an email specced, they
-     *  aren't returned.
+     *  Returns a map of display name onto user id for each user, in the
+     *  specified site, with site.upd. If a user doesn't have an email specced,
+     *  they aren't returned.
      *
      *  @param siteId The site to retrieve updaters for
-     *  @return A map of display name onto email address
+     *  @return A map of display name onto user id
      */
     public Map<String, String> getSiteUpdaters(String siteId) {
 
@@ -125,7 +125,7 @@ public class SakaiProxy {
                 User user = userDirectoryService.getUser(userId);
                 String email = user.getEmail();
                 if (email != null && email.length() > 0) {
-                    map.put(email, user.getDisplayName());
+                    map.put(user.getId(), user.getDisplayName());
                 }
             }
             return map;
