@@ -69,12 +69,10 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 	}
 
 	public String getEntityPrefix() {
-
 		return ENTITY_PREFIX;
 	}
 
 	public String[] getHandledOutputFormats() {
-
 		return new String[] { Formats.JSON, Formats.HTML };
 	}
 
@@ -84,13 +82,11 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
 	@EntityCustomAction(action = "reportcontent", viewKey = EntityView.VIEW_EDIT)
 	public String handleContentReport(EntityView view, Map<String, Object> params) {
-		
         return handleReport(view, params, Constants.CONTENT);
 	}
 
 	@EntityCustomAction(action = "reporttechnical", viewKey = EntityView.VIEW_EDIT)
 	public String handleTechnicalReport(EntityView view, Map<String, Object> params) {
-
         return handleReport(view, params, Constants.TECHNICAL);
 	}
 
@@ -98,25 +94,26 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
 		final String userId = developerHelperService.getCurrentUserId();
 
+        // Users have to be logged in submit content reports
         if (userId == null && Constants.CONTENT.equals(type)) {
-			logger.error("Not logged in for content report. Returning BAD REQUEST ...");
-			throw new EntityException("You must be logged in to post a content report", "", HttpServletResponse.SC_BAD_REQUEST);
+			logger.error("Not logged in for content report. Returning FORBIDDEN ...");
+			throw new EntityException("You must be logged in to post a content report", "", HttpServletResponse.SC_FORBIDDEN);
+        }
+
+        if (view.getPathSegments().length != 3) {
+			throw new EntityException("Invalid path", "", HttpServletResponse.SC_BAD_REQUEST);
         }
 
         final String siteId = view.getPathSegment(1);
-
-		if (siteId == null) {
-			throw new EntityException("You must supply a site id to post a technical report", "", HttpServletResponse.SC_BAD_REQUEST);
-		}
 
         if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
 
         final String title = (String) params.get("title");
         final String description = (String) params.get("description");
 
-        if (title == null || title.length() == 0) {
+        if (title == null || title.length() < 8 || title.length() > 40) {
 			logger.error("No title. Returning BAD REQUEST ...");
-			throw new EntityException("You need to supply a title", "", HttpServletResponse.SC_BAD_REQUEST);
+			throw new EntityException("You need to supply a title between 8 and 40 characters in length", "", HttpServletResponse.SC_BAD_REQUEST);
         }
 
         if (description == null || description.length() == 0) {

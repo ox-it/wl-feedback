@@ -162,21 +162,26 @@
                     }, 2000);
                     Recaptcha.reload();
                 } else {
-                feedback.switchState(HOME);
+                    feedback.switchState(HOME);
                 }
             },
             error: function (xmlHttpRequest, textStatus, errorThrown) {
             },
             beforeSubmit: function (formArray, $form, options) {
                 for (var i=0,j=formArray.length;i<j;i++) {
-                    if (formArray[i].name === 'title'
-                            || formArray[i].name === 'description') {
-                        if (formArray[i].value.length == 0) {
+                    var el = formArray[i];
+                    if (el.name === 'title') {
+                        if (el.value.length < 8 || el.value.length > 40) {
                             alert(feedback.i18n.mandatory_title_warning);
                             return false;
                         }
-                    } else if (!loggedIn && formArray[i].name === 'senderaddress') {
-                        if (formArray[i].value.length == 0) {
+                    } else if (el.name === 'description') {
+                        if (el.value.length < 32) {
+                            alert(feedback.i18n.mandatory_description_warning);
+                            return false;
+                        }
+                    } else if (!loggedIn && el.name === 'senderaddress') {
+                        if (el.value.length == 0) {
                             alert(feedback.i18n.mandatory_email_warning);
                             return false;
                         }
