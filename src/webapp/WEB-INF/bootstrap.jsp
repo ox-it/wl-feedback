@@ -49,7 +49,14 @@
         <!-- wrap tool in portletBody div for PDA portal compatibility -->
         <div class="portletBody">
             <ul id="feedback-toolbar" class="navIntraTool actionToolBar" role="menu"></ul>
-            <div id="feedback-content" class="portletBody"></div>
+            <div class="portletBody">
+                <div id="feedback-error-message-wrapper">
+                    <div>
+                        <img src="/library/image/silk/exclamation.png" /><span></span><a id="feedback-error-close" href="javascript:;"><img src="/library/image/silk/cross.png" /></a>
+                    </div>
+                </div>
+                <div id="feedback-content"></div>
+            </div>
         </div>
         <script type="text/javascript" src="/feedback-tool/js/feedback.js"></script>
 

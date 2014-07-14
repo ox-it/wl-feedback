@@ -7,6 +7,17 @@
     var CONTENT = 'content';
     var TECHNICAL = 'technical';
 
+    /* RESPONSE CODES */
+    var SUCCESS = 'SUCCESS';
+    var FORBIDDEN = 'FORBIDDEN';
+    var BAD_REQUEST = 'BAD_REQUEST';
+    var ATTACHMENTS_TOO_BIG = 'ATTACHMENTS_TOO_BIG';
+    var BAD_TITLE = 'BAD_TITLE';
+    var BAD_DESCRIPTION = 'BAD_DESCRIPTION';
+    var RECAPTCHA_FAILURE = 'RECAPTCHA_FAILURE';
+    var BAD_RECIPIENT = 'BAD_RECIPIENT';
+    var NO_SENDER_ADDRESS = 'NO_SENDER_ADDRESS';
+
     var loggedIn = (feedback.userId != '') ? true : false;
 
     feedback.switchState = function (state) {
@@ -15,8 +26,9 @@
 
         $('#feedback-' + state + '-item > span').addClass('current');
 
-        if (HOME === state) {
+        $('#feedback-error-message-wrapper').hide();
 
+        if (HOME === state) {
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
@@ -154,34 +166,29 @@
             timeout: 30000,
             success: function (responseText, statusText, xhr) {
 
-                if (responseText === 'RECAPTCHA FAILURE') {
-                    $('#feedback-recaptcha-error').show();
-                    setTimeout(function () {
-                        $('#feedback-recaptcha-error').fadeOut();
-                    }, 2000);
-                    Recaptcha.reload();
-                } else {
+                if (responseText === SUCCESS) {
                     feedback.switchState(HOME);
+                } else {
+                    feedback.displayError(responseText);
                 }
             },
-            error: function (xmlHttpRequest, textStatus, errorThrown) {
-            },
             beforeSubmit: function (formArray, $form, options) {
+
                 for (var i=0,j=formArray.length;i<j;i++) {
                     var el = formArray[i];
                     if (el.name === 'title') {
                         if (el.value.length < 8 || el.value.length > 40) {
-                            alert(feedback.i18n.mandatory_title_warning);
+                            feedback.displayError(BAD_TITLE);
                             return false;
                         }
                     } else if (el.name === 'description') {
                         if (el.value.length < 32) {
-                            alert(feedback.i18n.mandatory_description_warning);
+                            feedback.displayError(BAD_DESCRIPTION);
                             return false;
                         }
                     } else if (!loggedIn && el.name === 'senderaddress') {
                         if (el.value.length == 0) {
-                            alert(feedback.i18n.mandatory_email_warning);
+                            feedback.displayError(NO_SENDER_ADDRESS);
                             return false;
                         }
                     }
@@ -189,6 +196,41 @@
                 return true;
             }
         };
+    };
+
+    feedback.displayError = function (errorCode) {
+
+        if (errorCode === FORBIDDEN) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_forbidden);
+        } else if (errorCode === BAD_REQUEST) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_request);
+        } else if (errorCode === ATTACHMENTS_TOO_BIG) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_attachments_too_big);
+        } else if (errorCode === BAD_TITLE) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_title);
+        } else if (errorCode === BAD_DESCRIPTION) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_description);
+        } else if (errorCode === RECAPTCHA_FAILURE) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_recaptcha_failure);
+        } else if (errorCode === BAD_RECIPIENT) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_recipient);
+        } else if (errorCode === NO_SENDER_ADDRESS) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_no_sender_address);
+        } else {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error);
+        }
+
+        $('#feedback-error-message-wrapper a').click(function (e) {
+            $('#feedback-error-message-wrapper').hide();
+        });
+
+        $('#feedback-error-message-wrapper').show();
+        feedback.fitFrame();
+
+        if (feedback.recaptchaPublicKey.length > 0) {
+            // Recaptcha is enabled, so we need to reset it.
+            Recaptcha.reload();
+        }
     };
 
     var loggedIn = (feedback.userId != '') ? true : false;

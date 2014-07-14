@@ -41,6 +41,30 @@
     margin-bottom: 10px;
 }
 
+#feedback-error-message-wrapper {
+    display: none;
+    text-align: center;
+    margin-top: 10px;
+}
+
+#feedback-error-message-wrapper > div {
+    display: inline-block;
+    padding: 5px;
+    border: 1px red solid;
+    border-radius: 1em 1em 1em 1em;
+    color: red;
+}
+
+#feedback-error-message-wrapper span {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+#feedback-error-message-wrapper img {
+    margin: 0px;
+    padding: 0px;
+}
+
 .feedback-explanation {
     display: none;
     width: 50%;
@@ -63,15 +87,6 @@
     margin-top: 5px;
 }
 
-#feedback-recaptcha-error {
-    display: none;
-    margin-left: 10px;
-    padding: 5px;
-    border: 1px red solid;
-    border-radius: 1em 1em 1em 1em;
-    background-color: red;
-    color: white;
-}
 #feedback-recaptcha-wrapper {
     display: none;
 }

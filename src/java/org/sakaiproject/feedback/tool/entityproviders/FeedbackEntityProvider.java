@@ -36,10 +36,18 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 	
 	public final static String ENTITY_PREFIX = "feedback";
 
+    // Error codes start
     private final static String ATTACHMENTS_TOO_BIG = "ATTACHMENTS_TOO_BIG";
-    private final static String SUCCESS = "SUCCESS";
+    private final static String BAD_DESCRIPTION = "BAD_DESCRIPTION";
+    private final static String BAD_RECIPIENT = "BAD_RECIPIENT";
+    private final static String BAD_REQUEST = "BAD_REQUEST";
+    private final static String BAD_TITLE = "BAD_TITLE";
     private final static String ERROR = "ERROR";
+    private final static String FORBIDDEN = "FORBIDDEN";
     private final static String NO_SENDER_ADDRESS = "NO_SENDER_ADDRESS";
+    private final static String RECAPTCHA_FAILURE = "RECAPTCHA_FAILURE";
+    private final static String SUCCESS = "SUCCESS";
+    // Error codes end
 
 	private final Logger logger = Logger.getLogger(getClass());
 
@@ -98,12 +106,12 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         // Users have to be logged in submit content reports
         if (userId == null && Constants.CONTENT.equals(type)) {
-			logger.error("Not logged in for content report. Returning FORBIDDEN ...");
-			throw new EntityException("You must be logged in to post a content report", "", HttpServletResponse.SC_FORBIDDEN);
+			logger.error("Not logged in for content report. Returning " + FORBIDDEN + " ...");
+            return FORBIDDEN;
         }
 
         if (view.getPathSegments().length != 3) {
-			throw new EntityException("Invalid path", "", HttpServletResponse.SC_BAD_REQUEST);
+            return BAD_REQUEST;
         }
 
         final String siteId = view.getPathSegment(1);
@@ -114,13 +122,13 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         final String description = (String) params.get("description");
 
         if (title == null || title.length() < 8 || title.length() > 40) {
-			logger.error("No title. Returning BAD REQUEST ...");
-			throw new EntityException("You need to supply a title between 8 and 40 characters in length", "", HttpServletResponse.SC_BAD_REQUEST);
+			logger.error("Title incorrect. Returning " + BAD_TITLE + " ...");
+            return BAD_TITLE;
         }
 
-        if (description == null || description.length() == 0) {
-			logger.error("No description. Returning BAD REQUEST ...");
-			throw new EntityException("You need to supply a description", "", HttpServletResponse.SC_BAD_REQUEST);
+        if (description == null || description.length() < 32) {
+			logger.error("No description. Returning " + BAD_DESCRIPTION + " ...");
+            return BAD_DESCRIPTION;
         }
 
         if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
@@ -150,14 +158,14 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     ReCaptchaResponse response = captcha.checkAnswer(remoteAddress, challengeField, responseField);
                     if (!response.isValid()) {
                         logger.warn("Recaptcha failed with this message: " + response.getErrorMessage());
-                        return "RECAPTCHA FAILURE";
+                        return RECAPTCHA_FAILURE;
                     }
                 }
 
                 senderAddress = (String) params.get("senderaddress");
                 if (senderAddress == null || senderAddress.length() == 0) {
                     logger.error("No sender email address for non logged in user. Returning BAD REQUEST ...");
-                    throw new EntityException("No sender email address for non logged in user", "", HttpServletResponse.SC_BAD_REQUEST);
+                    return BAD_REQUEST;
                 }
             } else {
                 senderAddress = sakaiProxy.getUser(userId).getEmail();
@@ -176,8 +184,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     toAddress = alternativeRecipientUser.getEmail();
                     addNoContactMessage = true;
                 } else {
-                    logger.error("No user for id '" + alternativeRecipientId + "'. Returning BAD REQUEST ...");
-                    throw new EntityException("No user for id '" + alternativeRecipientId + "'", "", HttpServletResponse.SC_BAD_REQUEST);
+                    logger.error("No user for id '" + alternativeRecipientId + "'. Returning BAD_RECIPIENT ...");
+                    return BAD_RECIPIENT;
                 }
             } else {
                 // The site has a contact email. Use it as the toAddress.
@@ -187,7 +195,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (toAddress == null || toAddress.isEmpty()) {
             logger.error("No recipient. Returning BAD REQUEST ...");
-            throw new EntityException("You need to supply a recipient", "", HttpServletResponse.SC_BAD_REQUEST);
+            return BAD_REQUEST;
         }
 
         if (senderAddress != null && senderAddress.length() > 0) {
