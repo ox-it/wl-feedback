@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <registration>
     <tool id="sakai.feedback" 
-    	title="Feedback" 
+    	title="Contact Us"
     	description="A site content and functionality reporting tool">
     
     	<category name="course" />
