@@ -89,7 +89,6 @@ public class FeedbackTool extends HttpServlet {
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
                 request.setAttribute("recaptchaPublicKey", publicKey);
-                request.setAttribute("recaptchaScheme", request.getScheme());
             }
         }
 
