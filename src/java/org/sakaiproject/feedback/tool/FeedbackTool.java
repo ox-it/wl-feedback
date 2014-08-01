@@ -34,27 +34,27 @@ import org.springframework.web.context.support.WebApplicationContextUtils;
  * @author Adrian Fish (adrian.r.fish@gmail.com)
  */
 public class FeedbackTool extends HttpServlet {
-	
-	private static final long serialVersionUID = 1L;
+    
+    private static final long serialVersionUID = 1L;
 
-	private static final Log logger = LogFactory.getLog(FeedbackTool.class);
+    private static final Log logger = LogFactory.getLog(FeedbackTool.class);
 
     private SakaiProxy sakaiProxy = null;
 
-	public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
 
-		super.init(config);
+        super.init(config);
 
-		try {
+        try {
             ApplicationContext context
                 = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
             sakaiProxy = (SakaiProxy) context.getBean("org.sakaiproject.feedback.util.SakaiProxy");
-		} catch (Throwable t) {
-			throw new ServletException("Failed to initialise FeedbackTool servlet.", t);
-		}
-	}
+        } catch (Throwable t) {
+            throw new ServletException("Failed to initialise FeedbackTool servlet.", t);
+        }
+    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         String userId = sakaiProxy.getCurrentUserId();
 
@@ -88,8 +88,7 @@ public class FeedbackTool extends HttpServlet {
 
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
-		        request.setAttribute("recaptchaPublicKey", publicKey);
-		        request.setAttribute("recaptchaScheme", request.getScheme());
+                request.setAttribute("recaptchaPublicKey", publicKey);
             }
         }
 
@@ -97,7 +96,7 @@ public class FeedbackTool extends HttpServlet {
             (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
                 ? false : true);
 
-		request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
+        request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
         request.setAttribute("userId", (userId == null) ? "" : userId);
         request.setAttribute("siteId", siteId);
         request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
@@ -107,5 +106,5 @@ public class FeedbackTool extends HttpServlet {
 
         response.setContentType("text/html");
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
-	}
+    }
 }
