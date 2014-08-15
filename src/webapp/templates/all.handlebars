@@ -1,6 +1,7 @@
-(function() {
-  var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
-templates['content'] = template(function (Handlebars,depth0,helpers,partials,data) {
+(function () {
+// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/content.handlebars
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, helper, options, functionType="function", escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, self=this;
@@ -35,11 +36,11 @@ function program1(depth0,data) {
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\n        </select>\n    </div>\n    <div id=\"feedback-mandatory-instruction\" class=\"instruction\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "mandatory_instruction", options) : helperMissing.call(depth0, "translate", "mandatory_instruction", options)))
-    + "</div>\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
+    + "</div>\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr>\n            <td id=\"feedback-title-label\"><label for=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
-    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" maxlength=\"40\"/></td></tr>\n        <tr><td id=\"feedback-description-label\">"
+    + "</label></td>\n            <td id=\"feedback-title-field\"><input id=\"feedback-title\" type=\"text\" name=\"title\" maxlength=\"40\" size=\"40\"/></td>\n        </tr>\n        <tr>\n            <td id=\"feedback-description-label\"><label for=\"feedback-description\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
-    + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n    </table>\n    <div id=\"feedback-attachments-label\">\n        <span>"
+    + "</label></td>\n            <td id=\"feedback-description-field\"><textarea id=\"feedback-description\" name=\"description\" cols=\"5\" rows=\"80\"></textarea></td>\n        </tr>\n    </table>\n    <div id=\"feedback-attachments-label\">\n        <span>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
     + "</span>\n        <span id=\"feedback-max-attachments-label\">\n            <span id=\"feedback-max-attachments-mb\"></span>\n            <span id=\"feedback-attachments-max-suffix\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_max_suffix", options) : helperMissing.call(depth0, "translate", "attachments_max_suffix", options)))
@@ -48,7 +49,15 @@ function program1(depth0,data) {
     + "\" />\n</form>\n";
   return buffer;
   });
-templates['home'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['content'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['content'] = template;
+
+
+// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/home.handlebars
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
@@ -122,7 +131,15 @@ function program1(depth0,data) {
   buffer += "</div>\n</div>\n";
   return buffer;
   });
-templates['technical'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['home'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['home'] = template;
+
+
+// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/technical.handlebars
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
@@ -138,11 +155,11 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   buffer += escapeExpression(stack1)
     + "/reporttechnical\" method=\"POST\">\n    <div id=\"feedback-mandatory-instruction\" class=\"instruction\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "mandatory_instruction", options) : helperMissing.call(depth0, "translate", "mandatory_instruction", options)))
-    + "</div>\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr><td id=\"feedback-title-label\">"
+    + "</div>\n    <table id=\"feedback-field-table\" cols=\"2\">\n        <tr>\n            <td id=\"feedback-title-label\"><label for=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title_label", options) : helperMissing.call(depth0, "translate", "title_label", options)))
-    + "</td><td id=\"feedback-title-field\"><input type=\"text\" name=\"title\" maxlength=\"40\"/></td></tr>\n        <tr><td id=\"feedback-description-label\">"
+    + "</label></td>\n            <td id=\"feedback-title-field\"><input id=\"feedback-title\" type=\"text\" name=\"title\" maxlength=\"40\" size=\"40\"/></td>\n        </tr>\n        <tr>\n            <td id=\"feedback-description-label\"><label for=\"feedback-description\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "description_label", options) : helperMissing.call(depth0, "translate", "description_label", options)))
-    + "</td><td id=\"feedback-description-field\"><textarea name=\"description\"></textarea></td></tr>\n        <tr id=\"feedback-sender-address\"><td>"
+    + "</label></td>\n            <td id=\"feedback-description-field\"><textarea id=\"feedback-description\" name=\"description\" cols=\"80\" rows=\"5\"></textarea></td>\n        </tr>\n        <tr id=\"feedback-sender-address\"><td>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "sender_address_label", options) : helperMissing.call(depth0, "translate", "sender_address_label", options)))
     + "</td><td><input type=\"text\" name=\"senderaddress\" /></td</tr>\n    </table>\n    <div id=\"feedback-recaptcha-wrapper\">\n        <div>Enter the text that you see in the box below:</div>\n        <div id=\"feedback-recaptcha-block\"></div>\n    </div>\n    <div id=\"feedback-attachments-label\">\n        <span>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_label", options) : helperMissing.call(depth0, "translate", "attachments_label", options)))
@@ -153,7 +170,15 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + "\" />\n</form>\n";
   return buffer;
   });
-templates['toolbar'] = template(function (Handlebars,depth0,helpers,partials,data) {
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['technical'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['technical'] = template;
+
+
+// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/toolbar.handlebars
+
+  var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, self=this, functionType="function";
@@ -199,4 +224,11 @@ function program1(depth0,data) {
     + "</a></span></li>\n";
   return buffer;
   });
+  var templates = Handlebars.templates = Handlebars.templates || {};
+  templates['toolbar'] = template;
+  var partials = Handlebars.partials = Handlebars.partials || {};
+  partials['toolbar'] = template;
+
+
+
 })();
