@@ -41,3 +41,12 @@ provider does the emailing. Some protection against DDoS attacks is provided by
 an optional Recaptcha integration. There's a template for every page although
 they are all compiled from WEB-INF/templates into templates/all.handlebars. One
 download with all the templates compiled to JS.
+
+To compile the templates use handlebars.js
+
+    npm install -g handlebars
+
+The precompile step is available through the plugin
+
+    mvn3 install -P templates
+
