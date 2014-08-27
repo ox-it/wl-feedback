@@ -23,6 +23,7 @@
                 language: '${language}',
                 featureSuggestionUrl: '${featureSuggestionUrl}',
                 enableTechnical: ${enableTechnical},
+                helpdeskUrl: '${helpdeskUrl}',
                 helpPagesUrl: '${helpPagesUrl}',
                 supplementaryInfo: '${supplementaryInfo}',
                 recaptchaPublicKey: '${recaptchaPublicKey}',
