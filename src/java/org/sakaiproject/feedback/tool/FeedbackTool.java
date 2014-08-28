@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.feedback.tool.entityproviders.FeedbackEntityProvider;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
+import org.sakaiproject.portal.charon.SkinnableCharonPortal;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.tool.api.Session;
 import org.sakaiproject.util.RequestFilter;
@@ -67,7 +68,8 @@ public class FeedbackTool extends HttpServlet {
             if (sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL) == null) {
                 // No contact email. Load up the maintainers so the reporter can
                 // pick one
-                siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+                Site originSite = (Site) request.getSession().getAttribute(SkinnableCharonPortal.CONTACT_US_ORIGIN_SITE);
+                siteUpdaters = sakaiProxy.getSiteUpdaters(originSite.getId());
             }
 
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
