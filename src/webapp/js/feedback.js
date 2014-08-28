@@ -178,12 +178,12 @@
                 for (var i=0,j=formArray.length;i<j;i++) {
                     var el = formArray[i];
                     if (el.name === 'title') {
-                        if (el.value.length < 8 || el.value.length > 40) {
+                        if (el.value.length < 2 || el.value.length > 40) {
                             feedback.displayError(BAD_TITLE);
                             return false;
                         }
                     } else if (el.name === 'description') {
-                        if (el.value.length < 32) {
+                        if (el.value.length < 2) {
                             feedback.displayError(BAD_DESCRIPTION);
                             return false;
                         }
