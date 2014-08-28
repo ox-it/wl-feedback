@@ -32,7 +32,7 @@ public class FeedbackTool extends HttpServlet {
 
     private SakaiProxy sakaiProxy = null;
 
-	public static final String CONTACT_US_ORIGIN_SITE = ServerConfigurationService.getString("contact.us.origin.site", "contact.us.origin.site");
+    public static final String CONTACT_US_ORIGIN_SITE = ServerConfigurationService.getString("contact.us.origin.site", "contact.us.origin.site");
 
     public void init(ServletConfig config) throws ServletException {
 
