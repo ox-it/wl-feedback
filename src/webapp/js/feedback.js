@@ -32,6 +32,7 @@
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
+                                                    helpdeskUrl: feedback.helpdeskUrl,
                                                     loggedIn: loggedIn }, 'feedback-content');
 
             $(document).ready(function () {
