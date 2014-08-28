@@ -94,10 +94,6 @@
 			<artifactId>entitybroker-utils</artifactId>
    		</dependency>
 		<dependency>
-			<groupId>org.sakaiproject.portal</groupId>
-			<artifactId>sakai-portal-impl</artifactId>
-			</dependency>
-		<dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
         </dependency>

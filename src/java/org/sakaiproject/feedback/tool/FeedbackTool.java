@@ -1,35 +1,25 @@
 package org.sakaiproject.feedback.tool;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.feedback.util.Constants;
+import org.sakaiproject.feedback.util.SakaiProxy;
+import org.sakaiproject.site.api.Site;
+import org.sakaiproject.util.ResourceLoader;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import org.sakaiproject.feedback.tool.entityproviders.FeedbackEntityProvider;
-import org.sakaiproject.feedback.util.Constants;
-import org.sakaiproject.feedback.util.SakaiProxy;
-import org.sakaiproject.portal.charon.SkinnableCharonPortal;
-import org.sakaiproject.site.api.Site;
-import org.sakaiproject.tool.api.Session;
-import org.sakaiproject.util.RequestFilter;
-import org.sakaiproject.util.ResourceLoader;
-
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * @author Adrian Fish (adrian.r.fish@gmail.com)
@@ -41,6 +31,8 @@ public class FeedbackTool extends HttpServlet {
     private static final Log logger = LogFactory.getLog(FeedbackTool.class);
 
     private SakaiProxy sakaiProxy = null;
+
+	public static final String CONTACT_US_ORIGIN_SITE = ServerConfigurationService.getString("contact.us.origin.site", "contact.us.origin.site");
 
     public void init(ServletConfig config) throws ServletException {
 
@@ -68,7 +60,7 @@ public class FeedbackTool extends HttpServlet {
             if (sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL) == null) {
                 // No contact email. Load up the maintainers so the reporter can
                 // pick one
-                Site originSite = (Site) request.getSession().getAttribute(SkinnableCharonPortal.CONTACT_US_ORIGIN_SITE);
+                Site originSite = (Site) request.getSession().getAttribute(CONTACT_US_ORIGIN_SITE);
                 siteUpdaters = sakaiProxy.getSiteUpdaters(originSite.getId());
             }
 
