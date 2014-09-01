@@ -61,7 +61,9 @@ public class FeedbackTool extends HttpServlet {
                 // No contact email. Load up the maintainers so the reporter can
                 // pick one
                 Site originSite = (Site) request.getSession().getAttribute(CONTACT_US_ORIGIN_SITE);
-                siteUpdaters = sakaiProxy.getSiteUpdaters(originSite.getId());
+                if (originSite!=null){
+                    siteUpdaters = sakaiProxy.getSiteUpdaters(originSite.getId());
+                }
             }
 
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
