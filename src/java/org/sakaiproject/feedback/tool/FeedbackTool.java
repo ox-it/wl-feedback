@@ -32,8 +32,6 @@ public class FeedbackTool extends HttpServlet {
 
     private SakaiProxy sakaiProxy = null;
 
-    public static final String CONTACT_US_ORIGIN_SITE = "contact.us.origin.site";
-
     public void init(ServletConfig config) throws ServletException {
 
         super.init(config);
@@ -53,6 +51,12 @@ public class FeedbackTool extends HttpServlet {
 
         String siteId = sakaiProxy.getCurrentSiteId();
 
+
+        String contactUsSiteId = (String) request.getSession().getAttribute("contact.us.origin.site");
+        if (contactUsSiteId!=null) {
+            siteId = contactUsSiteId;
+        }
+
         if (userId != null) {
 
             Map<String, String> siteUpdaters = new HashMap<String, String>();
@@ -60,10 +64,7 @@ public class FeedbackTool extends HttpServlet {
             if (sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL) == null) {
                 // No contact email. Load up the maintainers so the reporter can
                 // pick one
-                Site originSite = (Site) request.getSession().getAttribute(CONTACT_US_ORIGIN_SITE);
-                if (originSite!=null){
-                    siteUpdaters = sakaiProxy.getSiteUpdaters(originSite.getId());
-                }
+                siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
             }
 
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
