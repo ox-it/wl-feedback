@@ -49,7 +49,7 @@
                 if (feedback.enableTechnical) {
                     $('#feedback-technical-item').show().css('display', 'inline');
                     $('#feedback-report-technical-wrapper').show();
-                    $('#feedback-report-technical-link').click(function (e) {
+                    $('#feedback-report-technical-link, #feedback-report-helpdesk-link').click(function (e) {
                         feedback.switchState(TECHNICAL);
                     });
                 } else {
