@@ -19,6 +19,7 @@ public class Database {
     public void init() {
         
         sqlService.ddl(this.getClass().getClassLoader(), "createtables");
+        sqlService.ddl(this.getClass().getClassLoader(), "createcontactustool");
     }
 
     public void logReport(String userId, String email, String siteId, String type, String title, String content) {
