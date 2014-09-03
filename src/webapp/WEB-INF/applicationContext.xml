@@ -29,7 +29,7 @@
         <property name="userDirectoryService"><ref bean="org.sakaiproject.user.api.UserDirectoryService" /></property>
     </bean>
 
-    <bean id="org.sakaiproject.feedback.db.Database" class="org.sakaiproject.feedback.db.Database" init-method="init">
+    <bean id="org.sakaiproject.feedback.db.Database" class="org.sakaiproject.feedback.db.Database" init-method="init" depends-on="org.sakaiproject.site.api.SiteService">
         <property name="sqlService"><ref bean="org.sakaiproject.db.api.SqlService" /></property>
     </bean>
 
