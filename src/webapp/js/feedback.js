@@ -149,7 +149,7 @@
     feedback.setUpCancelButton = function () {
         $('#feedback-cancel-button').click(function (e) {
             location.href="";
-            return false;
+            e.preventDefault();
         });
     }
 
