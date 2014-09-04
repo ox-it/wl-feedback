@@ -1,5 +1,5 @@
 (function () {
-// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/content.handlebars
+// Source: /home/nickwilson/prog/current1/oxford-sakai.git/feedback/src/webapp/WEB-INF/templates/content.handlebars
 
   var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
@@ -46,6 +46,8 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_max_suffix", options) : helperMissing.call(depth0, "translate", "attachments_max_suffix", options)))
     + "</span>\n        </span>\n    </div>\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "submit_label", options) : helperMissing.call(depth0, "translate", "submit_label", options)))
+    + "\" />\n    <input id=\"feedback-cancel-button\" type=\"submit\" value=\""
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "cancel_label", options) : helperMissing.call(depth0, "translate", "cancel_label", options)))
     + "\" />\n</form>\n";
   return buffer;
   });
@@ -55,25 +57,13 @@ function program1(depth0,data) {
   partials['content'] = template;
 
 
-// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/home.handlebars
+// Source: /home/nickwilson/prog/current1/oxford-sakai.git/feedback/src/webapp/WEB-INF/templates/home.handlebars
 
   var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
 helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
-  var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function", self=this;
+  var buffer = "", stack1, helper, options, helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, functionType="function";
 
-function program1(depth0,data) {
-  
-  var buffer = "", helper, options;
-  buffer += "\n    <div class=\"feedback-box\" id=\"feedback-content-problem\">\n        <h3>"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_title", options) : helperMissing.call(depth0, "translate", "content_title", options)))
-    + "</h3>\n        <ul>"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_explanation", options) : helperMissing.call(depth0, "translate", "content_explanation", options)))
-    + "</ul>\n        <p><a id=\"feedback-report-content-link\" href=\"javascript:;\">"
-    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_link", options) : helperMissing.call(depth0, "translate", "content_link", options)))
-    + "</a></p>\n        <div class=\"clear\"></div>\n    </div>\n    ";
-  return buffer;
-  }
 
   buffer += "<h2 id=\"feedback-title\">"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "title", options) : helperMissing.call(depth0, "translate", "title", options)))
@@ -93,10 +83,13 @@ function program1(depth0,data) {
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "help_3", options) : helperMissing.call(depth0, "translate", "help_3", options)))
     + "</span>\n</div>\n<div id=\"feedback-technical-setup-instruction\" class=\"information\">\n    "
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "technical_setup_instruction", options) : helperMissing.call(depth0, "translate", "technical_setup_instruction", options)))
-    + "\n</div>\n<div id=\"feedback-links\">\n    ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.loggedIn), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\n\n    <div class=\"feedback-box\" id=\"feedback-ask-help\">\n        <h3>"
+    + "\n</div>\n<div id=\"feedback-links\">\n    <div class=\"feedback-box\" id=\"feedback-content-problem\">\n        <h3>"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_title", options) : helperMissing.call(depth0, "translate", "content_title", options)))
+    + "</h3>\n        <ul>"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_explanation", options) : helperMissing.call(depth0, "translate", "content_explanation", options)))
+    + "</ul>\n        <p><a id=\"feedback-report-content-link\" href=\"javascript:;\">"
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "content_link", options) : helperMissing.call(depth0, "translate", "content_link", options)))
+    + "</a></p>\n        <div class=\"clear\"></div>\n    </div>\n\n    <div class=\"feedback-box\" id=\"feedback-ask-help\">\n        <h3>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "ask_title", options) : helperMissing.call(depth0, "translate", "ask_title", options)))
     + "</h3>\n        <ul>"
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "ask_explanation", options) : helperMissing.call(depth0, "translate", "ask_explanation", options)))
@@ -135,7 +128,7 @@ function program1(depth0,data) {
   partials['home'] = template;
 
 
-// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/technical.handlebars
+// Source: /home/nickwilson/prog/current1/oxford-sakai.git/feedback/src/webapp/WEB-INF/templates/technical.handlebars
 
   var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];
@@ -165,6 +158,8 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "attachments_max_suffix", options) : helperMissing.call(depth0, "translate", "attachments_max_suffix", options)))
     + "</span>\n        </span>\n    </div>\n    <input id=\"feedback-attachment\" name=\"attachment\" type=\"file\" class=\"multi\"/><br clear=\"all\"/>\n    <input id=\"feedback-submit-button\" type=\"submit\" value=\""
     + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "submit_label", options) : helperMissing.call(depth0, "translate", "submit_label", options)))
+    + "\" />\n    <input id=\"feedback-cancel-button\" type=\"submit\" value=\""
+    + escapeExpression((helper = helpers.translate || (depth0 && depth0.translate),options={hash:{},data:data},helper ? helper.call(depth0, "cancel_label", options) : helperMissing.call(depth0, "translate", "cancel_label", options)))
     + "\" />\n</form>\n";
   return buffer;
   });
@@ -174,7 +169,7 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
   partials['technical'] = template;
 
 
-// Source: /Volumes/SSD/prog/10/src/feedback/src/webapp/WEB-INF/templates/toolbar.handlebars
+// Source: /home/nickwilson/prog/current1/oxford-sakai.git/feedback/src/webapp/WEB-INF/templates/toolbar.handlebars
 
   var template = Handlebars.template(function (Handlebars,depth0,helpers,partials,data) {
   this.compilerInfo = [4,'>= 1.0.0'];

@@ -98,6 +98,8 @@
                     max: 5,
                     namePattern: '$name_$i'
                 });
+
+                feedback.setUpCancelButton();
             });
         } else if (TECHNICAL === state) {
 
@@ -137,11 +139,19 @@
                     namePattern: '$name_$i'
                 } );
 
+                feedback.setUpCancelButton();
             });
         }
 
         return false;
     };
+
+    feedback.setUpCancelButton = function () {
+        $('#feedback-cancel-button').click(function (e) {
+            location.href="";
+            e.preventDefault();
+        });
+    }
 
     feedback.fitFrame = function () {
 
