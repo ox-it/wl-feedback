@@ -121,12 +121,12 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         final String title = (String) params.get("title");
         final String description = (String) params.get("description");
 
-        if (title == null || title.length() < 8 || title.length() > 40) {
+        if (title == null || title.isEmpty()) {
 			logger.error("Title incorrect. Returning " + BAD_TITLE + " ...");
             return BAD_TITLE;
         }
 
-        if (description == null || description.length() < 32) {
+        if (description == null || description.isEmpty()) {
 			logger.error("No description. Returning " + BAD_DESCRIPTION + " ...");
             return BAD_DESCRIPTION;
         }
