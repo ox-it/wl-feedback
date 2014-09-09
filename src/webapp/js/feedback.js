@@ -79,7 +79,7 @@
         } else if (CONTENT === state) {
 
             feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    siteUpdaters: feedback.siteUpdaters }, 'feedback-content');
+                                                    siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn  }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -90,7 +90,7 @@
                     $('#feedback-siteupdaters-wrapper').show();
                 }
 
-                $('#feedback-form').ajaxForm(feedback.getFormOptions());
+                $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
 
                 $('#feedback-max-attachments-mb').html(feedback.maxAttachmentsMB);
 
@@ -100,10 +100,16 @@
                 });
 
                 feedback.setUpCancelButton();
+
+                if (!loggedIn) {
+                    // Not logged in, show the sender email box.
+                    $('#feedback-sender-address').show();
+                }
+
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn}, 'feedback-content');
 
             $(document).ready(function () {
 

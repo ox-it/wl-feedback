@@ -213,10 +213,6 @@ public class SakaiProxy {
 
         String noContactEmailMessage = "";
         
-        if (addNoContactEmailMessage) {
-            noContactEmailMessage = rb.getString("no_contact_email_message");
-        }
-
         final String instance = serverConfigurationService.getServerIdInstance();
 
         final String bodyTemplate = rb.getString("email_body_template");
@@ -259,10 +255,8 @@ public class SakaiProxy {
         	}
         }
 
-		if (feedbackType.equals(Constants.CONTENT)) {
-            // Copy the sender in
-			msg.addRecipient(RecipientType.CC, fromName, fromAddress);
-		}
+        // Copy the sender in
+		msg.addRecipient(RecipientType.CC, fromName, fromAddress);
 
 		msg.addRecipient(RecipientType.TO, toAddress);
 
