@@ -77,7 +77,7 @@ public class FeedbackTool extends HttpServlet {
             }
 
             Map<String, String> siteUpdaters = new HashMap<String, String>();
-            boolean hasViewPermission = securityService.unlock((userId!=null ? userId : ""), "roster.viewallmembers", site.getReference());
+            boolean hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
             if(hasViewPermission) {
                 siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
             }
