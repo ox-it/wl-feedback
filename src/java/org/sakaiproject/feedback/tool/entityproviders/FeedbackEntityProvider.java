@@ -133,7 +133,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
 
         if (userId != null) {
-			senderAddress = sakaiProxy.getUser(userId).getEmail();
+            senderAddress = sakaiProxy.getUser(userId).getEmail();
 
             String alternativeRecipientId = (String) params.get("alternativerecipient");
 
