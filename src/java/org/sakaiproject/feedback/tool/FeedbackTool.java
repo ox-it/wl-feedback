@@ -59,13 +59,7 @@ public class FeedbackTool extends HttpServlet {
 
         if (userId != null) {
 
-            Map<String, String> siteUpdaters = new HashMap<String, String>();
-
-            if (sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL) == null) {
-                // No contact email. Load up the maintainers so the reporter can
-                // pick one
-                siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
-            }
+            Map<String, String> siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
 
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
 
