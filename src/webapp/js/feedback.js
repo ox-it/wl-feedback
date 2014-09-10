@@ -83,10 +83,10 @@
                                             } });
                 });
 
-                feedback.fitFrame();
-
                 feedback.displayInfo(siteUpdater);
                 feedback.displayInfo(technicalToAddress);
+
+                feedback.fitFrame();
             });
         } else if (CONTENT === state) {
 
