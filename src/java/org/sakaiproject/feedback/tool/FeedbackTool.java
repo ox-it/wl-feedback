@@ -38,7 +38,7 @@ public class FeedbackTool extends HttpServlet {
     private SiteService siteService = null;
 
 
-	public void init(ServletConfig config) throws ServletException {
+    public void init(ServletConfig config) throws ServletException {
 
         super.init(config);
 
