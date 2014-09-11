@@ -244,24 +244,24 @@ public class SakaiProxy {
 		final EmailMessage msg = new EmailMessage();
 
 		msg.setFrom(new EmailAddress(fromAddress, fromName));
-        msg.setContentType(ContentType.TEXT_PLAIN);
+		msg.setContentType(ContentType.TEXT_PLAIN);
 
 		msg.setSubject(formattedSubject);
 		msg.setBody(formattedBody);
 
-        if (attachments != null) {
-        	for (Attachment attachment : attachments) {
-        		msg.addAttachment(attachment);
-        	}
-        }
+		if (attachments != null) {
+			for (Attachment attachment : attachments) {
+				msg.addAttachment(attachment);
+			}
+		}
 
-        // Copy the sender in
+		// Copy the sender in
 		msg.addRecipient(RecipientType.CC, fromName, fromAddress);
 
 		msg.addRecipient(RecipientType.TO, toAddress);
 
-        new Thread(new Runnable() {
-            public void run() {
+		new Thread(new Runnable() {
+			public void run() {
 		        try {
 			        emailService.send(msg, true);
                 } catch (Exception e) {
