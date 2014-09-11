@@ -88,8 +88,12 @@
                     $('#feedback-info-message-wrapper').hide();
                 });
 
-                feedback.displayInfo(siteUpdater);
-                feedback.displayInfo(technicalToAddress);
+                if (siteUpdater!=null && siteUpdater!='') {
+                    feedback.displayInfo(siteUpdater);
+                }
+                else {
+                    feedback.displayInfo(technicalToAddress);
+                }
 
                 feedback.fitFrame();
             });
