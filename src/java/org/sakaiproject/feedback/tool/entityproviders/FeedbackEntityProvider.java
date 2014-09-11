@@ -150,7 +150,6 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     return BAD_RECIPIENT;
                 }
             } else {
-                // The site has a contact email. Use it as the toAddress.
                 toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
             }
         }
