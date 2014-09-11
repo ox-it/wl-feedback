@@ -66,21 +66,20 @@ public class FeedbackTool extends HttpServlet {
             siteId = contactUsSiteId;
         }
 
+        Site site;
+        try {
+            site = siteService.getSite(siteId);
+        } catch (IdUnusedException e) {
+            throw new RuntimeException("The site cannot be found with siteId: " + siteId, e);
+        }
+
+        Map<String, String> siteUpdaters = new HashMap<String, String>();
+        boolean hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
+        if(hasViewPermission) {
+            siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+        }
+
         if (userId != null) {
-
-
-            Site site;
-            try {
-                site = siteService.getSite(siteId);
-            } catch (IdUnusedException e) {
-                throw new RuntimeException("The site cannot be found with siteId: " + siteId, e);
-            }
-
-            Map<String, String> siteUpdaters = new HashMap<String, String>();
-            boolean hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
-            if(hasViewPermission) {
-                siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
-            }
 
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
 
