@@ -150,7 +150,10 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     return BAD_RECIPIENT;
                 }
             } else {
-                toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+                toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
+                if (toAddress==null){
+                    toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+                }
             }
         }
         else {
@@ -177,11 +180,11 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                 return BAD_REQUEST;
             }
 
-
+            toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
             if (toAddress==null){
                 toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
             }
-		}
+        }
 
         if (toAddress == null || toAddress.isEmpty()) {
             logger.error("No recipient. Returning BAD REQUEST ...");
