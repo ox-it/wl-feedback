@@ -41,7 +41,7 @@
     margin-bottom: 10px;
 }
 
-#feedback-error-message-wrapper, #feedback-info-message-wrapper {
+#feedback-error-message-wrapper {
     display: none;
     text-align: center;
     margin-top: 10px;
@@ -55,20 +55,12 @@
     color: red;
 }
 
-#feedback-info-message-wrapper > div{
-    display: inline-block;
-    padding: 5px;
-    border: 1px green solid;
-    border-radius: 1em 1em 1em 1em;
-    color: green;
-}
-
-#feedback-error-message-wrapper span, #feedback-info-message-wrapper span {
+#feedback-error-message-wrapper span {
     margin-right: 10px;
     margin-left: 10px;
 }
 
-#feedback-error-message-wrapper img, #feedback-info-message-wrapper img {
+#feedback-error-message-wrapper img {
     margin: 0px;
     padding: 0px;
 }

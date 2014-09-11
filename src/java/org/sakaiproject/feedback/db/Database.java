@@ -28,7 +28,7 @@ public class Database {
 
         try {
             conn = sqlService.borrowConnection();
-            sqlService.dbWrite(conn, insertReportSql, new String[] {userId, email, siteId, type, title, content});
+            sqlService.dbInsert(conn, insertReportSql, new String[] {userId, email, siteId, type, title, content}, null);
         } catch (Exception e) {
             logger.error("Failed to insert feedback report.", e);
         } finally {

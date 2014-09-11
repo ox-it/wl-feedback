@@ -22,7 +22,6 @@
                 siteId: '${siteId}',
                 language: '${language}',
                 featureSuggestionUrl: '${featureSuggestionUrl}',
-                technicalToAddress: '${technicalToAddress}',
                 enableTechnical: ${enableTechnical},
                 helpdeskUrl: '${helpdeskUrl}',
                 helpPagesUrl: '${helpPagesUrl}',
@@ -55,11 +54,6 @@
                 <div id="feedback-error-message-wrapper">
                     <div>
                         <img src="/library/image/silk/exclamation.png" /><span></span><a id="feedback-error-close" href="javascript:;"><img src="/library/image/silk/cross.png" /></a>
-                    </div>
-                </div>
-                <div id="feedback-info-message-wrapper">
-                    <div>
-                        <img src="/library/image/silk/information.png" /><span></span><a id="feedback-info-close" href="javascript:;"><img src="/library/image/silk/cross.png" /></a>
                     </div>
                 </div>
                 <div id="feedback-content"></div>
