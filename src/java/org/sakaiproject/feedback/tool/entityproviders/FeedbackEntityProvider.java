@@ -153,9 +153,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                 // The site has a contact email. Use it as the toAddress.
                 toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
             }
-
-		}
-		else {
+        }
+        else {
             // Recaptcha
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
