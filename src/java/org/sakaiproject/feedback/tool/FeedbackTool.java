@@ -117,6 +117,16 @@ public class FeedbackTool extends HttpServlet {
         request.setAttribute("maxAttachmentsMB", sakaiProxy.getAttachmentLimit());
         request.setAttribute("technicalToAddress", sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null));
 
+        String contactName = null;
+        String siteEmail = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
+        if (siteEmail!=null && !siteEmail.isEmpty()){
+            contactName = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
+        }
+        else if (!hasViewPermission){
+            contactName = sakaiProxy.getConfigString("ui.service", "Sakai") + " Team<" + sakaiProxy.getConfigString("mail.support", "") + ">";
+        }
+        request.setAttribute("contactName", contactName);
+
         response.setContentType("text/html");
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
     }
