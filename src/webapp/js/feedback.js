@@ -126,6 +126,8 @@
                 if (!loggedIn) {
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
+
+                    feedback.setUpRecaptcha();
                 }
 
             });
@@ -141,19 +143,7 @@
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
 
-                    if (feedback.recaptchaPublicKey.length > 0) {
-                        // Recaptcha is enabled, show it.
-                        Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
-                            {
-                                theme: "red",
-                                callback: function () {
-
-                                    feedback.fitFrame();
-                                    $('#feedback-recaptcha-wrapper').show();
-                                }
-                            }
-                        );
-                    }
+                    feedback.setUpRecaptcha();
                 }
 
                 feedback.fitFrame();
@@ -174,12 +164,29 @@
         return false;
     };
 
+    feedback.setUpRecaptcha = function () {
+
+        if (feedback.recaptchaPublicKey.length > 0) {
+            // Recaptcha is enabled, show it.
+            Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
+                {
+                    theme: "red",
+                    callback: function () {
+
+                        feedback.fitFrame();
+                        $('#feedback-recaptcha-wrapper').show();
+                    }
+                }
+            );
+        }
+    };
+
     feedback.setUpCancelButton = function () {
         $('#feedback-cancel-button').click(function (e) {
             location.href="";
             e.preventDefault();
         });
-    }
+    };
 
     feedback.fitFrame = function () {
 
