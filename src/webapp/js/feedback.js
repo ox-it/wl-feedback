@@ -19,6 +19,8 @@
     var NO_SENDER_ADDRESS = 'NO_SENDER_ADDRESS';
 
     var loggedIn = (feedback.userId != '') ? true : false;
+    var siteUpdater;
+    var technicalToAddress;
 
     feedback.switchState = function (state) {
 
@@ -28,7 +30,14 @@
 
         $('#feedback-error-message-wrapper').hide();
 
+        $('#feedback-info-message-wrapper').hide();
+
         if (HOME === state) {
+
+            siteUpdater = $('#feedback-siteupdaters').find(':selected').text();
+
+            technicalToAddress = $('#feedback-technical-email').val();
+
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
@@ -74,6 +83,18 @@
                                             } });
                 });
 
+
+                $('#feedback-info-message-wrapper a').click(function (e) {
+                    $('#feedback-info-message-wrapper').hide();
+                });
+
+                if (siteUpdater!=null && siteUpdater!='') {
+                    feedback.displayInfo(siteUpdater);
+                }
+                else {
+                    feedback.displayInfo(technicalToAddress);
+                }
+
                 feedback.fitFrame();
             });
         } else if (CONTENT === state) {
@@ -109,7 +130,7 @@
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn}, 'feedback-content');
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -247,6 +268,15 @@
         if (feedback.recaptchaPublicKey.length > 0) {
             // Recaptcha is enabled, so we need to reset it.
             Recaptcha.reload();
+        }
+    };
+
+
+    feedback.displayInfo = function (siteUpdater) {
+        if (siteUpdater!=null && siteUpdater!=''){
+            $('#feedback-info-message-wrapper span').html('An email with the information you entered has been sent to ' + siteUpdater);
+            $('#feedback-info-message-wrapper').show();
+            feedback.fitFrame();
         }
     };
 
