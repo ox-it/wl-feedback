@@ -17,6 +17,7 @@
     var RECAPTCHA_FAILURE = 'RECAPTCHA_FAILURE';
     var BAD_RECIPIENT = 'BAD_RECIPIENT';
     var NO_SENDER_ADDRESS = 'NO_SENDER_ADDRESS';
+    var BAD_SENDER_ADDRESS = 'BAD_SENDER_ADDRESS';
 
     var loggedIn = (feedback.userId != '') ? true : false;
     var siteUpdater;
@@ -223,11 +224,20 @@
                             feedback.displayError(NO_SENDER_ADDRESS);
                             return false;
                         }
+                        else if (!feedback.validateEmail(el.value)) {
+                            feedback.displayError(BAD_SENDER_ADDRESS);
+                            return false;
+                        }
                     }
                 }
                 return true;
             }
         };
+    };
+
+    feedback.validateEmail = function (email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
     };
 
     feedback.displayError = function (errorCode) {
@@ -248,6 +258,8 @@
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_recipient);
         } else if (errorCode === NO_SENDER_ADDRESS) {
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error_no_sender_address);
+        } else if (errorCode === BAD_SENDER_ADDRESS) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_sender_address);
         } else {
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error);
         }
