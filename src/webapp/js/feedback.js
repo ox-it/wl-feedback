@@ -126,6 +126,20 @@
                 if (!loggedIn) {
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
+
+                    if (feedback.recaptchaPublicKey.length > 0) {
+                        // Recaptcha is enabled, show it.
+                        Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
+                            {
+                                theme: "red",
+                                callback: function () {
+
+                                    feedback.fitFrame();
+                                    $('#feedback-recaptcha-wrapper').show();
+                                }
+                            }
+                        );
+                    }
                 }
 
             });
