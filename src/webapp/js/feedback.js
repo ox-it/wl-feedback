@@ -101,7 +101,7 @@
         } else if (CONTENT === state) {
 
             feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn  }, 'feedback-content');
+                                                    siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress   }, 'feedback-content');
 
             $(document).ready(function () {
 
