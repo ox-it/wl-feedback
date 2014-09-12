@@ -101,7 +101,7 @@
         } else if (CONTENT === state) {
 
             feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn  }, 'feedback-content');
+                                                    siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress   }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -126,6 +126,20 @@
                 if (!loggedIn) {
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
+
+                    if (feedback.recaptchaPublicKey.length > 0) {
+                        // Recaptcha is enabled, show it.
+                        Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
+                            {
+                                theme: "red",
+                                callback: function () {
+
+                                    feedback.fitFrame();
+                                    $('#feedback-recaptcha-wrapper').show();
+                                }
+                            }
+                        );
+                    }
                 }
 
             });
