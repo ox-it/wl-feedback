@@ -167,6 +167,8 @@ public class SakaiProxy {
             userId = user.getId();
             userEid = user.getEid();
         }
+        final String smtpFrom = emailService.getSmtpFrom();
+        emailService.setSmtpFrom(fromAddress);
 
         if (fromAddress == null) {
             logger.error("No email for reporter: " + fromUserId + ". No email will be sent.");
@@ -266,6 +268,10 @@ public class SakaiProxy {
 			        emailService.send(msg, true);
                 } catch (Exception e) {
                     logger.error("Failed to send email.", e);
+                }
+                finally {
+                // Reset envelope return address to original value
+                emailService.setSmtpFrom(smtpFrom);
                 }
             }
         }, "Feedback Email Thread").start();
