@@ -43,7 +43,6 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
     private final static String BAD_REQUEST = "BAD_REQUEST";
     private final static String BAD_TITLE = "BAD_TITLE";
     private final static String ERROR = "ERROR";
-    private final static String FORBIDDEN = "FORBIDDEN";
     private final static String NO_SENDER_ADDRESS = "NO_SENDER_ADDRESS";
     private final static String RECAPTCHA_FAILURE = "RECAPTCHA_FAILURE";
     private final static String SUCCESS = "SUCCESS";
@@ -104,12 +103,6 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
 		final String userId = developerHelperService.getCurrentUserId();
 
-        // Users have to be logged in submit content reports
-        if (userId == null && Constants.CONTENT.equals(type)) {
-			logger.error("Not logged in for content report. Returning " + FORBIDDEN + " ...");
-            return FORBIDDEN;
-        }
-
         if (view.getPathSegments().length != 3) {
             return BAD_REQUEST;
         }
@@ -133,44 +126,15 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         if (logger.isDebugEnabled()) logger.debug("title: " + title + ". description: " + description);
 
-        String toAddress = null;
 
         boolean addNoContactMessage = false;
 
         // The senderAddress can be either picked up from the current user's
         // account, or manually entered by the user submitting the report.
-        String senderAddress = "";
+        String senderAddress = null;
+        String toAddress = null;
 
-        if (type.equals(Constants.TECHNICAL)) {
-            toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
-            if (userId == null) {
-
-                // Recaptcha
-                if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
-                    String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
-                    String privateKey = sakaiProxy.getConfigString("user.recaptcha.private-key", "");
-                    ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
-                    String challengeField = (String) params.get("recaptcha_challenge_field");
-                    String responseField = (String) params.get("recaptcha_response_field");
-                    if (challengeField == null) challengeField = "";
-                    if (responseField == null) responseField = "";
-                    String remoteAddress = requestGetter.getRequest().getRemoteAddr();
-                    ReCaptchaResponse response = captcha.checkAnswer(remoteAddress, challengeField, responseField);
-                    if (!response.isValid()) {
-                        logger.warn("Recaptcha failed with this message: " + response.getErrorMessage());
-                        return RECAPTCHA_FAILURE;
-                    }
-                }
-
-                senderAddress = (String) params.get("senderaddress");
-                if (senderAddress == null || senderAddress.length() == 0) {
-                    logger.error("No sender email address for non logged in user. Returning BAD REQUEST ...");
-                    return BAD_REQUEST;
-                }
-            } else {
-                senderAddress = sakaiProxy.getUser(userId).getEmail();
-            }
-        } else {
+        if (userId != null) {
             senderAddress = sakaiProxy.getUser(userId).getEmail();
 
             String alternativeRecipientId = (String) params.get("alternativerecipient");
@@ -188,8 +152,39 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     return BAD_RECIPIENT;
                 }
             } else {
-                // The site has a contact email. Use it as the toAddress.
                 toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
+                if (toAddress==null){
+                    toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+                }
+            }
+        }
+        else {
+            // Recaptcha
+            if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
+                String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
+                String privateKey = sakaiProxy.getConfigString("user.recaptcha.private-key", "");
+                ReCaptcha captcha = ReCaptchaFactory.newReCaptcha(publicKey, privateKey, false);
+                String challengeField = (String) params.get("recaptcha_challenge_field");
+                String responseField = (String) params.get("recaptcha_response_field");
+                if (challengeField == null) challengeField = "";
+                if (responseField == null) responseField = "";
+                String remoteAddress = requestGetter.getRequest().getRemoteAddr();
+                ReCaptchaResponse response = captcha.checkAnswer(remoteAddress, challengeField, responseField);
+                if (!response.isValid()) {
+                    logger.warn("Recaptcha failed with this message: " + response.getErrorMessage());
+                    return RECAPTCHA_FAILURE;
+                }
+            }
+
+            senderAddress = (String) params.get("senderaddress");
+            if (senderAddress == null || senderAddress.length() == 0) {
+                logger.error("No sender email address for non logged in user. Returning BAD REQUEST ...");
+                return BAD_REQUEST;
+            }
+
+            toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
+            if (toAddress==null){
+                toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
             }
         }
 

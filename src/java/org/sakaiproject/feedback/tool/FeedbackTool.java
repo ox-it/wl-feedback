@@ -2,10 +2,13 @@ package org.sakaiproject.feedback.tool;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.sakaiproject.authz.api.SecurityService;
 import org.sakaiproject.component.cover.ServerConfigurationService;
+import org.sakaiproject.exception.IdUnusedException;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
+import org.sakaiproject.site.api.SiteService;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -32,6 +35,10 @@ public class FeedbackTool extends HttpServlet {
 
     private SakaiProxy sakaiProxy = null;
 
+    private SecurityService securityService = null;
+
+    private SiteService siteService = null;
+
     public void init(ServletConfig config) throws ServletException {
 
         super.init(config);
@@ -40,6 +47,8 @@ public class FeedbackTool extends HttpServlet {
             ApplicationContext context
                 = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
             sakaiProxy = (SakaiProxy) context.getBean("org.sakaiproject.feedback.util.SakaiProxy");
+            securityService = (SecurityService) context.getBean("org.sakaiproject.authz.api.SecurityService");
+            siteService = (SiteService) context.getBean("org.sakaiproject.site.api.SiteService");
         } catch (Throwable t) {
             throw new ServletException("Failed to initialise FeedbackTool servlet.", t);
         }
@@ -57,9 +66,20 @@ public class FeedbackTool extends HttpServlet {
             siteId = contactUsSiteId;
         }
 
-        if (userId != null) {
+        Site site;
+        try {
+            site = siteService.getSite(siteId);
+        } catch (IdUnusedException e) {
+            throw new RuntimeException("The site cannot be found with siteId: " + siteId, e);
+        }
 
-            Map<String, String> siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+        Map<String, String> siteUpdaters = new HashMap<String, String>();
+        boolean hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
+        if(hasViewPermission) {
+            siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+        }
+
+        if (userId != null) {
 
             ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
 
@@ -95,6 +115,7 @@ public class FeedbackTool extends HttpServlet {
         request.setAttribute("helpdeskUrl", sakaiProxy.getConfigString("feedback.helpdeskUrl", ""));
         request.setAttribute("supplementaryInfo", sakaiProxy.getConfigString("feedback.supplementaryInfo", ""));
         request.setAttribute("maxAttachmentsMB", sakaiProxy.getAttachmentLimit());
+        request.setAttribute("technicalToAddress", sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null));
 
         response.setContentType("text/html");
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);

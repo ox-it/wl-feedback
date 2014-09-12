@@ -20,6 +20,8 @@
     var BAD_SENDER_ADDRESS = 'BAD_SENDER_ADDRESS';
 
     var loggedIn = (feedback.userId != '') ? true : false;
+    var siteUpdater;
+    var technicalToAddress;
 
     feedback.switchState = function (state) {
 
@@ -29,7 +31,14 @@
 
         $('#feedback-error-message-wrapper').hide();
 
+        $('#feedback-info-message-wrapper').hide();
+
         if (HOME === state) {
+
+            siteUpdater = $('#feedback-siteupdaters').find(':selected').text();
+
+            technicalToAddress = $('#feedback-technical-email').val();
+
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
@@ -75,12 +84,24 @@
                                             } });
                 });
 
+                $('#feedback-info-message-wrapper a').click(function (e) {
+                    $('#feedback-info-message-wrapper').hide();
+                });
+
+                if (siteUpdater!=null && siteUpdater!='') {
+                    feedback.displayInfo(siteUpdater);
+                }
+                else {
+                    feedback.displayInfo(technicalToAddress);
+                }
+
                 feedback.fitFrame();
             });
         } else if (CONTENT === state) {
 
             feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    siteUpdaters: feedback.siteUpdaters }, 'feedback-content');
+                siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn,
+                technicalToAddress: feedback.technicalToAddress }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -91,7 +112,7 @@
                     $('#feedback-siteupdaters-wrapper').show();
                 }
 
-                $('#feedback-form').ajaxForm(feedback.getFormOptions());
+                $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
 
                 $('#feedback-max-attachments-mb').html(feedback.maxAttachmentsMB);
 
@@ -101,10 +122,31 @@
                 });
 
                 feedback.setUpCancelButton();
+
+                if (!loggedIn) {
+                    // Not logged in, show the sender email box.
+                    $('#feedback-sender-address').show();
+
+                    if (feedback.recaptchaPublicKey.length > 0) {
+                        // Recaptcha is enabled, show it.
+                        Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
+                            {
+                                theme: "red",
+                                callback: function () {
+
+                                    feedback.fitFrame();
+                                    $('#feedback-recaptcha-wrapper').show();
+                                }
+                            }
+                        );
+                    }
+                }
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
+                siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn,
+                technicalToAddress: feedback.technicalToAddress }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -168,6 +210,14 @@
         $('textarea').mouseup(function (e) {
             feedback.fitFrame();
         });
+    };
+
+    feedback.displayInfo = function (siteUpdater) {
+        if (siteUpdater!=null && siteUpdater!=''){
+            $('#feedback-info-message-wrapper span').html('An email with the information you entered has been sent to ' + siteUpdater);
+            $('#feedback-info-message-wrapper').show();
+            feedback.fitFrame();
+        }
     };
 
     feedback.getFormOptions = function (loggedIn) {
