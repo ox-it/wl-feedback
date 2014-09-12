@@ -24,6 +24,14 @@
             <td id="feedback-description-field"><textarea id="feedback-description" name="description" cols="80" rows="5"></textarea></td>
         </tr>
         <tr id="feedback-sender-address"><td>{{translate 'sender_address_label'}}</td><td><input type="text" name="senderaddress" size="40"/></td></tr>
+        {{#if contactName}}
+            <tr>
+                <td id="feedback-contact-name-label"><label for="feedback-contact-name">{{translate 'contact_name_label'}}</label></td>
+                <td id="feedback-contact-name-field">
+                    <div id="feedback-mandatory-instruction" class="instruction">{{contactName}}</div>
+                </td>
+            </tr>
+        {{/if}}
     </table>
     <div id="feedback-recaptcha-wrapper">
         <div>Enter the text that you see in the box below:</div>

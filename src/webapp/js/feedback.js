@@ -100,8 +100,7 @@
             });
         } else if (CONTENT === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn  }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -131,7 +130,7 @@
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
 
             $(document).ready(function () {
 

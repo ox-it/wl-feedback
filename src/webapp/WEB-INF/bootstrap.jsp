@@ -23,6 +23,7 @@
                 language: '${language}',
                 featureSuggestionUrl: '${featureSuggestionUrl}',
                 technicalToAddress: '${technicalToAddress}',
+                contactName: '${contactName}',
                 enableTechnical: ${enableTechnical},
                 helpdeskUrl: '${helpdeskUrl}',
                 helpPagesUrl: '${helpPagesUrl}',
