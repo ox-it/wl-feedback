@@ -8,6 +8,7 @@ import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.util.ResourceLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletConfig;
@@ -122,16 +123,16 @@ public class FeedbackTool extends HttpServlet {
     private Map<String, String> getBundle(HttpServletRequest request) {
         Locale requestLocale = request.getLocale();
         request.setAttribute("language", requestLocale.getLanguage());
-        ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback", requestLocale);
+        ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
         Map<String, String> bundleMap = new HashMap<String, String>();
-        for (String key : rb.keySet()) {
-            bundleMap.put(key, rb.getString(key));
+        for (Object key : rb.keySet()) {
+            bundleMap.put((String) key, rb.getString((String) key));
         }
         formatProperties(rb, bundleMap);
         return bundleMap;
     }
 
-    private void formatProperties(ResourceBundle rb, Map<String, String> bundleMap) {
+    private void formatProperties(ResourceLoader rb, Map<String, String> bundleMap) {
         String serviceName = sakaiProxy.getConfigString("ui.service", "Sakai");
 
         for (String property : DYNAMIC_PROPERTIES) {
