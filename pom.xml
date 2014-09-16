@@ -204,7 +204,8 @@
                 </includes>
             </resource>
             <resource>
-                <directory>${basedir}/src/bundle</directory>
+                <!--proper Maven -->
+                <directory>${basedir}/src/main/resources</directory>
             </resource>
         </resources>
     </build>

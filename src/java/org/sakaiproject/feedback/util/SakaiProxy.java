@@ -192,7 +192,7 @@ public class SakaiProxy {
             locale = Locale.getDefault();
         }
 
-        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.email", locale);
+        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback");
 
         String subjectTemplate = null;
         
@@ -227,7 +227,8 @@ public class SakaiProxy {
                                                                     siteUrl,
                                                                     instance,
                                                                     userTitle,
-                                                                    userContent});
+                                                                    userContent,
+                                                                    "\n"});
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);

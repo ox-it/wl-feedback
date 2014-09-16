@@ -8,7 +8,6 @@ import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
-import org.sakaiproject.util.ResourceLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import javax.servlet.ServletConfig;
@@ -17,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -37,6 +37,8 @@ public class FeedbackTool extends HttpServlet {
 
     private SiteService siteService = null;
 
+    private final String[] DYNAMIC_PROPERTIES = { "help_tooltip",  "overview", "technical_setup_instruction", "report_technical_tooltip", "short_technical_description",
+            "suggest_feature_tooltip", "feature_description", "technical_instruction",  "error"};
 
     public void init(ServletConfig config) throws ServletException {
 
@@ -80,30 +82,16 @@ public class FeedbackTool extends HttpServlet {
         }
 
         if (userId != null) {
-
-            ResourceLoader rl = new ResourceLoader("org.sakaiproject.feedback.bundle.ui");
-
-            request.setAttribute("language", rl.getLocale().getLanguage());
             request.setAttribute("siteUpdaters", siteUpdaters);
-            request.setAttribute("i18n", rl);
         } else {
-            // No logged in user. The content report will be hidden.
-            Locale requestLocale = request.getLocale();
-            request.setAttribute("language", requestLocale.getLanguage());
-            ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.ui", requestLocale);
-            Map<String, String> bundleMap = new HashMap<String, String>();
-            for (String key : rb.keySet()) {
-                bundleMap.put(key, rb.getString(key));
-            }
-            request.setAttribute("i18n", bundleMap);
-
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
                 request.setAttribute("recaptchaPublicKey", publicKey);
             }
         }
 
-        request.setAttribute("enableTechnical", 
+        request.setAttribute("i18n", getBundle(request));
+        request.setAttribute("enableTechnical",
             (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
                 ? false : true);
 
@@ -129,5 +117,32 @@ public class FeedbackTool extends HttpServlet {
 
         response.setContentType("text/html");
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
+    }
+
+    private Map<String, String> getBundle(HttpServletRequest request) {
+        Locale requestLocale = request.getLocale();
+        request.setAttribute("language", requestLocale.getLanguage());
+        ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback", requestLocale);
+        Map<String, String> bundleMap = new HashMap<String, String>();
+        for (String key : rb.keySet()) {
+            bundleMap.put(key, rb.getString(key));
+        }
+        formatProperties(rb, bundleMap);
+        return bundleMap;
+    }
+
+    private void formatProperties(ResourceBundle rb, Map<String, String> bundleMap) {
+        String serviceName = sakaiProxy.getConfigString("ui.service", "Sakai");
+
+        for (String property : DYNAMIC_PROPERTIES) {
+            bundleMap.put(property, MessageFormat.format(rb.getString(property), new String[]{serviceName}));
+        }
+
+        if (serviceName!=null && !serviceName.isEmpty()){
+            bundleMap.put("technical_link", MessageFormat.format(rb.getString("technical_link"), new String[]{serviceName}));
+        }
+        else {
+            bundleMap.put("technical_link", rb.getString("ask_link"));
+        }
     }
 }
