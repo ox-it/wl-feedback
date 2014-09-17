@@ -219,7 +219,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         return toAddress;
     }
 
-    private List<FileItem> getAttachments(final Map<String, Object> params) throws Exception {
+	private List<FileItem> getAttachments(final Map<String, Object> params) throws Exception {
 
 		final List<FileItem> fileItems = new ArrayList<FileItem>();
 
