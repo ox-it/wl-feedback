@@ -1,11 +1,6 @@
 package org.sakaiproject.feedback.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Map;
+import java.util.*;
 import java.text.MessageFormat;
 
 import org.apache.commons.fileupload.FileItem;
@@ -121,8 +116,9 @@ public class SakaiProxy {
         try {
             Site site = siteService.getSite(siteId);
             Map<String, String> map = new HashMap<String, String>();
-            for (String userId : site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE)) {
-                User user = userDirectoryService.getUser(userId);
+            Set<String> userIds = site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE);
+            List<User> users = userDirectoryService.getUsers(userIds);
+            for (User user : users) {
                 String email = user.getEmail();
                 if (email != null && email.length() > 0) {
                     map.put(user.getId(), user.getDisplayName());
