@@ -7,6 +7,8 @@
     	<category name="course" />
         <category name="project" />
 
+		<configuration name="reset.button" value="false"/>
+
 		<configuration name="functions.require"/>
     </tool>
 </registration>
