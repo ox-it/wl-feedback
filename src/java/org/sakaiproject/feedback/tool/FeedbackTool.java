@@ -91,7 +91,8 @@ public class FeedbackTool extends HttpServlet {
             }
         }
 
-        request.setAttribute("i18n", getBundle(request));
+        request.setAttribute("i18n", getBundle());
+        request.setAttribute("language", request.getLocale().getLanguage());
         request.setAttribute("enableTechnical",
             (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
                 ? false : true);
@@ -120,9 +121,7 @@ public class FeedbackTool extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
     }
 
-    private Map<String, String> getBundle(HttpServletRequest request) {
-        Locale requestLocale = request.getLocale();
-        request.setAttribute("language", requestLocale.getLanguage());
+    private Map<String, String> getBundle() {
         ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
         Map<String, String> bundleMap = new HashMap<String, String>();
         for (Object key : rb.keySet()) {
