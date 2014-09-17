@@ -3,18 +3,6 @@
 <form id="feedback-form" action="/direct/feedback/{{siteId}}/reporttechnical" method="POST">
     <div id="feedback-mandatory-instruction" class="instruction">{{translate 'mandatory_instruction'}}</div>
     <table id="feedback-field-table" cols="2">
-    {{#if loggedIn}}
-        <tr>
-            <td id="feedback-siteupdater-instruction"><label for="feedback-siteupdaters">{{translate 'siteupdater_instruction'}}</label></td>
-            <td>
-                <select id="feedback-siteupdaters" name="alternativerecipient">
-                    {{#each siteUpdaters}}
-                        <option value="{{id}}">{{displayName}}</option>
-                    {{/each}}
-                </select>
-            </td>
-        </tr>
-    {{/if}}
         <tr>
             <td id="feedback-title-label"><label for="feedback-title">{{translate 'title_label'}}</label></td>
             <td id="feedback-title-field"><input id="feedback-title" type="text" name="title" maxlength="40" size="40"/></td>
@@ -24,14 +12,6 @@
             <td id="feedback-description-field"><textarea id="feedback-description" name="description" cols="80" rows="5"></textarea></td>
         </tr>
         <tr id="feedback-sender-address"><td>{{translate 'sender_address_label'}}</td><td><input type="text" name="senderaddress" size="40"/></td></tr>
-        {{#if contactName}}
-            <tr>
-                <td id="feedback-contact-name-label"><label for="feedback-contact-name">{{translate 'contact_name_label'}}</label></td>
-                <td id="feedback-contact-name-field">
-                    <div id="feedback-mandatory-instruction" class="instruction">{{contactName}}</div>
-                </td>
-            </tr>
-        {{/if}}
     </table>
     <input id="feedback-technical-email" value="{{technicalToAddress}}" hidden="hidden"/>
     <div id="feedback-attachments-label">
