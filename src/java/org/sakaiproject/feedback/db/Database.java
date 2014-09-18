@@ -1,8 +1,11 @@
 package org.sakaiproject.feedback.db;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+
 import org.sakaiproject.db.api.SqlService;
 import org.apache.log4j.Logger;
+import org.sakaiproject.feedback.tool.entityproviders.FeedbackEntityProvider;
 
 public class Database {
 
@@ -22,19 +25,19 @@ public class Database {
         sqlService.ddl(this.getClass().getClassLoader(), "createcontactustool");
     }
 
-    public void logReport(String userId, String email, String siteId, String type, String title, String content) {
+    public void logReport(String userId, String email, String siteId, String type, String title, String content) throws SQLException {
 
         Connection conn = null;
 
         try {
             conn = sqlService.borrowConnection();
             sqlService.dbWrite(conn, insertReportSql, new String[] {userId, email, siteId, type, title, content});
-        } catch (Exception e) {
-            logger.error("Failed to insert feedback report.", e);
-        } finally {
+        } catch (SQLException sqlException){
+            logger.error("Failed to insert feedback report. Caught sql exception while generating report. '" + FeedbackEntityProvider.DB_ERROR + "' will be returned to the client.", sqlException);
             if (conn != null) {
                 sqlService.returnConnection(conn);
             }
+            throw new SQLException();
         }
     }
 }

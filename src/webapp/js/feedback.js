@@ -18,6 +18,7 @@
     var BAD_RECIPIENT = 'BAD_RECIPIENT';
     var NO_SENDER_ADDRESS = 'NO_SENDER_ADDRESS';
     var BAD_SENDER_ADDRESS = 'BAD_SENDER_ADDRESS';
+    var DB_ERROR = 'DB_ERROR';
 
     var loggedIn = (feedback.userId != '') ? true : false;
     var siteUpdater;
@@ -272,6 +273,8 @@
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error_no_sender_address);
         } else if (errorCode === BAD_SENDER_ADDRESS) {
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_sender_address);
+        } else if (errorCode === DB_ERROR) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_db_error);
         } else {
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error);
         }

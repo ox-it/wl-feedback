@@ -1,5 +1,6 @@
 package org.sakaiproject.feedback.tool.entityproviders;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 	public final static String ENTITY_PREFIX = "feedback";
 
     // Error codes start
+    public final static String DB_ERROR = "DB_ERROR";
     private final static String ATTACHMENTS_TOO_BIG = "ATTACHMENTS_TOO_BIG";
     private final static String BAD_DESCRIPTION = "BAD_DESCRIPTION";
     private final static String BAD_RECIPIENT = "BAD_RECIPIENT";
@@ -211,6 +213,9 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             } catch (AttachmentsTooBigException atbe) {
                 logger.error("The total size of the attachments exceeded the permitted limit of " + maxAttachmentsBytes + ". '" + ATTACHMENTS_TOO_BIG + "' will be returned to the client.");
                 return ATTACHMENTS_TOO_BIG;
+            } catch (SQLException sqlException) {
+                logger.error("Caught exception while generating report. '" + DB_ERROR + "' will be returned to the client.", sqlException);
+                return DB_ERROR;
             } catch (Exception e) {
                 logger.error("Caught exception while sending email or generating report. '" + ERROR + "' will be returned to the client.", e);
                 return ERROR;
