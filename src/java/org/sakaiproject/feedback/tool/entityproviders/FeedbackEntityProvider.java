@@ -130,7 +130,6 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         // The senderAddress can be either picked up from the current user's
         // account, or manually entered by the user submitting the report.
         String senderAddress = null;
-        toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
 
         if (userId != null) {
             senderAddress = sakaiProxy.getUser(userId).getEmail();
@@ -150,10 +149,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                     return BAD_RECIPIENT;
                 }
             } else {
-                toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
-                if (toAddress==null){
-                    toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
-                }
+                toAddress = getToAddress(type, siteId);
             }
         }
         else {
@@ -180,10 +176,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                 return BAD_REQUEST;
             }
 
-            toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
-            if (toAddress==null){
-                toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
-            }
+            toAddress = getToAddress(type, siteId);
         }
 
         if (toAddress == null || toAddress.isEmpty()) {
@@ -210,6 +203,20 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             logger.error("Failed to determine a sender address No email or report will be generated. '"  + NO_SENDER_ADDRESS + "' will be returned to the client.");
             return NO_SENDER_ADDRESS;
         }
+    }
+
+    private String getToAddress(String type, String siteId) {
+        String toAddress;
+        if (Constants.CONTENT.equals(type)){
+            toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
+            if (toAddress==null){
+                toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+            }
+        }
+        else {
+            toAddress = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+        }
+        return toAddress;
     }
 
 	private List<FileItem> getAttachments(final Map<String, Object> params) throws Exception {
