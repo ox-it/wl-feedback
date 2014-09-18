@@ -32,6 +32,8 @@ public class FeedbackTool extends HttpServlet {
 
     private static final Log logger = LogFactory.getLog(FeedbackTool.class);
 
+    private static final String TEAM = "Team";
+
     private SakaiProxy sakaiProxy = null;
 
     private SecurityService securityService = null;
@@ -81,6 +83,8 @@ public class FeedbackTool extends HttpServlet {
         if(hasViewPermission) {
             siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
         }
+        String serviceName = sakaiProxy.getConfigString("ui.service", "Sakai");
+        addSiteContact(site, siteUpdaters, serviceName);
 
         if (userId != null) {
             request.setAttribute("siteUpdaters", siteUpdaters);
@@ -91,7 +95,7 @@ public class FeedbackTool extends HttpServlet {
             }
         }
 
-        request.setAttribute("i18n", getBundle());
+        request.setAttribute("i18n", getBundle(serviceName));
         request.setAttribute("language", request.getLocale().getLanguage());
         request.setAttribute("enableTechnical",
             (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
@@ -113,7 +117,7 @@ public class FeedbackTool extends HttpServlet {
             contactName = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
         }
         else if (!hasViewPermission){
-            contactName = sakaiProxy.getConfigString("ui.service", "Sakai") + " Team<" + sakaiProxy.getConfigString("mail.support", "") + ">";
+            contactName = serviceName + " " + TEAM + " <" + sakaiProxy.getConfigString("mail.support", "") + ">";
         }
         request.setAttribute("contactName", contactName);
 
@@ -121,18 +125,30 @@ public class FeedbackTool extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
     }
 
-    private Map<String, String> getBundle() {
+    private void addSiteContact(Site site, Map<String, String> siteUpdaters, String serviceName) {
+        String siteContact = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
+        String siteEmail = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
+        if (siteEmail!=null && !siteEmail.isEmpty()){
+            siteUpdaters.put(siteEmail, siteContact + " (site contact)");
+        }
+        else if (siteUpdaters.isEmpty()){
+            siteContact = serviceName+  " "  + TEAM;
+            siteEmail = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+            siteUpdaters.put(siteEmail, siteContact);
+        }
+    }
+
+    private Map<String, String> getBundle(String serviceName) {
         ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
         Map<String, String> bundleMap = new HashMap<String, String>();
         for (Object key : rb.keySet()) {
             bundleMap.put((String) key, rb.getString((String) key));
         }
-        formatProperties(rb, bundleMap);
+        formatProperties(rb, bundleMap, serviceName);
         return bundleMap;
     }
 
-    private void formatProperties(ResourceLoader rb, Map<String, String> bundleMap) {
-        String serviceName = sakaiProxy.getConfigString("ui.service", "Sakai");
+    private void formatProperties(ResourceLoader rb, Map<String, String> bundleMap, String serviceName) {
 
         for (String property : DYNAMIC_PROPERTIES) {
             bundleMap.put(property, MessageFormat.format(rb.getString(property), new String[]{serviceName}));

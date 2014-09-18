@@ -29,6 +29,9 @@ import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable, RequestAware {
 	
 	public final static String ENTITY_PREFIX = "feedback";
@@ -37,6 +40,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
     private final static String ATTACHMENTS_TOO_BIG = "ATTACHMENTS_TOO_BIG";
     private final static String BAD_DESCRIPTION = "BAD_DESCRIPTION";
     private final static String BAD_RECIPIENT = "BAD_RECIPIENT";
+    private final static String BADLY_FORMED_RECIPIENT = "BADLY_FORMED_RECIPIENT";
     private final static String BAD_REQUEST = "BAD_REQUEST";
     private final static String BAD_TITLE = "BAD_TITLE";
     private final static String ERROR = "ERROR";
@@ -138,16 +142,21 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             String alternativeRecipientId = (String) params.get("alternativerecipient");
 
             if (alternativeRecipientId != null && alternativeRecipientId.length() > 0) {
-                // The site has no contact email. The user has selected one from
-                // the list of site updaters.
                 User alternativeRecipientUser = sakaiProxy.getUser(alternativeRecipientId);
 
                 if (alternativeRecipientUser != null) {
                     toAddress = alternativeRecipientUser.getEmail();
                     addNoContactMessage = true;
                 } else {
-                    logger.error("No user for id '" + alternativeRecipientId + "'. Returning BAD_RECIPIENT ...");
-                    return BAD_RECIPIENT;
+                    try {
+                        //validate site contact email address
+                        InternetAddress emailAddr = new InternetAddress(alternativeRecipientId);
+                        emailAddr.validate();
+                        toAddress = alternativeRecipientId;
+                    } catch (AddressException ex) {
+                        logger.error("Incorrectly formed site contact email address. Returning BADLY_FORMED_RECIPIENT...");
+                        return BADLY_FORMED_RECIPIENT;
+                    }
                 }
             } else {
                 toAddress = sakaiProxy.getSiteProperty(siteId, Site.PROP_SITE_CONTACT_EMAIL);
