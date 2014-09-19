@@ -25,6 +25,7 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 import lombok.Setter;
+import org.sakaiproject.util.ResourceLoader;
 
 public class SakaiProxy {
 
@@ -188,7 +189,7 @@ public class SakaiProxy {
             locale = Locale.getDefault();
         }
 
-        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.email", locale);
+        final ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
 
         String subjectTemplate = null;
         
@@ -223,7 +224,8 @@ public class SakaiProxy {
                                                                     siteUrl,
                                                                     instance,
                                                                     userTitle,
-                                                                    userContent});
+                                                                    userContent,
+                                                                    "\n"});
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);

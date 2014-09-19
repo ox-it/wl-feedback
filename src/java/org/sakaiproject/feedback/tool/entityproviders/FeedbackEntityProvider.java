@@ -1,5 +1,6 @@
 package org.sakaiproject.feedback.tool.entityproviders;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,9 @@ import net.tanesha.recaptcha.ReCaptcha;
 import net.tanesha.recaptcha.ReCaptchaFactory;
 import net.tanesha.recaptcha.ReCaptchaResponse;
 
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+
 public class FeedbackEntityProvider extends AbstractEntityProvider implements AutoRegisterEntityProvider, Outputable, Describeable, ActionsExecutable, RequestAware {
 	
 	public final static String ENTITY_PREFIX = "feedback";
@@ -37,6 +41,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
     private final static String ATTACHMENTS_TOO_BIG = "ATTACHMENTS_TOO_BIG";
     private final static String BAD_DESCRIPTION = "BAD_DESCRIPTION";
     private final static String BAD_RECIPIENT = "BAD_RECIPIENT";
+    private final static String BADLY_FORMED_RECIPIENT = "BADLY_FORMED_RECIPIENT";
     private final static String BAD_REQUEST = "BAD_REQUEST";
     private final static String BAD_TITLE = "BAD_TITLE";
     private final static String ERROR = "ERROR";
@@ -112,12 +117,12 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         final String description = (String) params.get("description");
 
         if (title == null || title.isEmpty()) {
-			logger.error("Title incorrect. Returning " + BAD_TITLE + " ...");
+			logger.debug("Subject incorrect. Returning " + BAD_TITLE + " ...");
             return BAD_TITLE;
         }
 
         if (description == null || description.isEmpty()) {
-			logger.error("No description. Returning " + BAD_DESCRIPTION + " ...");
+			logger.debug("No summary. Returning " + BAD_DESCRIPTION + " ...");
             return BAD_DESCRIPTION;
         }
 
@@ -137,16 +142,21 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             String alternativeRecipientId = (String) params.get("alternativerecipient");
 
             if (alternativeRecipientId != null && alternativeRecipientId.length() > 0) {
-                // The site has no contact email. The user has selected one from
-                // the list of site updaters.
                 User alternativeRecipientUser = sakaiProxy.getUser(alternativeRecipientId);
 
                 if (alternativeRecipientUser != null) {
                     toAddress = alternativeRecipientUser.getEmail();
                     addNoContactMessage = true;
                 } else {
-                    logger.error("No user for id '" + alternativeRecipientId + "'. Returning BAD_RECIPIENT ...");
-                    return BAD_RECIPIENT;
+                    try {
+                        //validate site contact email address
+                        InternetAddress emailAddr = new InternetAddress(alternativeRecipientId);
+                        emailAddr.validate();
+                        toAddress = alternativeRecipientId;
+                    } catch (AddressException ex) {
+                        logger.error("Incorrectly formed site contact email address. Returning BADLY_FORMED_RECIPIENT...");
+                        return BADLY_FORMED_RECIPIENT;
+                    }
                 }
             } else {
                 toAddress = getToAddress(type, siteId);
@@ -195,6 +205,9 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             } catch (AttachmentsTooBigException atbe) {
                 logger.error("The total size of the attachments exceeded the permitted limit of " + maxAttachmentsBytes + ". '" + ATTACHMENTS_TOO_BIG + "' will be returned to the client.");
                 return ATTACHMENTS_TOO_BIG;
+            } catch (SQLException sqlException) {
+                logger.error("Caught exception while generating report. '" + Database.DB_ERROR + "' will be returned to the client.", sqlException);
+                return Database.DB_ERROR;
             } catch (Exception e) {
                 logger.error("Caught exception while sending email or generating report. '" + ERROR + "' will be returned to the client.", e);
                 return ERROR;
