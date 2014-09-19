@@ -5,11 +5,12 @@ import java.sql.SQLException;
 
 import org.sakaiproject.db.api.SqlService;
 import org.apache.log4j.Logger;
-import org.sakaiproject.feedback.tool.entityproviders.FeedbackEntityProvider;
 
 public class Database {
 
 	private Logger logger = Logger.getLogger(Database.class);
+
+    public final static String DB_ERROR = "DB_ERROR";
 
     private SqlService sqlService;
     public void setSqlService(SqlService sqlService) {
@@ -33,11 +34,12 @@ public class Database {
             conn = sqlService.borrowConnection();
             sqlService.dbWrite(conn, insertReportSql, new String[] {userId, email, siteId, type, title, content});
         } catch (SQLException sqlException){
-            logger.error("Failed to insert feedback report. Caught sql exception while generating report. '" + FeedbackEntityProvider.DB_ERROR + "' will be returned to the client.", sqlException);
+            logger.error("Failed to insert feedback report. Caught sql exception while generating report. '" + DB_ERROR + "' will be returned to the client.", sqlException);
+            throw sqlException;
+        } finally {
             if (conn != null) {
                 sqlService.returnConnection(conn);
             }
-            throw new SQLException();
         }
     }
 }

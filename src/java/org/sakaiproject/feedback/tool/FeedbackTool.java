@@ -43,6 +43,8 @@ public class FeedbackTool extends HttpServlet {
     private final String[] DYNAMIC_PROPERTIES = { "help_tooltip",  "overview", "technical_setup_instruction", "report_technical_tooltip", "short_technical_description",
             "suggest_feature_tooltip", "feature_description", "technical_instruction",  "error"};
 
+    private static ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
+
     public void init(ServletConfig config) throws ServletException {
 
         super.init(config);
@@ -96,7 +98,7 @@ public class FeedbackTool extends HttpServlet {
         }
 
         request.setAttribute("i18n", getBundle(serviceName));
-        request.setAttribute("language", request.getLocale().getLanguage());
+        request.setAttribute("language", rb.getLocale().getLanguage());
         request.setAttribute("enableTechnical",
             (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
                 ? false : true);
@@ -139,7 +141,6 @@ public class FeedbackTool extends HttpServlet {
     }
 
     private Map<String, String> getBundle(String serviceName) {
-        ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
         Map<String, String> bundleMap = new HashMap<String, String>();
         for (Object key : rb.keySet()) {
             bundleMap.put((String) key, rb.getString((String) key));

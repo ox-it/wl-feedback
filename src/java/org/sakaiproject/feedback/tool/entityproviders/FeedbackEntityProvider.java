@@ -38,7 +38,6 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 	public final static String ENTITY_PREFIX = "feedback";
 
     // Error codes start
-    public final static String DB_ERROR = "DB_ERROR";
     private final static String ATTACHMENTS_TOO_BIG = "ATTACHMENTS_TOO_BIG";
     private final static String BAD_DESCRIPTION = "BAD_DESCRIPTION";
     private final static String BAD_RECIPIENT = "BAD_RECIPIENT";
@@ -118,12 +117,12 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         final String description = (String) params.get("description");
 
         if (title == null || title.isEmpty()) {
-			logger.error("Subject incorrect. Returning " + BAD_TITLE + " ...");
+			logger.debug("Subject incorrect. Returning " + BAD_TITLE + " ...");
             return BAD_TITLE;
         }
 
         if (description == null || description.isEmpty()) {
-			logger.error("No summary. Returning " + BAD_DESCRIPTION + " ...");
+			logger.debug("No summary. Returning " + BAD_DESCRIPTION + " ...");
             return BAD_DESCRIPTION;
         }
 
@@ -214,8 +213,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
                 logger.error("The total size of the attachments exceeded the permitted limit of " + maxAttachmentsBytes + ". '" + ATTACHMENTS_TOO_BIG + "' will be returned to the client.");
                 return ATTACHMENTS_TOO_BIG;
             } catch (SQLException sqlException) {
-                logger.error("Caught exception while generating report. '" + DB_ERROR + "' will be returned to the client.", sqlException);
-                return DB_ERROR;
+                logger.error("Caught exception while generating report. '" + Database.DB_ERROR + "' will be returned to the client.", sqlException);
+                return Database.DB_ERROR;
             } catch (Exception e) {
                 logger.error("Caught exception while sending email or generating report. '" + ERROR + "' will be returned to the client.", e);
                 return ERROR;
