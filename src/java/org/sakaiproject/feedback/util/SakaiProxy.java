@@ -195,6 +195,8 @@ public class SakaiProxy {
         
         if (feedbackType.equals(Constants.CONTENT)) {
             subjectTemplate = rb.getString("content_email_subject_template");
+        } else if (feedbackType.equals(Constants.HELPDESK)) {
+            subjectTemplate = rb.getString("help_email_subject_template");
         } else {
             subjectTemplate = rb.getString("technical_email_subject_template");
         }

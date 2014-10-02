@@ -101,6 +101,11 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         return handleReport(view, params, Constants.TECHNICAL);
 	}
 
+	@EntityCustomAction(action = "reporthelpdesk", viewKey = EntityView.VIEW_EDIT)
+	public String handleHelpReport(EntityView view, Map<String, Object> params) {
+		return handleReport(view, params, Constants.HELPDESK);
+	}
+
 	private String handleReport(final EntityView view, final Map<String, Object> params, final String type) {
 
 		final String userId = developerHelperService.getCurrentUserId();

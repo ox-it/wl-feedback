@@ -6,6 +6,8 @@
     var HOME = 'home';
     var CONTENT = 'content';
     var TECHNICAL = 'technical';
+    var REPORTTECHNICAL = 'reporttechnical';
+    var REPORTHELPDESK = 'reporthelpdesk';
 
     /* RESPONSE CODES */
     var SUCCESS = 'SUCCESS';
@@ -25,6 +27,10 @@
     var technicalToAddress;
 
     feedback.switchState = function (state) {
+        feedback.switchState(state, null);
+    }
+
+    feedback.switchState = function (state, url) {
 
         $('#feedback-toolbar > li > span').removeClass('current');
 
@@ -60,8 +66,11 @@
                 if (feedback.enableTechnical) {
                     $('#feedback-technical-item').show().css('display', 'inline');
                     $('#feedback-report-technical-wrapper').show();
-                    $('#feedback-report-technical-link, #feedback-report-helpdesk-link').click(function (e) {
-                        feedback.switchState(TECHNICAL);
+                    $('#feedback-report-technical-link').click(function (e) {
+                        feedback.switchState(TECHNICAL, REPORTTECHNICAL);
+                    });
+                    $('#feedback-report-helpdesk-link').click(function (e) {
+                        feedback.switchState(TECHNICAL, REPORTHELPDESK);
                     });
                 } else {
                     $('#feedback-technical-setup-instruction').show();
@@ -133,7 +142,7 @@
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { url: url, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -317,7 +326,11 @@
         });
 
         $('#feedback-technical-item').click(function (e) {
-            return feedback.switchState(TECHNICAL);
+            return feedback.switchState(TECHNICAL, REPORTTECHNICAL);
+        });
+
+        $('#feedback-helpdesk-item').click(function (e) {
+            return feedback.switchState(TECHNICAL, REPORTHELPDESK);
         });
 
         if (feedback.helpPagesUrl.length > 0 ) {
