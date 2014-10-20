@@ -8,6 +8,7 @@ import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
 import org.sakaiproject.site.api.SiteService;
+import org.sakaiproject.tool.cover.SessionManager;
 import org.sakaiproject.util.ResourceLoader;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
@@ -71,6 +72,9 @@ public class FeedbackTool extends HttpServlet {
         String contactUsSiteId = (String) request.getSession().getAttribute("contact.us.origin.site");
         if (contactUsSiteId!=null) {
             siteId = contactUsSiteId;
+        }
+        if (siteId.equals("!error")) { // if site was unavailable then retrieve stored siteId
+            siteId = (String) SessionManager.getCurrentSession().getAttribute("contact.us.origin.site");
         }
 
         Site site;
