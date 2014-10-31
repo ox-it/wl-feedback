@@ -2,6 +2,7 @@
 <div id="feedback-overview" class="instruction">{{translate 'technical_instruction'}}</div>
 <form id="feedback-form" action="/direct/feedback/{{siteId}}/{{url}}" method="POST">
     <div id="feedback-mandatory-instruction" class="instruction">{{translate 'mandatory_instruction'}}</div>
+    <fieldset>
     <table id="feedback-field-table" cols="2">
         <tr>
             <td id="feedback-title-label"><label for="feedback-title">{{translate 'title_label'}}</label></td>
@@ -26,6 +27,7 @@
         <div>Enter the text that you see in the box below:</div>
         <div id="feedback-recaptcha-block"></div>
     </div>
+    </fieldset>
     <input id="feedback-submit-button" type="submit" value="{{translate 'submit_label'}}" />
     <input id="feedback-cancel-button" type="submit" value="{{translate 'cancel_label'}}" />
 </form>
