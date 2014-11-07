@@ -18,10 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * @author Adrian Fish (adrian.r.fish@gmail.com)
@@ -81,15 +78,16 @@ public class FeedbackTool extends HttpServlet {
         }
 
         Map<String, String> siteUpdaters = new HashMap<String, String>();
+        Map<String, String> emailRecipients = new LinkedHashMap<String, String>();
         boolean hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
         if(hasViewPermission) {
             siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
         }
         String serviceName = sakaiProxy.getConfigString("ui.service", "Sakai");
-        addSiteContact(site, siteUpdaters, serviceName);
+        addRecipients(site, emailRecipients, siteUpdaters, serviceName);
 
         if (userId != null) {
-            request.setAttribute("siteUpdaters", siteUpdaters);
+            request.setAttribute("siteUpdaters", emailRecipients);
         } else {
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
@@ -127,17 +125,18 @@ public class FeedbackTool extends HttpServlet {
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
     }
 
-    private void addSiteContact(Site site, Map<String, String> siteUpdaters, String serviceName) {
+    private void addRecipients(Site site, Map<String, String> emailRecipients, Map<String, String> siteUpdaters, String serviceName) {
         String siteContact = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
         String siteEmail = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
         if (siteEmail!=null && !siteEmail.isEmpty()){
-            siteUpdaters.put(siteEmail, siteContact + " (site contact)");
+            emailRecipients.put(siteEmail, siteContact + " (site contact)");
         }
         else if (siteUpdaters.isEmpty()){
             siteContact = serviceName+  " "  + TEAM;
             siteEmail = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
-            siteUpdaters.put(siteEmail, siteContact);
+            emailRecipients.put(siteEmail, siteContact);
         }
+        emailRecipients.putAll(siteUpdaters);
     }
 
     private Map<String, String> getBundle(String serviceName) {
