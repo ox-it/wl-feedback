@@ -9,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.mail.util.ByteArrayDataSource;
 
+import org.sakaiproject.api.privacy.PrivacyManager;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.Attachment;
 import org.sakaiproject.email.api.ContentType;
@@ -50,6 +51,10 @@ public class SakaiProxy {
 
     @Setter
     private EmailService emailService;
+
+    @Setter
+    private PrivacyManager privacyManager;
+
 
     public boolean getConfigBoolean(String name, boolean defaultValue) {
         return serverConfigurationService.getBoolean(name, defaultValue);
@@ -118,6 +123,8 @@ public class SakaiProxy {
             Site site = siteService.getSite(siteId);
             Map<String, String> map = new HashMap<String, String>();
             Set<String> userIds = site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE);
+            Set<String> hiddenUserIds = privacyManager.findHidden("/site/" + siteId, userIds);
+            userIds.removeAll(hiddenUserIds);
             List<User> users = userDirectoryService.getUsers(userIds);
             for (User user : users) {
                 String email = user.getEmail();
@@ -215,7 +222,7 @@ public class SakaiProxy {
         final String instance = serverConfigurationService.getServerIdInstance();
 
         final String bodyTemplate = rb.getString("email_body_template");
-        final String formattedBody
+        String formattedBody
             = MessageFormat.format(bodyTemplate, new String[] {noContactEmailMessage,
                                                                     userId,
                                                                     userEid,
@@ -228,6 +235,12 @@ public class SakaiProxy {
                                                                     userTitle,
                                                                     userContent,
                                                                     "\n"});
+
+
+        if (feedbackType.equals(Constants.CONTENT)) {
+            formattedBody = formattedBody + rb.getString("email_body_template_note");
+        }
+
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);
