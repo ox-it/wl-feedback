@@ -41,8 +41,6 @@ public class FeedbackTool extends HttpServlet {
 
     private SiteService siteService = null;
 
-    private SessionManager sessionManager = null;
-
     private final String[] DYNAMIC_PROPERTIES = { "help_tooltip",  "overview", "technical_setup_instruction", "report_technical_tooltip", "short_technical_description",
             "suggest_feature_tooltip", "feature_description", "technical_instruction",  "error"};
 
@@ -58,7 +56,6 @@ public class FeedbackTool extends HttpServlet {
             sakaiProxy = (SakaiProxy) context.getBean("org.sakaiproject.feedback.util.SakaiProxy");
             securityService = (SecurityService) context.getBean("org.sakaiproject.authz.api.SecurityService");
             siteService = (SiteService) context.getBean("org.sakaiproject.site.api.SiteService");
-            sessionManager = (SessionManager) context.getBean("org.sakaiproject.tool.api.SessionManager");
 
         } catch (Throwable t) {
             throw new ServletException("Failed to initialise FeedbackTool servlet.", t);
@@ -76,8 +73,8 @@ public class FeedbackTool extends HttpServlet {
         if (contactUsSiteId!=null) {
             siteId = contactUsSiteId;
         }
-        if (siteId.equals("!error")) { // if site was unavailable then retrieve stored siteId
-            siteId = (String) sessionManager.getCurrentSession().getAttribute("contact.us.origin.site");
+        if (siteId.equals("!error")) { // if site was unavailable then retrieve siteId
+            siteId = request.getParameter("siteId");
         }
 
         Site site;
