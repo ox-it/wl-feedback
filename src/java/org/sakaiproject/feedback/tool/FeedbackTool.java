@@ -69,6 +69,9 @@ public class FeedbackTool extends HttpServlet {
         if (contactUsSiteId!=null) {
             siteId = contactUsSiteId;
         }
+        if (siteId.equals("!error")) { // if site is unavailable then retrieve siteId
+            siteId = request.getParameter("siteId");
+        }
 
         Site site;
         try {
