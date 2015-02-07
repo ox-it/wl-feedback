@@ -141,7 +141,7 @@ public class SakaiProxy {
 
 	public void sendEmail(String fromUserId, String senderAddress, String toAddress, boolean addNoContactEmailMessage, String siteId, String feedbackType
                             , String userTitle, String userContent
-                            , List<FileItem> fileItems) {
+                            , List<FileItem> fileItems, boolean siteExists) {
 
 		final List<Attachment> attachments = new ArrayList<Attachment>();
 
@@ -213,9 +213,9 @@ public class SakaiProxy {
 
         final Site site = getSite(siteId);
 
-        final String siteTitle = site.getTitle();
+        final String siteTitle = siteExists ? site.getTitle() : "N/A (Site does not exist)";
 
-        final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + site.getId();
+        final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + (siteExists ? site.getId() : siteId) ;
 
         String noContactEmailMessage = "";
         

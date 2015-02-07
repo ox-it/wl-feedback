@@ -120,6 +120,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
 
         final String title = (String) params.get("title");
         final String description = (String) params.get("description");
+        final boolean siteExists = new Boolean((String)params.get("siteExists"));
 
         if (title == null || title.isEmpty()) {
 			logger.debug("Subject incorrect. Returning " + BAD_TITLE + " ...");
@@ -204,7 +205,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         
             try {
                 attachments = getAttachments(params);
-                sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments);
+                sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments, siteExists);
                 db.logReport(userId, senderAddress, siteId, type, title, description);
                 return SUCCESS;
             } catch (AttachmentsTooBigException atbe) {

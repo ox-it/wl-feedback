@@ -73,21 +73,34 @@ public class FeedbackTool extends HttpServlet {
             siteId = request.getParameter("siteId");
         }
 
-        Site site;
-        try {
-            site = siteService.getSite(siteId);
-        } catch (IdUnusedException e) {
-            throw new RuntimeException("The site cannot be found with siteId: " + siteId, e);
+        boolean siteExists = siteService.siteExists(siteId);
+
+        Site site = null;
+        if (siteExists){
+            try {
+                site = siteService.getSite(siteId);
+            } catch (IdUnusedException e) {
+                throw new RuntimeException("The site cannot be found with siteId: " + siteId, e);
+            }
         }
 
         Map<String, String> siteUpdaters = new HashMap<String, String>();
         Map<String, String> emailRecipients = new LinkedHashMap<String, String>();
-        boolean hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
-        if(hasViewPermission) {
-            siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
-        }
+
         String serviceName = sakaiProxy.getConfigString("ui.service", "Sakai");
-        addRecipients(site, emailRecipients, siteUpdaters, serviceName);
+        boolean hasViewPermission = false;
+        if (siteExists){
+            hasViewPermission = securityService.unlock("roster.viewallmembers", site.getReference());
+            if(hasViewPermission) {
+                siteUpdaters = sakaiProxy.getSiteUpdaters(siteId);
+            }
+            addRecipients(site, emailRecipients, siteUpdaters, serviceName);
+        }
+        else {
+            String siteContact = serviceName+  " "  + TEAM;
+            String siteEmail = sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null);
+            emailRecipients.put(siteEmail, siteContact);
+        }
 
         if (userId != null) {
             request.setAttribute("siteUpdaters", emailRecipients);
@@ -107,6 +120,7 @@ public class FeedbackTool extends HttpServlet {
         request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
         request.setAttribute("userId", (userId == null) ? "" : userId);
         request.setAttribute("siteId", siteId);
+        request.setAttribute("siteExists", siteExists);
         request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
         request.setAttribute("helpPagesUrl", sakaiProxy.getConfigString("feedback.helpPagesUrl", ""));
         request.setAttribute("helpdeskUrl", sakaiProxy.getConfigString("feedback.helpdeskUrl", ""));
@@ -115,8 +129,12 @@ public class FeedbackTool extends HttpServlet {
         request.setAttribute("technicalToAddress", sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null));
 
         String contactName = null;
-        String siteEmail = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
-        if (siteEmail!=null && !siteEmail.isEmpty()){
+        String siteEmail = null;
+        if (siteExists){
+            siteEmail = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
+        }
+
+        if (siteEmail!=null && !siteEmail.isEmpty() && siteExists){
             contactName = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
         }
         else if (!hasViewPermission){
