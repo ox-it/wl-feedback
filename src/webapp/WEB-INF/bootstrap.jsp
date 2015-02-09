@@ -20,6 +20,7 @@
                 state: 'home',
                 userId: '${userId}',
                 siteId: '${siteId}',
+                siteExists: '${siteExists}',
                 language: '${language}',
                 featureSuggestionUrl: '${featureSuggestionUrl}',
                 technicalToAddress: '${technicalToAddress}',
