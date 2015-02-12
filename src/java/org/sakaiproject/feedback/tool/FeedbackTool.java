@@ -1,5 +1,6 @@
 package org.sakaiproject.feedback.tool;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityService;
@@ -147,7 +148,7 @@ public class FeedbackTool extends HttpServlet {
     }
 
     private void addRecipients(Site site, Map<String, String> emailRecipients, Map<String, String> siteUpdaters, String serviceName) {
-        String siteContact = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
+        String siteContact = StringEscapeUtils.escapeJavaScript(site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME));
         String siteEmail = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_EMAIL);
         if (siteEmail!=null && !siteEmail.isEmpty()){
             emailRecipients.put(siteEmail, siteContact + " (site contact)");
