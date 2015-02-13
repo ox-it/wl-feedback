@@ -20,6 +20,7 @@ import org.sakaiproject.entitybroker.entityprovider.extension.RequestGetter;
 import org.sakaiproject.entitybroker.util.AbstractEntityProvider;
 import org.sakaiproject.feedback.db.Database;
 import org.sakaiproject.feedback.exception.AttachmentsTooBigException;
+import org.sakaiproject.feedback.tool.FeedbackTool;
 import org.sakaiproject.feedback.util.Constants;
 import org.sakaiproject.feedback.util.SakaiProxy;
 import org.sakaiproject.site.api.Site;
@@ -114,7 +115,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             return BAD_REQUEST;
         }
 
-        final String siteId = view.getPathSegment(1);
+        final String siteId = view.getPathSegment(1).replaceAll(FeedbackTool.FORWARD_SLASH, "/");
 
         if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
 

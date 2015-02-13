@@ -41,6 +41,8 @@ public class FeedbackTool extends HttpServlet {
     private final String[] DYNAMIC_PROPERTIES = { "help_tooltip",  "overview", "technical_setup_instruction", "report_technical_tooltip", "short_technical_description",
             "suggest_feature_tooltip", "feature_description", "technical_instruction",  "error"};
 
+    public static final String FORWARD_SLASH = "FORWARD_SLASH";
+
     private static ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
 
     public void init(ServletConfig config) throws ServletException {
@@ -120,7 +122,7 @@ public class FeedbackTool extends HttpServlet {
 
         request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
         setStringAttribute(request, "userId", (userId == null) ? "" : userId);
-        setStringAttribute(request, "siteId", siteId);
+        setStringAttribute(request, "siteId", siteId.replaceAll("/", FORWARD_SLASH));
         request.setAttribute("siteExists", siteExists);
         setStringAttribute(request, "featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
         setStringAttribute(request, "helpPagesUrl", sakaiProxy.getConfigString("feedback.helpPagesUrl", ""));
