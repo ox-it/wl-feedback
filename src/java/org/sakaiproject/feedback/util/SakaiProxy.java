@@ -130,7 +130,7 @@ public class SakaiProxy {
             for (User user : users) {
                 String email = user.getEmail();
                 if (email != null && email.length() > 0) {
-                    map.put(user.getId(), StringEscapeUtils.escapeJavaScript(user.getDisplayName()));
+                    map.put(user.getId(), user.getDisplayName());
                 }
             }
             return map;
