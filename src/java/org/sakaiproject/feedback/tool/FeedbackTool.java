@@ -1,5 +1,6 @@
 package org.sakaiproject.feedback.tool;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.sakaiproject.authz.api.SecurityService;
@@ -39,6 +40,8 @@ public class FeedbackTool extends HttpServlet {
 
     private final String[] DYNAMIC_PROPERTIES = { "help_tooltip",  "overview", "technical_setup_instruction", "report_technical_tooltip", "short_technical_description",
             "suggest_feature_tooltip", "feature_description", "technical_instruction",  "error"};
+
+    public static final String FORWARD_SLASH = "FORWARD_SLASH";
 
     private static ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
 
@@ -103,30 +106,30 @@ public class FeedbackTool extends HttpServlet {
         }
 
         if (userId != null) {
-            request.setAttribute("siteUpdaters", emailRecipients);
+            setMapAttribute(request, "siteUpdaters", emailRecipients);
         } else {
             if (sakaiProxy.getConfigBoolean("user.recaptcha.enabled", false)) {
                 String publicKey = sakaiProxy.getConfigString("user.recaptcha.public-key", "");
-                request.setAttribute("recaptchaPublicKey", publicKey);
+                setStringAttribute(request, "recaptchaPublicKey", publicKey);
             }
         }
 
-        request.setAttribute("i18n", getBundle(serviceName));
-        request.setAttribute("language", rb.getLocale().getLanguage());
+        setMapAttribute(request, "i18n", getBundle(serviceName));
+        setStringAttribute(request, "language", rb.getLocale().getLanguage());
         request.setAttribute("enableTechnical",
             (sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null) == null)
                 ? false : true);
 
         request.setAttribute("sakaiHtmlHead", (String) request.getAttribute("sakai.html.head"));
-        request.setAttribute("userId", (userId == null) ? "" : userId);
-        request.setAttribute("siteId", siteId);
+        setStringAttribute(request, "userId", (userId == null) ? "" : userId);
+        setStringAttribute(request, "siteId", siteId.replaceAll("/", FORWARD_SLASH));
         request.setAttribute("siteExists", siteExists);
-        request.setAttribute("featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
-        request.setAttribute("helpPagesUrl", sakaiProxy.getConfigString("feedback.helpPagesUrl", ""));
-        request.setAttribute("helpdeskUrl", sakaiProxy.getConfigString("feedback.helpdeskUrl", ""));
-        request.setAttribute("supplementaryInfo", sakaiProxy.getConfigString("feedback.supplementaryInfo", ""));
+        setStringAttribute(request, "featureSuggestionUrl", sakaiProxy.getConfigString("feedback.featureSuggestionUrl", ""));
+        setStringAttribute(request, "helpPagesUrl", sakaiProxy.getConfigString("feedback.helpPagesUrl", ""));
+        setStringAttribute(request, "helpdeskUrl", sakaiProxy.getConfigString("feedback.helpdeskUrl", ""));
+        setStringAttribute(request, "supplementaryInfo", sakaiProxy.getConfigString("feedback.supplementaryInfo", ""));
         request.setAttribute("maxAttachmentsMB", sakaiProxy.getAttachmentLimit());
-        request.setAttribute("technicalToAddress", sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null));
+        setStringAttribute(request, "technicalToAddress", sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null));
 
         String contactName = null;
         String siteEmail = null;
@@ -140,11 +143,22 @@ public class FeedbackTool extends HttpServlet {
         else if (!hasViewPermission){
             contactName = serviceName + " " + TEAM + " <" + sakaiProxy.getConfigString("mail.support", "") + ">";
         }
-        request.setAttribute("contactName", contactName);
+        setStringAttribute(request, "contactName", contactName);
 
         response.setContentType("text/html");
         request.getRequestDispatcher("/WEB-INF/bootstrap.jsp").include(request, response);
     }
+
+	private void setStringAttribute(HttpServletRequest request, String key, String value){
+		request.setAttribute(key, StringEscapeUtils.escapeJavaScript(value));
+	}
+
+	private void setMapAttribute(HttpServletRequest request, String key, Map map){
+		for (Object o : map.keySet()) {
+			map.put(o, StringEscapeUtils.escapeJavaScript((String) map.get(o)));
+		}
+		request.setAttribute(key, map);
+	}
 
     private void addRecipients(Site site, Map<String, String> emailRecipients, Map<String, String> siteUpdaters, String serviceName) {
         String siteContact = site.getProperties().getProperty(Site.PROP_SITE_CONTACT_NAME);
