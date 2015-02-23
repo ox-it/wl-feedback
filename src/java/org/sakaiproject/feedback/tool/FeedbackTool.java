@@ -154,8 +154,8 @@ public class FeedbackTool extends HttpServlet {
 	}
 
 	private void setMapAttribute(HttpServletRequest request, String key, Map<String, String> map){
-        for (String s : map.keySet()) {
-			map.put(s, StringEscapeUtils.escapeJavaScript(map.get(s)));
+		for (String s : map.keySet()) {
+			map.put(s, StringEscapeUtils.escapeJavaScript( map.get(s)));
 		}
 		request.setAttribute(key, map);
 	}
