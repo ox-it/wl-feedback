@@ -43,6 +43,7 @@
         if (HOME === state) {
 
             siteUpdater = $('#feedback-siteupdaters').find(':selected').text();
+            if (siteUpdater=='') siteUpdater = $('#feedback-contactname').val();
 
             technicalToAddress = $('#feedback-technical-email').val();
 
