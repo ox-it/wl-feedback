@@ -76,12 +76,6 @@
                     $('#feedback-technical-setup-instruction').show();
                 }
 
-                if (feedback.featureSuggestionUrl.length > 0) {
-                    $('#feedback-suggest-feature-wrapper').show();
-                } else {
-                    $('#feedback-feature-suggestion-setup-instruction').show();
-                }
-
                 if (feedback.supplementaryInfo.length > 0) {
                     $('#feedback-supplementary-info').show();
                 }
