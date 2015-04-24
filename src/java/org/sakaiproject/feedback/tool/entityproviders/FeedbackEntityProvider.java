@@ -126,6 +126,16 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         final String description = (String) params.get("description");
         final boolean siteExists = new Boolean((String)params.get("siteExists"));
 
+        final String browserNameAndVersion = requestGetter.getRequest().getHeader("User-Agent");
+        final String osNameAndVersion = (String) params.get("oscpu");
+        final String windowHeight = (String) params.get("windowHeight");
+        final String windowWidth = (String) params.get("windowWidth");
+        final String browserSize = windowWidth + " x " + windowHeight + " pixels";
+        final String screenHeight = (String) params.get("screenHeight");
+        final String screenWidth = (String) params.get("screenWidth");
+        final String screenSize = screenWidth + " x " + screenHeight + " pixels";
+        final String plugins = (String) params.get("plugins");
+        final String ip = requestGetter.getRequest().getRemoteAddr();
         if (title == null || title.isEmpty()) {
 			logger.debug("Subject incorrect. Returning " + BAD_TITLE + " ...");
             return BAD_TITLE;
@@ -209,7 +219,8 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         
             try {
                 attachments = getAttachments(params);
-                sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments, siteExists);
+                sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments, siteExists,
+                        browserNameAndVersion, osNameAndVersion, browserSize, screenSize, plugins, ip);
                 db.logReport(userId, senderAddress, siteId, type, title, description);
                 return SUCCESS;
             } catch (AttachmentsTooBigException atbe) {

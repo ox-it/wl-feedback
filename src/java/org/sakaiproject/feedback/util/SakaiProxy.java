@@ -140,8 +140,9 @@ public class SakaiProxy {
     }
 
 	public void sendEmail(String fromUserId, String senderAddress, String toAddress, boolean addNoContactEmailMessage, String siteId, String feedbackType
-                            , String userTitle, String userContent
-                            , List<FileItem> fileItems, boolean siteExists) {
+			, String userTitle, String userContent
+			, List<FileItem> fileItems, boolean siteExists,
+			   String browserNameAndVersion, String osNameAndVersion, String browserSize, String screenSize, String plugins, String ip) {
 
 		final List<Attachment> attachments = new ArrayList<Attachment>();
 
@@ -223,18 +224,24 @@ public class SakaiProxy {
 
         final String bodyTemplate = rb.getString("email_body_template");
         String formattedBody
-            = MessageFormat.format(bodyTemplate, new String[] {noContactEmailMessage,
-                                                                    userId,
-                                                                    userEid,
-                                                                    fromName,
-                                                                    fromAddress,
-                                                                    siteTitle,
-                                                                    siteId,
-                                                                    siteUrl,
-                                                                    instance,
-                                                                    userTitle,
-                                                                    userContent,
-                                                                    "\n"});
+            = MessageFormat.format(bodyTemplate, new String[]{noContactEmailMessage,
+		        userId,
+		        userEid,
+		        fromName,
+		        fromAddress,
+		        siteTitle,
+		        siteId,
+		        siteUrl,
+		        instance,
+		        userTitle,
+		        userContent,
+		        "\n",
+		        browserNameAndVersion,
+		        osNameAndVersion,
+		        browserSize,
+		        screenSize,
+		        plugins,
+		        ip});
 
 
         if (feedbackType.equals(Constants.CONTENT)) {
