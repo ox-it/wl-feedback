@@ -110,12 +110,7 @@
             });
         } else if (CONTENT === state) {
 
-            var plugins = '';
-            for(var i = 0; i<navigator.plugins.length; i++) {
-                plugins += navigator.plugins[i].name + ", ";
-            }
-
-            feedback.utils.renderTemplate(state, { plugins : plugins, screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
+            feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
                 windowHeight: window.outerHeight, siteExists: feedback.siteExists, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
 
             $(document).ready(function () {
@@ -148,12 +143,7 @@
             });
         } else if (TECHNICAL === state) {
 
-            var plugins = '';
-            for(var i = 0; i<navigator.plugins.length; i++) {
-                plugins += navigator.plugins[i].name + ", ";
-            }
-
-            feedback.utils.renderTemplate(state, { plugins : plugins, screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
+            feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
                 windowHeight: window.outerHeight, siteExists: feedback.siteExists, url: url, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
 
             $(document).ready(function () {
@@ -207,6 +197,14 @@
             location.href="";
             e.preventDefault();
         });
+    };
+
+    feedback.getPluginList = function () {
+        var plugins = '';
+        for(var i = 0; i<navigator.plugins.length; i++) {
+            plugins += navigator.plugins[i].name + ", ";
+        }
+        return plugins;
     };
 
     feedback.fitFrame = function () {
