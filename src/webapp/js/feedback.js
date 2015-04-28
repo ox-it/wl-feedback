@@ -105,7 +105,8 @@
             });
         } else if (CONTENT === state) {
 
-            feedback.utils.renderTemplate(state, { siteExists: feedback.siteExists, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
+            feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
+                windowHeight: window.outerHeight, siteExists: feedback.siteExists, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -137,7 +138,8 @@
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteExists: feedback.siteExists, url: url, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
+                windowHeight: window.outerHeight, siteExists: feedback.siteExists, url: url, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -167,6 +169,15 @@
 
         return false;
     };
+
+    feedback.getPluginList = function () {
+        var plugins = '';
+        for(var i = 0; i<navigator.plugins.length; i++) {
+            plugins += navigator.plugins[i].name + ", ";
+        }
+        return plugins;
+    };
+
 
     feedback.setUpRecaptcha = function () {
 
