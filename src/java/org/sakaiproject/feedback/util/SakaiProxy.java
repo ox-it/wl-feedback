@@ -34,6 +34,8 @@ public class SakaiProxy {
 
 	private static final Log logger = LogFactory.getLog(SakaiProxy.class);
 
+    private static ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
+
     @Setter
     private ServerConfigurationService serverConfigurationService;
 
@@ -142,7 +144,8 @@ public class SakaiProxy {
 	public void sendEmail(String fromUserId, String senderAddress, String toAddress, boolean addNoContactEmailMessage, String siteId, String feedbackType
 			, String userTitle, String userContent
 			, List<FileItem> fileItems, boolean siteExists,
-			   String browserNameAndVersion, String osNameAndVersion, String browserSize, String screenSize, String plugins, String ip) {
+			   String browserNameAndVersion, String osNameAndVersion, String browserSize, String screenSize, String plugins, String ip,
+			   String currentTime) {
 
 		final List<Attachment> attachments = new ArrayList<Attachment>();
 
@@ -216,6 +219,7 @@ public class SakaiProxy {
 
         final String siteTitle = siteExists ? site.getTitle() : "N/A (Site does not exist)";
 
+        final String workerNode = serverConfigurationService.getServerId();
         final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + (siteExists ? site.getId() : siteId) ;
 
         String noContactEmailMessage = "";
@@ -241,7 +245,9 @@ public class SakaiProxy {
 		        browserSize,
 		        screenSize,
 		        plugins,
-		        ip});
+		        ip,
+		        workerNode,
+		        currentTime});
 
 
         if (feedbackType.equals(Constants.CONTENT)) {
@@ -299,5 +305,9 @@ public class SakaiProxy {
         int mb = (contentUploadMax < feedbackAttachMax) ? contentUploadMax : feedbackAttachMax;
 
         return mb;
+    }
+
+    public Locale getLocale() {
+        return rb.getLocale();
     }
 }
