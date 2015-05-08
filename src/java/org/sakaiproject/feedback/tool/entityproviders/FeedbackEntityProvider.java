@@ -1,9 +1,8 @@
 package org.sakaiproject.feedback.tool.entityproviders;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.util.*;
 
 import org.apache.log4j.Logger;
 import org.apache.commons.fileupload.FileItem;
@@ -136,6 +135,11 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         final String screenSize = screenWidth + " x " + screenHeight + " pixels";
         final String plugins = (String) params.get("plugins");
         final String ip = requestGetter.getRequest().getRemoteAddr();
+        int fmt = DateFormat.MEDIUM;
+        Locale locale = sakaiProxy.getLocale();
+        DateFormat format = DateFormat.getDateTimeInstance(fmt, fmt, locale);
+        final String currentTime = format.format(new Date());
+
         if (title == null || title.isEmpty()) {
 			logger.debug("Subject incorrect. Returning " + BAD_TITLE + " ...");
             return BAD_TITLE;
@@ -220,7 +224,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
             try {
                 attachments = getAttachments(params);
                 sakaiProxy.sendEmail(userId, senderAddress, toAddress, addNoContactMessage, siteId, type, title, description, attachments, siteExists,
-                        browserNameAndVersion, osNameAndVersion, browserSize, screenSize, plugins, ip);
+                        browserNameAndVersion, osNameAndVersion, browserSize, screenSize, plugins, ip, currentTime);
                 db.logReport(userId, senderAddress, siteId, type, title, description);
                 return SUCCESS;
             } catch (AttachmentsTooBigException atbe) {
