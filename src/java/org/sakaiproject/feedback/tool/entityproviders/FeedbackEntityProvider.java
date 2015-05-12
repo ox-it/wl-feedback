@@ -117,6 +117,7 @@ public class FeedbackEntityProvider extends AbstractEntityProvider implements Au
         // Because the Feedback Tool EntityProvider parses URLs using forward slashes
         // (see /direct/feedback/describe) we replace forward slashes with a constant
         // and substitute them back here
+        // TODO Doesn't this have a possible NPE?
         final String siteId = view.getPathSegment(1).replaceAll(FeedbackTool.FORWARD_SLASH, "/");
 
         if (logger.isDebugEnabled()) logger.debug("Site ID: " + siteId);
