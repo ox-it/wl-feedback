@@ -84,6 +84,11 @@ public class SakaiProxy {
         }
     }
 
+    /**
+     * This gets the current Site ID from the placement, if the tool is running outside the portal
+     * this will return <code>null</code>.
+     * @return The current site ID.
+     */
 	public String getCurrentSiteId() {
 		return toolManager.getCurrentPlacement().getContext();
 	}
