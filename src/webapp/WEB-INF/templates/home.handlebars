@@ -47,6 +47,20 @@
         </div>
     {{/if}}
 
+    {{#unless contentUrl}}
+        {{#unless helpUrl}}
+            {{#unless technicalUrl}}
+                {{#unless featureSuggestionUrl}}
+                    <div class="feedback-box" id="feedback-no-panels">
+                        <h3>{{translate 'no_panels_title'}}</h3>
+                        <p>{{translate 'no_panels_explanation'}}</p>
+                        <div class="clear"></div>
+                    </div>
+    {{/unless}}
+        {{/unless}}
+            {{/unless}}
+                {{/unless}}
+
     <div id="feedback-supplementary-info">{{{supplementaryInfo}}}</div>
     <div class="clear"></div>
 </div>
