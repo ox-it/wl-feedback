@@ -50,8 +50,12 @@
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
+                                                    helpPagesTarget: feedback.helpPagesTarget,
                                                     helpdeskUrl: feedback.helpdeskUrl,
-                                                    loggedIn: loggedIn }, 'feedback-content');
+                                                    loggedIn: loggedIn, showContentPanel : feedback.showContentPanel,
+                                                    showHelpPanel : feedback.showHelpPanel,
+                                                    showTechnicalPanel : feedback.showTechnicalPanel,
+                                                    showSuggestionsPanel : feedback.showSuggestionsPanel}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -106,7 +110,7 @@
         } else if (CONTENT === state) {
 
             feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
-                windowHeight: window.outerHeight, siteExists: feedback.siteExists, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
+                windowHeight: window.outerHeight, siteExists: feedback.siteExists, siteId: feedback.siteId, contentUrl : feedback.contentUrl, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -319,7 +323,8 @@
     var loggedIn = (feedback.userId != '') ? true : false;
     feedback.utils.renderTemplate(TOOLBAR , { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                 loggedIn: loggedIn,
-                                                helpPagesUrl: feedback.helpPagesUrl }, 'feedback-toolbar');
+                                                helpPagesUrl: feedback.helpPagesUrl,
+                                                helpPagesTarget: feedback.helpPagesTarget}, 'feedback-toolbar');
 
     $(document).ready(function () {
 

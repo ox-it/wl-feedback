@@ -28,9 +28,14 @@
                 enableTechnical: ${enableTechnical},
                 helpdeskUrl: '${helpdeskUrl}',
                 helpPagesUrl: '${helpPagesUrl}',
+                helpPagesTarget: '${helpPagesTarget}',
                 supplementaryInfo: '${supplementaryInfo}',
                 recaptchaPublicKey: '${recaptchaPublicKey}',
                 maxAttachmentsMB: ${maxAttachmentsMB},
+                showContentPanel: ${showContentPanel},
+                showHelpPanel: ${showHelpPanel},
+                showTechnicalPanel: ${showTechnicalPanel},
+                showSuggestionsPanel: ${showSuggestionsPanel},
                 siteUpdaters: [
                     <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
                     {id: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
