@@ -121,6 +121,9 @@ public class FeedbackTool extends HttpServlet {
         request.setAttribute("maxAttachmentsMB", sakaiProxy.getAttachmentLimit());
         setStringAttribute(request, "technicalToAddress", sakaiProxy.getConfigString(Constants.PROP_TECHNICAL_ADDRESS, null));
 
+        setStringAttribute(request, "contentUrl", sakaiProxy.getConfigString(Constants.CONTENT_URL, null));
+        setStringAttribute(request, "helpUrl", sakaiProxy.getConfigString(Constants.HELP_URL, null));
+        setStringAttribute(request, "technicalUrl", sakaiProxy.getConfigString(Constants.TECHNICAL_URL, null));
         String contactName = null;
         String siteEmail = null;
         if (siteExists){

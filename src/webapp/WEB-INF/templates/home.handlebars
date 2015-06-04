@@ -11,33 +11,41 @@
     {{translate 'technical_setup_instruction'}}
 </div>
 <div id="feedback-links">
-    <div class="feedback-box" id="feedback-content-problem">
-        <h3>{{translate 'content_title'}}</h3>
-        <ul>{{translate 'content_explanation'}}</ul>
-        <p><a id="feedback-report-content-link" href="javascript:;">{{translate 'content_link'}}</a></p>
-        <div class="clear"></div>
-    </div>
+    {{#if contentUrl}}
+        <div class="feedback-box" id="feedback-content-problem">
+            <h3>{{translate 'content_title'}}</h3>
+            <ul>{{translate 'content_explanation'}}</ul>
+            <p><a id="feedback-report-content-link" href="javascript:;">{{translate 'content_link'}}</a></p>
+            <div class="clear"></div>
+        </div>
+    {{/if}}
 
-    <div class="feedback-box" id="feedback-ask-help">
-        <h3>{{translate 'ask_title'}}</h3>
-        <ul>{{translate 'ask_explanation'}}</ul>
-        <p><a id="feedback-report-helpdesk-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
-        <div class="clear"></div>
-    </div>
+    {{#if helpUrl}}
+        <div class="feedback-box" id="feedback-ask-help">
+            <h3>{{translate 'ask_title'}}</h3>
+            <ul>{{translate 'ask_explanation'}}</ul>
+            <p><a id="feedback-report-helpdesk-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
+            <div class="clear"></div>
+        </div>
+    {{/if}}
 
-    <div class="feedback-box" id="feedback-tech-problem">
-        <h3>{{translate 'technical_title'}}</h3>
-        <ul>{{translate 'technical_explanation'}}</ul>
-        <p><a id="feedback-report-technical-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
-        <div class="clear"></div>
-    </div>
+    {{#if technicalUrl}}
+        <div class="feedback-box" id="feedback-tech-problem">
+            <h3>{{translate 'technical_title'}}</h3>
+            <ul>{{translate 'technical_explanation'}}</ul>
+            <p><a id="feedback-report-technical-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
+            <div class="clear"></div>
+        </div>
+    {{/if}}
 
-    <div class="feedback-box" id="feedback-improvement">
-        <h3>{{translate 'suggest_title'}}</h3>
-        <ul>{{translate 'suggest_explanation'}}</ul>
-        <p><a id="feedback-suggest-feature-link" href="{{featureSuggestionUrl}}" target="_blank">{{translate 'suggest_link'}}</a></p>
-        <div class="clear"></div>
-    </div>
+    {{#if featureSuggestionUrl}}
+            <div class="feedback-box" id="feedback-improvement">
+            <h3>{{translate 'suggest_title'}}</h3>
+            <ul>{{translate 'suggest_explanation'}}</ul>
+            <p><a id="feedback-suggest-feature-link" href="{{featureSuggestionUrl}}" target="_blank">{{translate 'suggest_link'}}</a></p>
+            <div class="clear"></div>
+        </div>
+    {{/if}}
 
     <div id="feedback-supplementary-info">{{{supplementaryInfo}}}</div>
     <div class="clear"></div>

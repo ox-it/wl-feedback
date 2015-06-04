@@ -31,6 +31,9 @@
                 supplementaryInfo: '${supplementaryInfo}',
                 recaptchaPublicKey: '${recaptchaPublicKey}',
                 maxAttachmentsMB: ${maxAttachmentsMB},
+                contentUrl: '${contentUrl}',
+                helpUrl: '${helpUrl}',
+                technicalUrl: '${technicalUrl}',
                 siteUpdaters: [
                     <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
                     {id: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
