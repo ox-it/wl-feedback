@@ -1,6 +1,6 @@
 <h2 id="feedback-title">{{translate 'title'}}</h2>
 <div id="feedback-overview" class="instruction">{{translate 'content_instruction'}}</div>
-<form id="feedback-form" action="/direct/feedback/{{siteId}}/reportcontent" method="POST">
+<form id="feedback-form" action="/direct/feedback/{{siteId}}{{contentUrl}}" method="POST">
     <div id="feedback-mandatory-instruction" class="instruction">{{translate 'mandatory_instruction'}}</div>
     <fieldset>
     <table id="feedback-field-table" cols="2">
