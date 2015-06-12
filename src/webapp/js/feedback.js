@@ -51,7 +51,8 @@
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
                                                     helpdeskUrl: feedback.helpdeskUrl,
-                                                    loggedIn: loggedIn }, 'feedback-content');
+                                                    loggedIn: loggedIn,
+                                                    technicalToAddress : feedback.technicalToAddress}, 'feedback-content');
 
             $(document).ready(function () {
 

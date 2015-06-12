@@ -21,21 +21,39 @@
     <div class="feedback-box" id="feedback-ask-help">
         <h3>{{translate 'ask_title'}}</h3>
         <ul>{{translate 'ask_explanation'}}</ul>
-        <p><a id="feedback-report-helpdesk-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
+        {{#if technicalToAddress}}
+            <p><a id="feedback-report-helpdesk-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
+        {{else}}
+            <div class="feedback-error-message-panel-wrapper">
+                <div><span>{{translate 'no_technical_address_message'}}</span></div>
+            </div>
+        {{/if}}
         <div class="clear"></div>
     </div>
 
     <div class="feedback-box" id="feedback-tech-problem">
         <h3>{{translate 'technical_title'}}</h3>
         <ul>{{translate 'technical_explanation'}}</ul>
-        <p><a id="feedback-report-technical-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
+        {{#if technicalToAddress}}
+            <p><a id="feedback-report-technical-link" href="javascript:;">{{translate 'technical_link'}}</a></p>
+        {{else}}
+            <div class="feedback-error-message-panel-wrapper">
+                <div><span>{{translate 'no_technical_address_message'}}</span></div>
+            </div>
+        {{/if}}
         <div class="clear"></div>
     </div>
 
     <div class="feedback-box" id="feedback-improvement">
         <h3>{{translate 'suggest_title'}}</h3>
         <ul>{{translate 'suggest_explanation'}}</ul>
-        <p><a id="feedback-suggest-feature-link" href="{{featureSuggestionUrl}}" target="_blank">{{translate 'suggest_link'}}</a></p>
+        {{#if featureSuggestionUrl}}
+            <p><a id="feedback-suggest-feature-link" href="{{featureSuggestionUrl}}" target="_blank">{{translate 'suggest_link'}}</a></p>
+        {{else}}
+            <div class="feedback-error-message-panel-wrapper">
+                <div><span>{{translate 'no_suggestion_panel_message'}}</span></div>
+            </div>
+        {{/if}}
         <div class="clear"></div>
     </div>
 
