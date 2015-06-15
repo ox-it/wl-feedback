@@ -55,7 +55,8 @@
                                                     loggedIn: loggedIn, showContentPanel : feedback.showContentPanel,
                                                     showHelpPanel : feedback.showHelpPanel,
                                                     showTechnicalPanel : feedback.showTechnicalPanel,
-                                                    showSuggestionsPanel : feedback.showSuggestionsPanel}, 'feedback-content');
+                                                    showSuggestionsPanel : feedback.showSuggestionsPanel,
+                                                    technicalToAddress : feedback.technicalToAddress}, 'feedback-content');
 
             $(document).ready(function () {
 
