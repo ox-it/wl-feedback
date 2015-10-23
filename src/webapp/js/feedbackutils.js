@@ -9,7 +9,7 @@
     };
 
     Handlebars.registerHelper('translate', function (key) {
-        return feedback.i18n[key];
+        return new Handlebars.SafeString(feedback.i18n[key]);
     });
 
 }) (jQuery);

@@ -8,13 +8,13 @@
   	<name>Sakai Feedback Tool</name>
   	<groupId>org.sakaiproject.feedback</groupId>
   	<artifactId>feedback-tool</artifactId>
-    <version>11-SNAPSHOT</version>
+  	<version>10-SNAPSHOT</version>
   	<packaging>war</packaging>
 	
 	<parent>
         <groupId>org.sakaiproject</groupId>
         <artifactId>master</artifactId>
-        <version>11-SNAPSHOT</version>
+        <version>10-SNAPSHOT</version>
         <relativePath>../master/pom.xml</relativePath>
     </parent>
 
@@ -82,6 +82,10 @@
     		<artifactId>sakai-component-manager</artifactId>
    		</dependency>
 		<dependency>
+			<groupId>org.sakaiproject.common</groupId>
+			<artifactId>sakai-privacy-api</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.sakaiproject.kernel</groupId>
 			<artifactId>sakai-kernel-util</artifactId>
 		</dependency>
@@ -110,6 +114,10 @@
             <artifactId>commons-fileupload</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
         </dependency>
@@ -124,7 +132,77 @@
         </dependency>
 	</dependencies>
 
+    <profiles>
+        <profile>
+            <id>templates</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.jknack</groupId>
+                        <artifactId>handlebars-maven-plugin</artifactId>
+                        <version>1.3.1</version>
+                        <executions>
+                            <execution>
+                                <id>precompile</id>
+                                <phase>prepare-package</phase>
+                                <goals>
+                                    <goal>precompile</goal>
+                                </goals>
+                                <configuration>
+                                    <output>${basedir}/src/webapp/templates/all.handlebars</output>
+                                    <prefix>${basedir}/src/webapp/WEB-INF/templates/</prefix>
+                                    <suffix>.handlebars</suffix>
+                                    <minimize>false</minimize>
+                                    <includeRuntime>false</includeRuntime>
+                                    <amd>false</amd>
+                                    <encoding>UTF-8</encoding>
+                                    <templates>
+                                        <template>content</template>
+                                        <template>home</template>
+                                        <template>technical</template>
+                                        <template>toolbar</template>
+                                    </templates>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
 	<build>
+        <plugins>
+            <plugin>
+                <groupId>com.github.jknack</groupId>
+                <artifactId>handlebars-maven-plugin</artifactId>
+                <version>1.3.1</version>
+                <executions>
+                    <execution>
+                        <id>precompile</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>precompile</goal>
+                        </goals>
+                        <configuration>
+                            <output>${project.build.directory}/${project.build.finalName}/templates/all.handlebars</output>
+                            <prefix>${basedir}/src/webapp/WEB-INF/templates/</prefix>
+                            <suffix>.handlebars</suffix>
+                            <minimize>false</minimize>
+                            <includeRuntime>false</includeRuntime>
+                            <amd>false</amd>
+                            <encoding>UTF-8</encoding>
+                            <templates>
+                                <template>content</template>
+                                <template>home</template>
+                                <template>technical</template>
+                                <template>toolbar</template>
+                            </templates>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
         <resources>
             <resource>
                 <directory>${basedir}/src/java</directory>
@@ -134,7 +212,8 @@
                 </includes>
             </resource>
             <resource>
-                <directory>${basedir}/src/bundle</directory>
+                <!--proper Maven -->
+                <directory>${basedir}/src/main/resources</directory>
             </resource>
         </resources>
     </build>

@@ -6,6 +6,8 @@
     var HOME = 'home';
     var CONTENT = 'content';
     var TECHNICAL = 'technical';
+    var REPORTTECHNICAL = 'reporttechnical';
+    var REPORTHELPDESK = 'reporthelpdesk';
 
     /* RESPONSE CODES */
     var SUCCESS = 'SUCCESS';
@@ -17,10 +19,18 @@
     var RECAPTCHA_FAILURE = 'RECAPTCHA_FAILURE';
     var BAD_RECIPIENT = 'BAD_RECIPIENT';
     var NO_SENDER_ADDRESS = 'NO_SENDER_ADDRESS';
+    var BAD_SENDER_ADDRESS = 'BAD_SENDER_ADDRESS';
+    var DB_ERROR = 'DB_ERROR';
 
     var loggedIn = (feedback.userId != '') ? true : false;
+    var siteUpdater;
+    var technicalToAddress;
 
     feedback.switchState = function (state) {
+        feedback.switchState(state, null);
+    }
+
+    feedback.switchState = function (state, url) {
 
         $('#feedback-toolbar > li > span').removeClass('current');
 
@@ -28,11 +38,25 @@
 
         $('#feedback-error-message-wrapper').hide();
 
+        $('#feedback-info-message-wrapper').hide();
+
         if (HOME === state) {
+
+            siteUpdater = $('#feedback-siteupdaters').find(':selected').text();
+            if (siteUpdater=='') siteUpdater = $('#feedback-contactname').val();
+
+            technicalToAddress = $('#feedback-technical-email').val();
+
             feedback.utils.renderTemplate(HOME, { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                     supplementaryInfo: feedback.supplementaryInfo,
                                                     helpPagesUrl: feedback.helpPagesUrl,
-                                                    loggedIn: loggedIn }, 'feedback-content');
+                                                    helpPagesTarget: feedback.helpPagesTarget,
+                                                    helpdeskUrl: feedback.helpdeskUrl,
+                                                    loggedIn: loggedIn, showContentPanel : feedback.showContentPanel,
+                                                    showHelpPanel : feedback.showHelpPanel,
+                                                    showTechnicalPanel : feedback.showTechnicalPanel,
+                                                    showSuggestionsPanel : feedback.showSuggestionsPanel,
+                                                    technicalToAddress : feedback.technicalToAddress}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -49,16 +73,13 @@
                     $('#feedback-technical-item').show().css('display', 'inline');
                     $('#feedback-report-technical-wrapper').show();
                     $('#feedback-report-technical-link').click(function (e) {
-                        feedback.switchState(TECHNICAL);
+                        feedback.switchState(TECHNICAL, REPORTTECHNICAL);
+                    });
+                    $('#feedback-report-helpdesk-link').click(function (e) {
+                        feedback.switchState(TECHNICAL, REPORTHELPDESK);
                     });
                 } else {
                     $('#feedback-technical-setup-instruction').show();
-                }
-
-                if (feedback.featureSuggestionUrl.length > 0) {
-                    $('#feedback-suggest-feature-wrapper').show();
-                } else {
-                    $('#feedback-feature-suggestion-setup-instruction').show();
                 }
 
                 if (feedback.supplementaryInfo.length > 0) {
@@ -73,12 +94,24 @@
                                             } });
                 });
 
+
+                $('#feedback-info-message-wrapper a').click(function (e) {
+                    $('#feedback-info-message-wrapper').hide();
+                });
+
+                if (siteUpdater!=null && siteUpdater!='') {
+                    feedback.displayInfo(siteUpdater);
+                }
+                else {
+                    feedback.displayInfo(technicalToAddress);
+                }
+
                 feedback.fitFrame();
             });
         } else if (CONTENT === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId,
-                                                    siteUpdaters: feedback.siteUpdaters }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
+                windowHeight: window.outerHeight, siteExists: feedback.siteExists, siteId: feedback.siteId, contentUrl : feedback.contentUrl, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName}, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -89,7 +122,7 @@
                     $('#feedback-siteupdaters-wrapper').show();
                 }
 
-                $('#feedback-form').ajaxForm(feedback.getFormOptions());
+                $('#feedback-form').ajaxForm(feedback.getFormOptions(feedback.userId.length > 0));
 
                 $('#feedback-max-attachments-mb').html(feedback.maxAttachmentsMB);
 
@@ -97,10 +130,21 @@
                     max: 5,
                     namePattern: '$name_$i'
                 });
+
+                feedback.setUpCancelButton();
+
+                if (!loggedIn) {
+                    // Not logged in, show the sender email box.
+                    $('#feedback-sender-address').show();
+
+                    feedback.setUpRecaptcha();
+                }
+
             });
         } else if (TECHNICAL === state) {
 
-            feedback.utils.renderTemplate(state, { siteId: feedback.siteId }, 'feedback-content');
+            feedback.utils.renderTemplate(state, { plugins : feedback.getPluginList(), screenWidth: screen.width, screenHeight: screen.height, oscpu: navigator.oscpu, windowWidth: window.outerWidth,
+                windowHeight: window.outerHeight, siteExists: feedback.siteExists, url: url, siteId: feedback.siteId, siteUpdaters: feedback.siteUpdaters, loggedIn: loggedIn, technicalToAddress: feedback.technicalToAddress, contactName: feedback.contactName }, 'feedback-content');
 
             $(document).ready(function () {
 
@@ -110,19 +154,7 @@
                     // Not logged in, show the sender email box.
                     $('#feedback-sender-address').show();
 
-                    if (feedback.recaptchaPublicKey.length > 0) {
-                        // Recaptcha is enabled, show it.
-                        Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
-                            {
-                                theme: "red",
-                                callback: function () {
-
-                                    feedback.fitFrame();
-                                    $('#feedback-recaptcha-wrapper').show();
-                                }
-                            }
-                        );
-                    }
+                    feedback.setUpRecaptcha();
                 }
 
                 feedback.fitFrame();
@@ -136,10 +168,44 @@
                     namePattern: '$name_$i'
                 } );
 
+                feedback.setUpCancelButton();
             });
         }
 
         return false;
+    };
+
+    feedback.getPluginList = function () {
+        var plugins = '';
+        for(var i = 0; i<navigator.plugins.length; i++) {
+            plugins += navigator.plugins[i].name + ", ";
+        }
+        return plugins;
+    };
+
+
+    feedback.setUpRecaptcha = function () {
+
+        if (feedback.recaptchaPublicKey.length > 0) {
+            // Recaptcha is enabled, show it.
+            Recaptcha.create(feedback.recaptchaPublicKey, "feedback-recaptcha-block",
+                {
+                    theme: "red",
+                    callback: function () {
+
+                        feedback.fitFrame();
+                        $('#feedback-recaptcha-wrapper').show();
+                    }
+                }
+            );
+        }
+    };
+
+    feedback.setUpCancelButton = function () {
+        $('#feedback-cancel-button').click(function (e) {
+            location.href="";
+            e.preventDefault();
+        });
     };
 
     feedback.fitFrame = function () {
@@ -177,12 +243,12 @@
                 for (var i=0,j=formArray.length;i<j;i++) {
                     var el = formArray[i];
                     if (el.name === 'title') {
-                        if (el.value.length < 8 || el.value.length > 40) {
+                        if (el.value.length < 1) {
                             feedback.displayError(BAD_TITLE);
                             return false;
                         }
                     } else if (el.name === 'description') {
-                        if (el.value.length < 32) {
+                        if (el.value.length < 1) {
                             feedback.displayError(BAD_DESCRIPTION);
                             return false;
                         }
@@ -191,11 +257,20 @@
                             feedback.displayError(NO_SENDER_ADDRESS);
                             return false;
                         }
+                        else if (!feedback.validateEmail(el.value)) {
+                            feedback.displayError(BAD_SENDER_ADDRESS);
+                            return false;
+                        }
                     }
                 }
                 return true;
             }
         };
+    };
+
+    feedback.validateEmail = function (email) {
+        var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        return re.test(email);
     };
 
     feedback.displayError = function (errorCode) {
@@ -216,6 +291,10 @@
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_recipient);
         } else if (errorCode === NO_SENDER_ADDRESS) {
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error_no_sender_address);
+        } else if (errorCode === BAD_SENDER_ADDRESS) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_bad_sender_address);
+        } else if (errorCode === DB_ERROR) {
+            $('#feedback-error-message-wrapper span').html(feedback.i18n.error_db_error);
         } else {
             $('#feedback-error-message-wrapper span').html(feedback.i18n.error);
         }
@@ -233,10 +312,20 @@
         }
     };
 
+
+    feedback.displayInfo = function (siteUpdater) {
+        if (siteUpdater!=null && siteUpdater!=''){
+            $('#feedback-info-message-wrapper span').html('An email with the information you entered has been sent to ' + siteUpdater);
+            $('#feedback-info-message-wrapper').show();
+            feedback.fitFrame();
+        }
+    };
+
     var loggedIn = (feedback.userId != '') ? true : false;
     feedback.utils.renderTemplate(TOOLBAR , { featureSuggestionUrl: feedback.featureSuggestionUrl,
                                                 loggedIn: loggedIn,
-                                                helpPagesUrl: feedback.helpPagesUrl }, 'feedback-toolbar');
+                                                helpPagesUrl: feedback.helpPagesUrl,
+                                                helpPagesTarget: feedback.helpPagesTarget}, 'feedback-toolbar');
 
     $(document).ready(function () {
 
@@ -249,7 +338,11 @@
         });
 
         $('#feedback-technical-item').click(function (e) {
-            return feedback.switchState(TECHNICAL);
+            return feedback.switchState(TECHNICAL, REPORTTECHNICAL);
+        });
+
+        $('#feedback-helpdesk-item').click(function (e) {
+            return feedback.switchState(TECHNICAL, REPORTHELPDESK);
         });
 
         if (feedback.helpPagesUrl.length > 0 ) {

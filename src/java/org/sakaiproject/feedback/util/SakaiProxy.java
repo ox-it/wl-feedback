@@ -1,11 +1,6 @@
 package org.sakaiproject.feedback.util;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Map;
+import java.util.*;
 import java.text.MessageFormat;
 
 import org.apache.commons.fileupload.FileItem;
@@ -14,6 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 import javax.mail.util.ByteArrayDataSource;
 
+import org.sakaiproject.api.privacy.PrivacyManager;
 import org.sakaiproject.component.api.ServerConfigurationService;
 import org.sakaiproject.email.api.Attachment;
 import org.sakaiproject.email.api.ContentType;
@@ -30,12 +26,15 @@ import org.sakaiproject.user.api.UserDirectoryService;
 import org.sakaiproject.user.api.UserNotDefinedException;
 
 import lombok.Setter;
+import org.sakaiproject.util.ResourceLoader;
 
 public class SakaiProxy {
 
     public static final int ATTACH_MAX_DEFAULT = 10;
 
 	private static final Log logger = LogFactory.getLog(SakaiProxy.class);
+
+    private static ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
 
     @Setter
     private ServerConfigurationService serverConfigurationService;
@@ -54,6 +53,10 @@ public class SakaiProxy {
 
     @Setter
     private EmailService emailService;
+
+    @Setter
+    private PrivacyManager privacyManager;
+
 
     public boolean getConfigBoolean(String name, boolean defaultValue) {
         return serverConfigurationService.getBoolean(name, defaultValue);
@@ -81,6 +84,11 @@ public class SakaiProxy {
         }
     }
 
+    /**
+     * This gets the current Site ID from the placement, if the tool is running outside the portal
+     * this will return <code>null</code>.
+     * @return The current site ID.
+     */
 	public String getCurrentSiteId() {
 		return toolManager.getCurrentPlacement().getContext();
 	}
@@ -121,8 +129,11 @@ public class SakaiProxy {
         try {
             Site site = siteService.getSite(siteId);
             Map<String, String> map = new HashMap<String, String>();
-            for (String userId : site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE)) {
-                User user = userDirectoryService.getUser(userId);
+            Set<String> userIds = site.getUsersIsAllowed(SiteService.SECURE_UPDATE_SITE);
+            Set<String> hiddenUserIds = privacyManager.findHidden("/site/" + siteId, userIds);
+            userIds.removeAll(hiddenUserIds);
+            List<User> users = userDirectoryService.getUsers(userIds);
+            for (User user : users) {
                 String email = user.getEmail();
                 if (email != null && email.length() > 0) {
                     map.put(user.getId(), user.getDisplayName());
@@ -136,8 +147,10 @@ public class SakaiProxy {
     }
 
 	public void sendEmail(String fromUserId, String senderAddress, String toAddress, boolean addNoContactEmailMessage, String siteId, String feedbackType
-                            , String userTitle, String userContent
-                            , List<FileItem> fileItems) {
+			, String userTitle, String userContent
+			, List<FileItem> fileItems, boolean siteExists,
+			   String browserNameAndVersion, String osNameAndVersion, String browserSize, String screenSize, String plugins, String ip,
+			   String currentTime) {
 
 		final List<Attachment> attachments = new ArrayList<Attachment>();
 
@@ -192,12 +205,14 @@ public class SakaiProxy {
             locale = Locale.getDefault();
         }
 
-        final ResourceBundle rb = ResourceBundle.getBundle("org.sakaiproject.feedback.bundle.email", locale);
+        final ResourceLoader rb = new ResourceLoader("org.sakaiproject.feedback");
 
         String subjectTemplate = null;
         
         if (feedbackType.equals(Constants.CONTENT)) {
             subjectTemplate = rb.getString("content_email_subject_template");
+        } else if (feedbackType.equals(Constants.HELPDESK)) {
+            subjectTemplate = rb.getString("help_email_subject_template");
         } else {
             subjectTemplate = rb.getString("technical_email_subject_template");
         }
@@ -207,31 +222,43 @@ public class SakaiProxy {
 
         final Site site = getSite(siteId);
 
-        final String siteTitle = site.getTitle();
+        final String siteTitle = siteExists ? site.getTitle() : "N/A (Site does not exist)";
 
-        final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + site.getId();
+        final String workerNode = serverConfigurationService.getServerId();
+        final String siteUrl = serverConfigurationService.getPortalUrl() + "/site/" + (siteExists ? site.getId() : siteId) ;
 
         String noContactEmailMessage = "";
         
-        if (addNoContactEmailMessage) {
-            noContactEmailMessage = rb.getString("no_contact_email_message");
-        }
-
         final String instance = serverConfigurationService.getServerIdInstance();
 
         final String bodyTemplate = rb.getString("email_body_template");
-        final String formattedBody
-            = MessageFormat.format(bodyTemplate, new String[] {noContactEmailMessage,
-                                                                    userId,
-                                                                    userEid,
-                                                                    fromName,
-                                                                    fromAddress,
-                                                                    siteTitle,
-                                                                    siteId,
-                                                                    siteUrl,
-                                                                    instance,
-                                                                    userTitle,
-                                                                    userContent});
+        String formattedBody
+            = MessageFormat.format(bodyTemplate, new String[]{noContactEmailMessage,
+		        userId,
+		        userEid,
+		        fromName,
+		        fromAddress,
+		        siteTitle,
+		        siteId,
+		        siteUrl,
+		        instance,
+		        userTitle,
+		        userContent,
+		        "\n",
+		        browserNameAndVersion,
+		        osNameAndVersion,
+		        browserSize,
+		        screenSize,
+		        plugins,
+		        ip,
+		        workerNode,
+		        currentTime});
+
+
+        if (feedbackType.equals(Constants.CONTENT)) {
+            formattedBody = formattedBody + "\n\n\n" + rb.getString("email_body_template_note");
+        }
+
 
         if (logger.isDebugEnabled()) {
             logger.debug("fromName: " + fromName);
@@ -248,26 +275,24 @@ public class SakaiProxy {
 		final EmailMessage msg = new EmailMessage();
 
 		msg.setFrom(new EmailAddress(fromAddress, fromName));
-        msg.setContentType(ContentType.TEXT_PLAIN);
+		msg.setContentType(ContentType.TEXT_PLAIN);
 
 		msg.setSubject(formattedSubject);
 		msg.setBody(formattedBody);
 
-        if (attachments != null) {
-        	for (Attachment attachment : attachments) {
-        		msg.addAttachment(attachment);
-        	}
-        }
-
-		if (feedbackType.equals(Constants.CONTENT)) {
-            // Copy the sender in
-			msg.addRecipient(RecipientType.CC, fromName, fromAddress);
+		if (attachments != null) {
+			for (Attachment attachment : attachments) {
+				msg.addAttachment(attachment);
+			}
 		}
+
+		// Copy the sender in
+		msg.addRecipient(RecipientType.CC, fromName, fromAddress);
 
 		msg.addRecipient(RecipientType.TO, toAddress);
 
-        new Thread(new Runnable() {
-            public void run() {
+		new Thread(new Runnable() {
+			public void run() {
 		        try {
 			        emailService.send(msg, true);
                 } catch (Exception e) {
@@ -285,5 +310,9 @@ public class SakaiProxy {
         int mb = (contentUploadMax < feedbackAttachMax) ? contentUploadMax : feedbackAttachMax;
 
         return mb;
+    }
+
+    public Locale getLocale() {
+        return rb.getLocale();
     }
 }

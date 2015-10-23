@@ -20,13 +20,22 @@
                 state: 'home',
                 userId: '${userId}',
                 siteId: '${siteId}',
+                siteExists: '${siteExists}',
                 language: '${language}',
                 featureSuggestionUrl: '${featureSuggestionUrl}',
+                technicalToAddress: '${technicalToAddress}',
+                contactName: '${contactName}',
                 enableTechnical: ${enableTechnical},
+                helpdeskUrl: '${helpdeskUrl}',
                 helpPagesUrl: '${helpPagesUrl}',
+                helpPagesTarget: '${helpPagesTarget}',
                 supplementaryInfo: '${supplementaryInfo}',
                 recaptchaPublicKey: '${recaptchaPublicKey}',
                 maxAttachmentsMB: ${maxAttachmentsMB},
+                showContentPanel: ${showContentPanel},
+                showHelpPanel: ${showHelpPanel},
+                showTechnicalPanel: ${showTechnicalPanel},
+                showSuggestionsPanel: ${showSuggestionsPanel},
                 siteUpdaters: [
                     <c:forEach items="${siteUpdaters}" var="su" varStatus="sus">
                     {id: '${su.key}', displayName: '${su.value}'}<c:if test="${!sus.last}">,</c:if>
@@ -53,6 +62,11 @@
                 <div id="feedback-error-message-wrapper">
                     <div>
                         <img src="/library/image/silk/exclamation.png" /><span></span><a id="feedback-error-close" href="javascript:;"><img src="/library/image/silk/cross.png" /></a>
+                    </div>
+                </div>
+                <div id="feedback-info-message-wrapper">
+                    <div>
+                        <img src="/library/image/silk/information.png" /><span></span><a id="feedback-info-close" href="javascript:;"><img src="/library/image/silk/cross.png" /></a>
                     </div>
                 </div>
                 <div id="feedback-content"></div>
